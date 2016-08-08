@@ -1,0 +1,4 @@
+la grafica del arduino sale capada
+no hay rotulos 
+no hay comunicacion bidireccional, aunque creo que el en el arduino esta implememtada
+

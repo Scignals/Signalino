@@ -20,7 +20,7 @@ int modo_salida=6;
 #define WiredSerial Serial
 
 
-#include <Cmd.h>
+// #include <Cmd.h>
 /* 
 The Arduino Due has three additional 3.3V TTL serial ports: Serial1 on pins 19 (RX) and 18 (TX); 
 Serial2 on pins 17 (RX) and 16 (TX), Serial3 on pins 15 (RX) and 14 (TX). 

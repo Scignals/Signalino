@@ -152,6 +152,10 @@ public static void fftpot2(double[] real, double[] imag) {
   }
 }
 
+int fft_iniciada;
+double [] cosTable;
+double [] sinTable;
+
 // la fft de arriba, optimizada para buffer de 512. No comprueba tamaños de arrays, y precalcula las tablas. 
 // usa un global fft_iniciada, que probablemente deberia ser un static, pero no controlo cómo se hace
 // esto deberia ser un metodo estatico, pero tampoco lo controlo, y da error de compilación

@@ -18,6 +18,7 @@ Chart ADS4ch;
 
 
 boolean modo_conectado = false;
+boolean modo_test = false;
 
 
 

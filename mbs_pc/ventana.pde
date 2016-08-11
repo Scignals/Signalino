@@ -25,7 +25,7 @@ class ventana {
   
   // dibuja de color _fondo la ventana
   void dibuja_fondo(){
-      //noStroke();
+      noStroke();
       fill(_fondo);  // color for the window background
       rect(_ctro_x, _ctro_y, _ancho, _alto);
       

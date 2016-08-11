@@ -1,7 +1,7 @@
 
 // variables modificables  durante debugging
 boolean gtestSignal=false;
-boolean gSimuladaSignal=true;
+boolean gSimuladaSignal=false;
 boolean gtestHEX=false;
 boolean gtestCONTINUO=true;
 int modo_salida=6;

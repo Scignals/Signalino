@@ -5,6 +5,7 @@ class Chart {
   int puntero_canales;
   ventana v;
   int[][] datos;
+  Buffer bf;
 
   Chart (int x, int y, int w, int h, int n) {  
     ancho = w; 
@@ -18,26 +19,22 @@ class Chart {
     canales = new ArrayList<Canal>();
     int alto_canal=alto/n_canales;
     ancho_canal=ancho-10;
-    
-
     for(int i=0;i<n;i++){
       canales.add(new Canal(cx,v.mrgS()+3+alto_canal/2+(alto_canal)*i,ancho-10, alto_canal));
     }
-    datos = new int[n_canales][ancho_canal];
+    
+    bf=new Buffer(n,w*5);
   
    }
+   
    void set(int [] valores){
-     puntero_canales++;
-     if(puntero_canales>=ancho_canal)puntero_canales=0;
-     for(int i=0;i<n_canales;i++){
-         datos[i][puntero_canales]=valores[i];
-     }
+      bf.apunta(valores);
    }
  
   void update() {
      for(int i=0;i<n_canales;i++){
-      Canal chx = canales.get(i);
-      chx.pinta(datos[i],0.1);
+        Canal chx = canales.get(i);
+        chx.pinta(bf.lee_canal(i,ancho));
      }
   } 
 } 

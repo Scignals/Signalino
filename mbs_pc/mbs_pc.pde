@@ -1,14 +1,15 @@
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import processing.serial.*;
 import javax.swing.JOptionPane;//For user input dialogs
 
-
 int BAUD_RATE = 57600;//230400;//921600;//460800;//921600; //921600 for Teensy2/Teensy3/Leonardo 460800
-int numCanales = 4; //number of channels to report
+int numCanales = 8; //number of channels to report
 int serialPortNumber = 0; //set to 0 for automatic detection
 
 Serial port;      // Create object from Serial class
-int[]  lectura;              // Data received from the serial port
+int[]  lectura;              // Datos leidos en el puerto serie
 
 
 
@@ -33,7 +34,7 @@ void setup() {
   if (!modo_test){
      serie_inicia();
   }   
-  ADS4ch = new Chart(anchoPantalla/2,altoPantalla/2,990,550,numCanales);
+  ADS4ch = new Chart(anchoPantalla/2,altoPantalla/2,anchoPantalla-10,altoPantalla-50,numCanales);
   
 }
 

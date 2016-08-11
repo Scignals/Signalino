@@ -1,4 +1,4 @@
-la grafica del arduino sale capada
+la grafica del arduino sale capada. Es por la escala, habria que arreglarlo
 no hay rotulos 
 no hay comunicacion bidireccional, aunque creo que el en el arduino esta implememtada
 

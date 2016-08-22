@@ -1,4 +1,4 @@
-// memboost, firmware v 02
+// memboost, firmware v 02 rama serial_command
 // juan Barios, agosto 2016
 
 #include "ads1298.h"
@@ -34,7 +34,6 @@ void inicia_hw() {
   using namespace ADS1298;
 
   //al empezar, reset
-   crea_seno();
    delay(800); //desde Power up, esperar 1 segundo para mover nada
    digitalWrite(kPIN_RESET, LOW);
    delay(100);
@@ -107,6 +106,38 @@ void ads_setupSimple() {
               
 }
 
+void ads_setupVariadito(int opciones) {
+   using namespace ADS1298;
+   switch(opciones){
+     case 1:
+       adc_wreg(GPIO, char(0));
+       adc_wreg(CONFIG1, LOW_POWR_250_SPS);
+       adc_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
+       adc_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
+       delay(150);
+       for (int i = 1; i <= gMaxChan; i++){
+               adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X )); //report this channel with x12 gain
+        } 
+        detectActiveChannels(); 
+        break;       
+     case 2:
+       adc_wreg(GPIO, char(0));
+       adc_wreg(CONFIG1, LOW_POWR_250_SPS);
+       adc_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
+       adc_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
+       delay(150);
+       for (int i = 1; i <= gMaxChan; i++){
+            adc_wreg(char(CHnSET + i), char(TEST_SIGNAL | GAIN_12X ));
+        } 
+        detectActiveChannels(); 
+        break;       
+   }
+  //start streaming data
+    isRDATAC = true;
+    adc_send_command(RDATAC); 
+    adc_send_command(START); 
+}
+
 void detectActiveChannels() {  //actualiza gActiveChan y gNumActiveChan
   using namespace ADS1298; 
   gNumActiveChan = 0;
@@ -151,22 +182,18 @@ void inicia_serial_pc(){
   HC06.begin(SERIAL_SPEED_BT); //use native port on Due
   while (HC06.read() >= 0) {} ;
   delay(200);  // Catch Due reset problem
-
-//  cmdInit(&WiredSerial);
-//  cmdAdd("test",f_test);
-//  cmdAdd("proto",f_proto);
-
-
-//   cmdAdd("hello", f_test);
-  
 }
 
 
 void setup(){
   inicia_serial_pc();
+  crea_seno();
   inicia_hw();
-  ads_setupSimple();
-
+  if( gtestSignal )
+      ads_setupVariadito(2);
+  else
+      ads_setupVariadito(1);
+      
   if(!gtestCONTINUO){
       mensaje_inicio();
       while(1);

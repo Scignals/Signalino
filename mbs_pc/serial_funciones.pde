@@ -36,7 +36,7 @@ void serie_inicia()
   //vaciamos el buffer del puerto y leemos hasta un 0xC0
   while (port.available() > 0)  port.read();
   byte[] basura=port.readBytesUntil(0xC0);
-  modo_conectado=true;  
+    modo_conectado=true;  
 }
 
 void setPortNum() 

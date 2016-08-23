@@ -33,6 +33,9 @@ void setup() {
   modo_conectado=false;
   if (!modo_test){
      serie_inicia();
+     //pone el ads en modo 6, bytes openBCI
+     port.write("frm6\n");
+
   }   
   ADS4ch = new Chart(anchoPantalla/2,altoPantalla/2,anchoPantalla-10,altoPantalla-50,numCanales);
   

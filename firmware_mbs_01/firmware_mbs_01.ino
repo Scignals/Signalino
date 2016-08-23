@@ -389,6 +389,9 @@ void leeSerial(){
      texto=WiredSerial.readString();
      texto.toLowerCase();
      texto.trim();
+
+//     WiredSerial.print(texto);
+//     return;
      
       if(texto.startsWith("sim")){
         gSimuladaSignal=!gSimuladaSignal;

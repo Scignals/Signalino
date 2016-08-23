@@ -1,10 +1,10 @@
 
 // variables modificables  durante debugging
-boolean gtestSignal=false;
+boolean gtestSignal=true;
 boolean gSimuladaSignal=false;
 boolean gtestHEX=false;
 boolean gtestCONTINUO=true;
-int modo_salida=1;
+int modo_salida=6;
 // 1-hex 2-numeros 3-openeeg-hex 4-openeeg-bytes
 // 5-openbci-numeros 6-openbci-bytes 7-openbci-hex      
 

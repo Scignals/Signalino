@@ -1,4 +1,4 @@
-// memboost, firmware v 02 rama serial_command
+// memboost, firmware v 02 rama master
 // juan Barios, agosto 2016
 
 #include "ads1298.h"
@@ -163,7 +163,7 @@ void mensaje_inicio(){
    WiredSerial.println(F("Comandos:"));
    WiredSerial.println(F("hlp -- ayuda "));
    WiredSerial.println(F("sim -- señal simulada on/off")); 
-   WiredSerial.println(F("prt -- protocolos")); 
+   WiredSerial.println(F("frmN -- formatos de salida: N=0,va cambiando. Ahora hay 7")); 
    
 }
 
@@ -385,19 +385,26 @@ void leeSerial(){
     if(WiredSerial.available()==0)return;
     
      String texto;
+     String parametro;
      texto=WiredSerial.readString();
-      if(texto=="sim"){
+     texto.toLowerCase();
+     texto.trim();
+     
+      if(texto.startsWith("sim")){
         gSimuladaSignal=!gSimuladaSignal;
         return;
-      }
-      if(texto=="hlp"){
+      } else if(texto.startsWith("hlp")){
        mensaje_inicio();
        while(WiredSerial.available()==0);
        return;
-      }
-      if(texto=="prt"){
-         //modo_salida++;
-         if(++modo_salida>5)modo_salida=1;
+      } else if(texto.startsWith("frm")){
+         parametro=texto.substring(3,4);
+         int p1=parametro.toInt();
+         if(p1==0){
+            if(++modo_salida>maxComando)modo_salida=minComando;
+         } else if (p1<maxComando){
+            modo_salida=p1;
+         }
          return;
       }
 }

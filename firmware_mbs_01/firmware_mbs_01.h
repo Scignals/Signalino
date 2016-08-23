@@ -4,7 +4,7 @@ boolean gtestSignal=false;
 boolean gSimuladaSignal=false;
 boolean gtestHEX=false;
 boolean gtestCONTINUO=true;
-int modo_salida=6;
+int modo_salida=1;
 // 1-hex 2-numeros 3-openeeg-hex 4-openeeg-bytes
 // 5-openbci-numeros 6-openbci-bytes 7-openbci-hex      
 
@@ -60,6 +60,9 @@ boolean isRDATAC = false;
 char *gLetra; // buffer usado en to_hex, inicializado en setup()
 int numSerialBytes=0;
 unsigned char serialBytes[80];
+
+int minComando=1;
+int maxComando=7;
 
 // protocolo openEEG firmware P2, util para openvibe
 // solo registra 6 canales

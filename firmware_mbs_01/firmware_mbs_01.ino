@@ -403,7 +403,9 @@ void leeSerial(){
      texto.toLowerCase();
      texto.trim();
 
-  //   WiredSerial.print(texto);
+     WiredSerial.print(texto);
+     WiredSerial.println("--ok");
+     
   //   return;
      
       if(texto.startsWith("sim")){ // 1 normal  2 test 3 simulada

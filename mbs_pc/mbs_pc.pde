@@ -34,21 +34,18 @@ void setup() {
   if (!modo_test){
      serie_inicia();
      //pone el ads en modo 6, bytes openBCI
-     port.write("frm6\n");
-
+    
   }   
   ADS4ch = new Chart(anchoPantalla/2,altoPantalla/2,anchoPantalla-10,altoPantalla-50,numCanales);
-  
+
 }
 
 void draw() {
+    // port.write("frm1\n");
+
      if(modo_conectado)serDecode();
-     else {
-        for(int i=0;i<numCanales;i++){
-           lectura[i]=(int) random(1,100);
-        }
-     }   
+     else serRand();
      ADS4ch.set(lectura);
      ADS4ch.update();
- 
+
 }

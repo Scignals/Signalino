@@ -4,9 +4,12 @@ boolean gtestSignal=true;
 boolean gSimuladaSignal=false;
 boolean gtestHEX=false;
 boolean gtestCONTINUO=true;
-int modo_salida=6;
 // 1-hex 2-numeros 3-openeeg-hex 4-openeeg-bytes
-// 5-openbci-numeros 6-openbci-bytes 7-openbci-hex      
+// 5-openbci-numeros 6-openbci-bytes 7-openbci-hex 8-no imprime nada      
+int minComando=1;
+int maxComando=8;
+int modo_salida=6;
+int ultimo_modo=8;
 
 #include "Arduino.h"
 #define isDUE  //Detect Arduino Due
@@ -61,8 +64,6 @@ char *gLetra; // buffer usado en to_hex, inicializado en setup()
 int numSerialBytes=0;
 unsigned char serialBytes[80];
 
-int minComando=1;
-int maxComando=7;
 
 // protocolo openEEG firmware P2, util para openvibe
 // solo registra 6 canales

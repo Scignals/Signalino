@@ -13,11 +13,11 @@ class Buffer {
   
   
   void apunta(int[] x1) {
-    println(puntero);
+   // println(puntero);
     if((++puntero)>=max_buffer)puntero=0;
     for(int i=0;i<num_canales;i++)
       datos[i][puntero]=x1[i];
-        println(puntero);
+       // println(puntero);
 
    }
 
@@ -29,10 +29,10 @@ class Buffer {
     return(salida);
   }
   int [] lee_canal(int canal,int longitud) {
-    print((datos[canal].length));
-    print("puntero");
-    println( puntero);
-    println (longitud);
+   // print((datos[canal].length));
+   // print("puntero");
+   // println( puntero);
+   // println (longitud);
 
     int [] c=new int [longitud];
 

@@ -163,7 +163,9 @@ void mensaje_inicio(){
    WiredSerial.println(F("Comandos:"));
    WiredSerial.println(F("hlp -- ayuda "));
    WiredSerial.println(F("sim -- señal simulada on/off")); 
-   WiredSerial.println(F("frmN -- formatos de salida: N=0,va cambiando. Ahora hay 7")); 
+   WiredSerial.println(F("rec -- chorro datos on/off")); 
+   
+   WiredSerial.println(F("frmN -- formatos de salida: N=0,va cambiando. Ahora hay 8")); 
    
 }
 
@@ -223,6 +225,10 @@ void imprime_linea( boolean modo){
 //añadimos un ; al final 
     WiredSerial.println(FINLINEA);
     HC06.println(FINLINEA);
+}
+
+void no_imprime_nada( boolean modo){
+   return;
 }
 
 
@@ -390,12 +396,25 @@ void leeSerial(){
      texto.toLowerCase();
      texto.trim();
 
-//     WiredSerial.print(texto);
-//     return;
+   //  WiredSerial.print(texto);
+   //  return;
      
-      if(texto.startsWith("sim")){
-        gSimuladaSignal=!gSimuladaSignal;
-        return;
+      if(texto.startsWith("sim")){ // 1 normal  2 test 3 normal
+         parametro=texto.substring(3,4);
+         int p1=parametro.toInt();
+         switch(p1){
+            case 1:
+              gSimuladaSignal=false;
+            break;
+            case 2:
+              gSimuladaSignal=true;
+            break;
+            case 3:
+              gtestSignal=true;
+              gSimuladaSignal=false;
+            break;
+         }       
+      return;
       } else if(texto.startsWith("hlp")){
        mensaje_inicio();
        while(WiredSerial.available()==0);
@@ -405,8 +424,17 @@ void leeSerial(){
          int p1=parametro.toInt();
          if(p1==0){
             if(++modo_salida>maxComando)modo_salida=minComando;
-         } else if (p1<maxComando){
+         } else if (p1<=maxComando){
             modo_salida=p1;
+         }       
+      } else if(texto.startsWith("rec")){
+         parametro=texto.substring(3,4);
+         int p1=parametro.toInt();
+         if(p1==0){
+            ultimo_modo=modo_salida;
+            modo_salida=8;            
+         } else {
+            modo_salida=ultimo_modo;
          }
          return;
       }
@@ -442,6 +470,9 @@ void loop()
          break;
       case 7:   
          imprime_openBCI_V3(3);
+         break;
+      case 8:   
+         no_imprime_nada(true);
          break;
          
      }

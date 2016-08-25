@@ -1,8 +1,19 @@
+int v1=0;
+boolean debugeando=false;
 
 void serDecode() { //assuming Arduino is only transfering active channels
+  
   int newlen = port.available();
-//  int[] val=new Int[20];
   if(newlen<1)return;
+  if(debugeando){
+      String texto=port.readString();
+      print(texto);
+      print(v1++);
+      return;
+      }
+//  int[] val=new Int[20];
+
+  
   int packetBytes = 33; // modo openbci3
   int cabecero=2;
   
@@ -21,6 +32,12 @@ void serDecode() { //assuming Arduino is only transfering active channels
 
 } //void serDecode
 
+void serRand() { //numeros aleatorios
+  for(int i=0;i<numCanales;i++){
+           lectura[i]=(int) random(1,100);
+        }
+} //void serRand
+
 
 void serie_inicia()
 {
@@ -34,8 +51,8 @@ void serie_inicia()
   }
   port = new Serial(this, Serial.list()[serialPortNumber], BAUD_RATE);    
   //vaciamos el buffer del puerto y leemos hasta un 0xC0
-  while (port.available() > 0)  port.read();
-  byte[] basura=port.readBytesUntil(0xC0);
+ while (port.available() > 0)  port.read(); 
+ byte[] basura=port.readBytesUntil(0xC0);
     modo_conectado=true;  
 }
 

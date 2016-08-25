@@ -82,6 +82,10 @@ void inicia_hw() {
 
 void ads_setupSimple() {
    using namespace ADS1298;
+
+  adc_send_command(SDATAC); // dejamos el modo READ para emitir comandos
+  delay(10);
+
    adc_wreg(GPIO, char(0));
    adc_wreg(CONFIG1, LOW_POWR_250_SPS);
    adc_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
@@ -108,6 +112,9 @@ void ads_setupSimple() {
 
 void ads_setupVariadito(int opciones) {
    using namespace ADS1298;
+   adc_send_command(SDATAC); // dejamos el modo READ para emitir comandos
+   delay(10);
+
    switch(opciones){
      case 1:
        adc_wreg(GPIO, char(0));
@@ -162,9 +169,9 @@ void mensaje_inicio(){
    WiredSerial.println(gMaxChan);
    WiredSerial.println(F("Comandos:"));
    WiredSerial.println(F("hlp -- ayuda "));
-   WiredSerial.println(F("sim -- señal simulada on/off")); 
+   WiredSerial.println(F("simN -- N1, señal normal. N2, test. N3 simulada")); 
    WiredSerial.println(F("rec -- chorro datos on/off")); 
-   
+   WiredSerial.println(F("sim -- señal simulada on/off"));    
    WiredSerial.println(F("frmN -- formatos de salida: N=0,va cambiando. Ahora hay 8")); 
    
 }
@@ -396,22 +403,28 @@ void leeSerial(){
      texto.toLowerCase();
      texto.trim();
 
-   //  WiredSerial.print(texto);
-   //  return;
+  //   WiredSerial.print(texto);
+  //   return;
      
-      if(texto.startsWith("sim")){ // 1 normal  2 test 3 normal
+      if(texto.startsWith("sim")){ // 1 normal  2 test 3 simulada
          parametro=texto.substring(3,4);
          int p1=parametro.toInt();
          switch(p1){
             case 1:
               gSimuladaSignal=false;
+              gtestSignal=false;
+              ads_setupVariadito(1);
             break;
             case 2:
-              gSimuladaSignal=true;
+              gSimuladaSignal=false;
+              gtestSignal=true;
+              ads_setupVariadito(2);
+
             break;
             case 3:
-              gtestSignal=true;
-              gSimuladaSignal=false;
+              gtestSignal=false;
+              gSimuladaSignal=true;
+
             break;
          }       
       return;

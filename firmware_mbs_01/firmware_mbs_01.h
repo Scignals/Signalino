@@ -8,7 +8,7 @@ boolean gtestCONTINUO=true;
 // 5-openbci-numeros 6-openbci-bytes 7-openbci-hex 8-no imprime nada      
 int minComando=1;
 int maxComando=8;
-int modo_salida=6;
+int modo_salida=2;
 int ultimo_modo=8;
 
 #include "Arduino.h"

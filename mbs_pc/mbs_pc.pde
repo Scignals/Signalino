@@ -8,6 +8,8 @@ int BAUD_RATE = 57600;//230400;//921600;//460800;//921600; //921600 for Teensy2/
 int numCanales = 8; //number of channels to report
 int serialPortNumber = 0; //set to 0 for automatic detection
 
+boolean primera_vuelta=true;
+
 Serial port;      // Create object from Serial class
 int[]  lectura;              // Datos leidos en el puerto serie
 
@@ -33,18 +35,22 @@ void setup() {
   modo_conectado=false;
   if (!modo_test){
      serie_inicia();
+     // port.buffer(1);  // no se si hace falta
      //pone el ads en modo 6, bytes openBCI
-    
+     sendComando("frm6",port);
+     sendComando("sim3",port);
+     
   }   
   ADS4ch = new Chart(anchoPantalla/2,altoPantalla/2,anchoPantalla-10,altoPantalla-50,numCanales);
 
 }
 
+int n=1;
 void draw() {
-    // port.write("frm1\n");
 
      if(modo_conectado)serDecode();
      else serRand();
+   //  serEco();
      ADS4ch.set(lectura);
      ADS4ch.update();
 

@@ -167,7 +167,7 @@ void mensaje_inicio(){
    
    WiredSerial.print(F("canales activos:"));
    WiredSerial.println(gMaxChan);
-   WiredSerial.println(F("Comandos:"));
+   WiredSerial.println(F("Comandos: (separados por punto y coma)"));
    WiredSerial.println(F("hlp -- ayuda "));
    WiredSerial.println(F("simN -- N1, señal normal. N2, test. N3 simulada")); 
    WiredSerial.println(F("rec -- chorro datos on/off")); 
@@ -393,22 +393,12 @@ void lee_datos_ads1299(void) {
       digitalWrite(IPIN_CS, HIGH);
 }
 
-
-void leeSerial(){
-    if(WiredSerial.available()==0)return;
-    
-     String texto;
+void procesaComando(String texto){
      String parametro;
-     texto=WiredSerial.readString();
-     texto.toLowerCase();
-     texto.trim();
-
      WiredSerial.print(texto);
-     WiredSerial.println("--ok");
-     
-  //   return;
-     
-      if(texto.startsWith("sim")){ // 1 normal  2 test 3 simulada
+     WiredSerial.println("-->ok");
+
+     if(texto.startsWith("sim")){ // 1 normal  2 test 3 simulada
          parametro=texto.substring(3,4);
          int p1=parametro.toInt();
          switch(p1){
@@ -441,6 +431,7 @@ void leeSerial(){
             if(++modo_salida>maxComando)modo_salida=minComando;
          } else if (p1<=maxComando){
             modo_salida=p1;
+            WiredSerial.println("cambiado modo");
          }       
       } else if(texto.startsWith("rec")){
          parametro=texto.substring(3,4);
@@ -453,6 +444,17 @@ void leeSerial(){
          }
          return;
       }
+}
+
+void leeSerial(){
+    if(WiredSerial.available()==0)return;
+    
+     String comando;
+     while( (comando = WiredSerial.readStringUntil(';')).length()>0){
+         comando.toLowerCase();
+         comando.trim();
+         procesaComando(comando);
+     }
 }
 
 void loop()

@@ -16,9 +16,9 @@ int ultimo_modo=8;
 #define SERIAL_SPEED 57600  //57600
 #define SERIAL_SPEED_BT 115200
 #define SEPARADOR_SERIAL ','
-#define FINLINEA " "
+#define FINLINEA ";"
 // tenemos un modulo HC06 en serial3, y por tanto en pines pins 15 (RX) and 14 (TX)
-// y prefiero el programing port, parece mas estable
+// y prefiero el programing port (Serial), parece mas estable
 #define HC06 Serial3  
 #define WiredSerial Serial
 

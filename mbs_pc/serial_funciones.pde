@@ -38,6 +38,14 @@ void serRand() { //numeros aleatorios
         }
 } //void serRand
 
+void serEco() { //numeros aleatorios
+    int newlen = port.available();
+    if(newlen<1)return;
+      String texto=port.readString();
+      print(texto);
+    
+} //void serRand
+
 
 void serie_inicia()
 {
@@ -75,3 +83,10 @@ void setPortNum()
       portStr, portStr[index]);
    serialPortNumber = Integer.parseInt(respStr.substring(0, 1));  
 } //setPortNum()
+
+void sendComando(String comando, Serial puerto)
+{
+     delay(200); // incomprensiblemente imprescindible, debe ser un bug de alguna libreria. Y me ha costado un huevo descubrirlo (windows 10, pc de elche).
+     puerto.write(comando+";");
+ 
+}

@@ -14,8 +14,9 @@
 long ultima_lectura[8];
 long contador_muestras=0;
 
-#define TABLE_SIZE 48
+#define TABLE_SIZE 72
 #define TWO_PI (3.14159 * 2)
+#define AMPLITUD_SENAL 1500
 float samples [TABLE_SIZE];
 float phaseIncrement = TWO_PI/TABLE_SIZE;
 
@@ -23,7 +24,7 @@ void crea_seno(void){
   float currentPhase = 0.0;
   int i;
   for (i = 0; i < TABLE_SIZE; i ++){
-      samples[i] = 100*sin(currentPhase)+100;
+      samples[i] = AMPLITUD_SENAL*sin(currentPhase)+AMPLITUD_SENAL;
       currentPhase += phaseIncrement;
       }
 }      

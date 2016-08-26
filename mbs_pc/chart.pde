@@ -7,7 +7,7 @@ class Chart {
   int[][] datos;
   Buffer bf;
 
-  Chart (int x, int y, int w, int h, int n) {  
+  Chart (int x, int y, int w, int h, int n, float escala) {  
     ancho = w; 
     alto = h;
     cx=x;
@@ -20,10 +20,10 @@ class Chart {
     int alto_canal=alto/n_canales;
     ancho_canal=ancho-10;
     for(int i=0;i<n;i++){
-      canales.add(new Canal(cx,v.mrgS()+3+alto_canal/2+(alto_canal)*i,ancho-10, alto_canal));
+      canales.add(new Canal(cx,v.mrgS()+3+alto_canal/2+(alto_canal)*i,ancho-10, alto_canal, escala));
     }
     
-    bf=new Buffer(n,w*5);
+    bf=new Buffer(n,w*1);
   
    }
    

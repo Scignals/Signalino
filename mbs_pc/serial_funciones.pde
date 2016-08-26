@@ -21,9 +21,6 @@ void serDecode() { //assuming Arduino is only transfering active channels
   byte[] rawData = new byte[10*packetBytes*2];
   int nn=port.readBytesUntil(0xC0, rawData);
   if(nn!=packetBytes)return;
-  // debug
-  // for(int c=0;c<33;c++){print(String.format("%02X ",rawData[c]));print(" ");};
-  // println("");
  
   for (int i = 0; i < numCanales; i++) //first byte is status, then 3 bytes per channel
              lectura[i] =  (rawData[cabecero+(i*3)]  << 24) + (rawData[cabecero+1+(i*3)]  << 16) + (rawData[cabecero+2+(i*3) ]<<8); //load as 32bit to capture sign bit
@@ -43,8 +40,7 @@ void serEco() { //numeros aleatorios
     if(newlen<1)return;
       String texto=port.readString();
       print(texto);
-    
-} //void serRand
+} //void serEco
 
 
 void serie_inicia()

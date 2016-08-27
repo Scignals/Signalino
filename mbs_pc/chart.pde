@@ -37,4 +37,11 @@ class Chart {
         chx.pinta(bf.lee_canal(i,ancho));
      }
   } 
+  void setEscala(float e) {
+     for(int i=0;i<n_canales;i++){
+        Canal chx = canales.get(i);
+        chx.escala=e;
+     }
+  } 
+
 } 

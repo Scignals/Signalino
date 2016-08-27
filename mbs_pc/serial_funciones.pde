@@ -71,7 +71,7 @@ void setPortNum()
      portStr[i] =  i+ " "+portStr[i] ;
    }  
    String respStr = (String) JOptionPane.showInputDialog(null,
-      "<html><div align='right'>Memboost v 0.1 (c) 2016</div>Choose COM port (if not listed: check drivers and power)</html>", "Select Arduino",
+      "<html><div align='right'>Memboost v 0.1 (c) 2016</div>Choose COM port (if not listed: check drivers and power)</html>", "Select Memboost device",
       JOptionPane.PLAIN_MESSAGE, null,
       portStr, portStr[index]);
    serialPortNumber = Integer.parseInt(respStr.substring(0, 1));  

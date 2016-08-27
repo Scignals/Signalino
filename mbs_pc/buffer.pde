@@ -35,15 +35,16 @@ class Buffer {
    // println (longitud);
 
     int [] c=new int [longitud];
-
-    // esto esta mal, hace algo muy raro al llegar limite del buffer, pero vale por ahora
-    if(puntero<longitud)
-        System.arraycopy(datos[canal], 0, c, 0, longitud );
-    else
+  
+    if(puntero>longitud)
         System.arraycopy(datos[canal], puntero-longitud, c, 0, longitud );
+    else{
+        System.arraycopy(datos[canal], max_buffer+puntero-longitud, c, 0, longitud-puntero );
+        System.arraycopy(datos[canal], 0, c, longitud-puntero, puntero );
+    }
     return(c);    
      
-     }
+  }
   
 
 }  

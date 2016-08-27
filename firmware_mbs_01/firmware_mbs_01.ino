@@ -14,7 +14,7 @@
 long ultima_lectura[8];
 long contador_muestras=0;
 
-#define TABLE_SIZE 72
+#define TABLE_SIZE 48
 #define TWO_PI (3.14159 * 2)
 #define AMPLITUD_SENAL 1500
 float samples [TABLE_SIZE];

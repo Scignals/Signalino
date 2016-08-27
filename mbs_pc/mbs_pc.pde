@@ -62,7 +62,6 @@ void draw() {
    //  serEco();
      ADS4ch.set(lectura);
      ADS4ch.update();
-
 }
 
 public void controlEvent(ControlEvent theEvent) {

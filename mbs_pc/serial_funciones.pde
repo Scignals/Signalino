@@ -5,14 +5,7 @@ void serDecode() { //assuming Arduino is only transfering active channels
   
   int newlen = port.available();
   if(newlen<1)return;
-  if(debugeando){
-      String texto=port.readString();
-      print(texto);
-      print(v1++);
-      return;
-      }
-//  int[] val=new Int[20];
-
+  
   
   int packetBytes = 33; // modo openbci3
   int cabecero=2;
@@ -27,6 +20,10 @@ void serDecode() { //assuming Arduino is only transfering active channels
   for (int i = 0; i < numCanales; i++)
              lectura[i] = (lectura[i] >> 8); //convert 32-bit to 24-bit integer processing deals with the sign,           
 
+  //chapucilla, pero salvado un pesadisimo bug. Solo leemos una vez por vuelta en draw, y borramos el resto. Si no, se almacena en algun sitio, y se acumula. 
+  while(port.available()>0){
+    int inByte = port.read();
+   }
 } //void serDecode
 
 void serRand() { //numeros aleatorios

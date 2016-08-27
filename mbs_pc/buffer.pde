@@ -4,12 +4,21 @@ class Buffer {
   int num_canales;
   int max_buffer;
   int puntero;
+  int [] umbral_max;
+  int [] umbral_min;
+  
   Buffer(int nc , int mb ) {
         datos=new int [nc][mb] ;
+        umbral_max=new int[nc];
+        umbral_min=new int[nc];
+        
         puntero=0;
         num_canales=nc;
         max_buffer=mb;        
-  }
+
+        for(int i=0;i<nc;i++)umbral_max[i]=1000000000;
+   
+}
   
   
   void apunta(int[] x1) {
@@ -28,6 +37,7 @@ class Buffer {
     }
     return(salida);
   }
+
   int [] lee_canal(int canal,int longitud) {
    // print((datos[canal].length));
    // print("puntero");
@@ -46,5 +56,16 @@ class Buffer {
      
   }
   
-
+  void calcula_umbrales() {
+    for(int i=0;i<num_canales;i++){
+       for(int j=0;j<max_buffer;j++){
+           umbral_max[i]+=abs(datos[i][j]);
+       }
+    }
+    
+    for(int i=0;i<num_canales;i++){
+           umbral_max[i]/=max_buffer;
+    }
+  }
+    
 }  

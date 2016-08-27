@@ -24,6 +24,8 @@ class Chart {
     }
     
     bf=new Buffer(n,w*1);
+    
+    
   
    }
    
@@ -36,6 +38,7 @@ class Chart {
         Canal chx = canales.get(i);
         chx.pinta(bf.lee_canal(i,ancho));
      }
+     bf.calcula_umbrales();
   } 
   void setEscala(float e) {
      for(int i=0;i<n_canales;i++){

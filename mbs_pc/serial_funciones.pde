@@ -11,19 +11,48 @@ void serDecode() { //assuming Arduino is only transfering active channels
   int cabecero=2;
   
   if (newlen < packetBytes) return;
+  
+  boolean modo_promedio=true;
   byte[] rawData = new byte[10*packetBytes*2];
-  int nn=port.readBytesUntil(0xC0, rawData);
-  if(nn!=packetBytes)return;
- 
-  for (int i = 0; i < numCanales; i++) //first byte is status, then 3 bytes per channel
-             lectura[i] =  (rawData[cabecero+(i*3)]  << 24) + (rawData[cabecero+1+(i*3)]  << 16) + (rawData[cabecero+2+(i*3) ]<<8); //load as 32bit to capture sign bit
-  for (int i = 0; i < numCanales; i++)
-             lectura[i] = (lectura[i] >> 8); //convert 32-bit to 24-bit integer processing deals with the sign,           
-
-  //chapucilla, pero salvado un pesadisimo bug. Solo leemos una vez por vuelta en draw, y borramos el resto. Si no, se almacena en algun sitio, y se acumula. 
-  while(port.available()>0){
-    int inByte = port.read();
-   }
+  
+  int  [] temp_lectura= new int[numCanales];
+  int  [] contador_vueltas= new int[numCanales];
+  for (int i = 0; i < numCanales; i++)contador_vueltas[i]=1;
+  
+  
+      while(port.available()>=packetBytes){
+           int nn=port.readBytesUntil(0xC0, rawData);
+           if(nn!=packetBytes)return;
+          
+           if(modo_promedio){  
+                for (int i = 0; i < numCanales; i++) //first byte is status, then 3 bytes per channel
+                           temp_lectura[i] =  (rawData[cabecero+(i*3)]  << 24) + (rawData[cabecero+1+(i*3)]  << 16) + (rawData[cabecero+2+(i*3) ]<<8); //load as 32bit to capture sign bit
+                for (int i = 0; i < numCanales; i++)
+                           temp_lectura[i] = (temp_lectura[i] >> 8); //convert 32-bit to 24-bit integer processing deals with the sign,           
+                for (int i = 0; i < numCanales; i++){
+                    // if(abs(temp_lectura[i])>ADS4ch.bf.umbral_max[i]*2){
+                     if(abs(temp_lectura[i])>=0){
+                       lectura[i]+=temp_lectura[i];
+                           contador_vueltas[i]++;
+                     }
+                }
+           } else {
+                 for (int i = 0; i < numCanales; i++) //first byte is status, then 3 bytes per channel
+                           lectura[i] =  (rawData[cabecero+(i*3)]  << 24) + (rawData[cabecero+1+(i*3)]  << 16) + (rawData[cabecero+2+(i*3) ]<<8); //load as 32bit to capture sign bit
+                 for (int i = 0; i < numCanales; i++)
+                           lectura[i] = (lectura[i] >> 8); //convert 32-bit to 24-bit integer processing deals with the sign,           
+                 ++contador_vueltas[1];
+           }  
+       }
+       for (int i = 0; i < numCanales; i++){
+                 if(modo_promedio)lectura[i]/=contador_vueltas[i];
+       }
+       print("  "+contador_vueltas[1]);
+      //chapucilla, pero salvado un pesadisimo bug. Solo leemos una vez por vuelta en draw, y borramos el resto. Si no, se almacena en algun sitio, y se acumula. 
+      while(port.available()>0){
+        int inByte = port.read();
+       }
+       
 } //void serDecode
 
 void serRand() { //numeros aleatorios

@@ -3,5 +3,9 @@ no hay rotulos
 no hay comunicacion bidireccional, aunque creo que el en el arduino esta implememtada. 
 
 -implementada clase buffer, mejorias en el codigo leve
--ya hay comunicacion bidireccional, falta por ir estableciendo un vocabulario de comandos. Ahora si funciona! delay(200)
--solo dibuja semiciclos positivos
+-ya hay comunicacion bidiccional, falta por ir estableciendo un vocabulario de comandos. Ahora si funciona! delay(200)
+-solo dibuja semiciclos positivos. De eso nada, ya funciona
+
+#version 0.1
+todo eso ya funciona.
+

@@ -35,6 +35,14 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
    .setValue(1)
      ;
 
+  gui.addTextlabel("lab1")
+   .setText("<esc>    exit")
+   .setPosition(910,300)
+   .setSize(10,27)
+   .setColorValue(0x00000000)
+   .setFont(createFont("Georgia",10))
+   ;
+
 }
 
 

@@ -49,56 +49,9 @@ class ventana {
       dibuja_fondo();
       stroke(250, 0, 0);     //red                          
       noFill();
-      beginShape();             
+      beginShape();        
+      cx1=0;
       for (int i = 0; i < x1.length; i++) {
-        cx1=(float)map(i,0,x1.length,mrgI(),mrgD());
-        cy1=cy()+escala*x1[i];
-        cy1=cy1<mrgS()?mrgS():cy1;
-        vertex(cx1,  cy1>mrgF()?mrgF():cy1);
-      }
-      endShape();
-    }
-
-    void pintaVector(int[] x1,float escala, int minimo, int maximo) {
-      float cx1,cy1;
-      dibuja_fondo();
-      stroke(250, 0, 0);     //red                          
-      noFill();
-      beginShape();             
-      for (int i = 0; i < x1.length; i++) {
-        cx1=(float)map(i,0,x1.length,mrgI(),mrgD());
-        cy1=cy()+escala*(float)map(x1[i],minimo,maximo,_alto/(-2),_alto/(2));        
-        cy1=cy1<=mrgS()?mrgS():cy1;
-        vertex(cx1,  cy1>=mrgF()?mrgF():cy1);
-      }
-      endShape();
-    }
-
-    void pintaVector(double[] x1,float escala) {
-      float cx1,cy1;
-      dibuja_fondo();
-      stroke(250, 0, 0);     //red                          
-      noFill();
-      beginShape();             
-      for (int i = 0; i < x1.length; i++) {
-        cx1=(float)map(i,0,x1.length,mrgI(),mrgD());
-        cy1=cy()+(float)escala*(float)x1[i];
-        vertex(cx1, cy1>mrgF()?mrgF():cy1);
-      }
-      endShape();
-    }
-
-   void pintaVector(int[] x1,float escala, int puntero) {
-     if(puntero<3)puntero=3;
-     if(puntero>900)puntero=900;
-      float cx1,cy1;
-      fill(_fondo);  // color for the window background
-      rect(puntero-3, _ctro_y, 6, _alto);
-//      dibuja_fondo();
-      stroke(250, 0, 0);     //red                          
-      noFill();
-      beginShape();             
-      for (int i = puntero-3; i < puntero+3; i++) {
         cx1=(float)map(i,0,x1.length,mrgI(),mrgD());
         cy1=cy()+escala*x1[i];
         cy1=cy1<mrgS()?mrgS():cy1;

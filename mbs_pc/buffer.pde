@@ -26,33 +26,29 @@ class Buffer {
     if((++puntero)>=max_buffer)puntero=0;
     for(int i=0;i<num_canales;i++)
       datos[i][puntero]=x1[i];
-       // println(puntero);
 
    }
 
-  int [] lee(int puntos) {
-    int [] salida=new int[num_canales];
-    for(int i=0;i<num_canales;i++){
-      salida[i]=datos[i][puntero];
-    }
-    return(salida);
-  }
-
-  int [] lee_canal(int canal,int longitud) {
-   // print((datos[canal].length));
-   // print("puntero");
-   // println( puntero);
-   // println (longitud);
-
-    int [] c=new int [longitud];
   
-    if(puntero>longitud)
-        System.arraycopy(datos[canal], puntero-longitud, c, 0, longitud );
+  int [] lee_canal(int canal,int longitud, int decimando) {
+  //print((datos[canal].length));
+  //print("puntero");
+  //println( puntero);
+  //println (longitud);
+
+    int longitud2=longitud*decimando;
+    int [] c=new int [longitud2];
+    int [] d=new int [longitud];
+    
+  
+    if(puntero>longitud2)
+        System.arraycopy(datos[canal], puntero-longitud2, c, 0, longitud2 );
     else{
-        System.arraycopy(datos[canal], max_buffer+puntero-longitud, c, 0, longitud-puntero );
-        System.arraycopy(datos[canal], 0, c, longitud-puntero, puntero );
+        System.arraycopy(datos[canal], max_buffer+puntero-longitud2, c, 0, longitud2-puntero );
+        System.arraycopy(datos[canal], 0, c, longitud2-puntero, puntero );
     }
-    return(c);    
+    for(int i=0;i<longitud;i++)d[i]=c[i*decimando];
+    return(d);    
      
   }
   
@@ -60,7 +56,7 @@ class Buffer {
     for(int i=0;i<num_canales;i++){
        for(int j=0;j<max_buffer;j++){
            umbral_max[i]+=abs(datos[i][j]);
-       }
+      }
     }
     
     for(int i=0;i<num_canales;i++){

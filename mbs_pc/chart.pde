@@ -1,3 +1,4 @@
+int MAX_DECIMANDO=64;
 class Chart { 
   int ancho, alto, cx, cy;
   ArrayList<Canal> canales;
@@ -23,7 +24,7 @@ class Chart {
       canales.add(new Canal(cx,v.mrgS()+3+alto_canal/2+(alto_canal)*i,ancho-10, alto_canal, escala));
     }
     
-    bf=new Buffer(n,w*1);
+    bf=new Buffer(n,w*MAX_DECIMANDO);
     
     
   
@@ -36,15 +37,21 @@ class Chart {
   void update() {
      for(int i=0;i<n_canales;i++){
         Canal chx = canales.get(i);
-        chx.pinta(bf.lee_canal(i,ancho));
+        chx.pinta(bf.lee_canal(i,ancho,chx.decimando));
      }
-     bf.calcula_umbrales();
+//     bf.calcula_umbrales();
   } 
   void setEscala(float e) {
      for(int i=0;i<n_canales;i++){
         Canal chx = canales.get(i);
         chx.escala=e;
      }
-  } 
+  }
+  void setDecimando(int e) {
+     for(int i=0;i<n_canales;i++){
+        Canal chx = canales.get(i);
+        chx.decimando=e;
+     }
+  }
 
 } 

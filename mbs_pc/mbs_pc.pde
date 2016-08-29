@@ -31,25 +31,24 @@ void setup() {
   size(1000, 600);
   rectMode(CENTER);
 
+  println("Memoboost signal visor 0.1");
+
   lectura=new int[numCanales];
 
   modo_conectado=false;
   if (!modo_test){
      serie_inicia();
-     // port.buffer(1);  // no se si hace falta
      //pone el ads en modo 6, bytes openBCI
      sendComando("frm6",port);
      sendComando("sim3",port);     
   }   
   ADS4ch = new Chart(anchoPantalla/2-50,altoPantalla/2,anchoPantalla-100,altoPantalla-50,numCanales,0.0001);
-
   gui = new ControlP5(this);
   iniciaGui(gui);
-  
 }
 
 void draw() {
-     if(modo_conectado)serDecode();
+     if(modo_conectado)serDecode(ADS4ch.bf);
      else serRand();
    //  serEco();
      ADS4ch.set(lectura);

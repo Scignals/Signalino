@@ -8,7 +8,6 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
    .addItem("senal",1)
    .addItem("test",2)
    .addItem("simul",3)
-   .addItem("g=1",4)
    
    ;
 
@@ -39,11 +38,27 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
 
   gui.addTextlabel("lab1")
    .setText("<esc>    exit")
-   .setPosition(910,300)
-   .setSize(10,27)
+   .setPosition(910,500)
+   .setSize(10,10)
    .setColorValue(0x00000000)
    .setFont(createFont("Georgia",10))
    ;
+
+  gui.addRadioButton("Ganancia")
+                .setPosition(910, 120)
+                .setColorForeground(color(120))
+                .setColorActive(color(255))
+                .setColorLabel(color(255))
+                .setSize(8,10)
+                .addItem("1", 0)
+                .addItem("2", 1)
+                .addItem("3", 2)
+                .addItem("4", 3)
+                .addItem("6", 4)
+                .addItem("8", 5)
+                .addItem("24", 6)
+                
+                ;
 
 }
 
@@ -78,4 +93,9 @@ public void Escala(float value){
 
 public void Tiempo(int value){
   ADS4ch.setDecimando(value);
+}
+
+public void Ganancia(int value){
+       sendComando("gan"+(value+1),port); 
+       println("gan"+(value+1));
 }

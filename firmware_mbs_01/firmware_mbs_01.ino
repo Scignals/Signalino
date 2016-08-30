@@ -166,6 +166,33 @@ void ads_setupVariadito(int opciones) {
     adc_send_command(START); 
 }
 
+void ads_setupGanancia(int valor) {
+       using namespace ADS1298;
+       adc_send_command(SDATAC); // dejamos el modo READ para emitir comandos
+       delay(10);
+       adc_wreg(GPIO, char(0));
+       adc_wreg(CONFIG1, LOW_POWR_250_SPS);
+       adc_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
+       adc_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
+       delay(150);
+       for (int i = 1; i <= gMaxChan; i++){
+           switch(valor){
+               case 1:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_1X )); break;
+               case 2:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_2X ));  break;
+               case 3:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_3X ));  break;
+               case 4:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_4X )); break;
+               case 5:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_2X )); break;
+               case 6:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_6X )); break;
+               case 7:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_8X )); break;
+               case 8:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X ));  break;
+           }
+        } 
+        detectActiveChannels(); 
+        isRDATAC = true;
+        adc_send_command(RDATAC); 
+        adc_send_command(START); 
+}
+
 void detectActiveChannels() {  //actualiza gActiveChan y gNumActiveChan
   using namespace ADS1298; 
   gNumActiveChan = 0;
@@ -472,7 +499,15 @@ void procesaComando(String texto){
             modo_salida=ultimo_modo;
          }
          return;
-      }
+      } else if(texto.startsWith("gan")){ // 1 normal  2 test 3 simulada
+         parametro=texto.substring(3,4);
+         int p1=parametro.toInt();
+         gSimuladaSignal=false;
+         gtestSignal=true;
+         ads_setupGanancia(p1);
+         }       
+      return;
+
 }
 
 void leeSerial(){

@@ -22,11 +22,10 @@ void serDecode(Buffer bf) { //assuming Arduino is only transfering active channe
              
 } //void serDecode
 
-void serRand(Buffer bf) { //numeros aleatorios
+void serRand() { //numeros aleatorios
   for(int i=0;i<numCanales;i++){
-           lectura[i]=(int) random(1,1000000);
+           lectura[i]=(int) random(1,100);
         }
-        bf.apunta(lectura);
 } //void serRand
 
 void serEco() { //numeros aleatorios
@@ -52,13 +51,8 @@ void serie_inicia()
       //vaciamos el buffer del puerto y leemos hasta un 0xC0
      while (port.available() > 0)  port.read(); 
      byte[] basura=port.readBytesUntil(0xC0);
-     
-     //ponemos el modulo en condiciones
-       sendComando("frm6",port);
-       sendComando("sim3",port);
-    
         modo_conectado=true;  
-//  } ;    
+ // } else exit();    
 }
 
 void setPortNum() 
@@ -66,8 +60,8 @@ void setPortNum()
    String[] portStr = Serial.list();
    int nPort = portStr.length;
    if (nPort < 1) {
-      javax.swing.JOptionPane.showMessageDialog(frame,"No devices detected: please check Arduino power and drivers. Continue unconnected...");  
- //     exit();    
+      javax.swing.JOptionPane.showMessageDialog(frame,"No devices detected: please check Arduino power and drivers. Exiting program...");  
+      exit();    
       return;
    }
    int index = 0;
@@ -84,7 +78,6 @@ void setPortNum()
 
 void sendComando(String comando, Serial puerto)
 {
-    if(!modo_conectado)return;
      delay(200); // incomprensiblemente imprescindible, debe ser un bug de alguna libreria. Y me ha costado un huevo descubrirlo (windows 10, pc de elche).
      puerto.write(comando+";");
  

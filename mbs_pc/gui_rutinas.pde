@@ -79,9 +79,6 @@ public void Senal(int value){
      case 3:
        sendComando("sim3;",port);
        break;  
-     case 4:
-       sendComando("sim4;",port);
-       break;  
 
   }
 }

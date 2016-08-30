@@ -81,7 +81,7 @@ void inicia_hw() {
 
 }
 
-void ads_setupSimple() {
+void xads_setupSimple() {
    using namespace ADS1298;
 
   adc_send_command(SDATAC); // dejamos el modo READ para emitir comandos
@@ -97,9 +97,9 @@ void ads_setupSimple() {
    delay(150);
    for (int i = 1; i <= gMaxChan; i++){
         if (gtestSignal)
-           adc_wreg(char(CHnSET + i), char(TEST_SIGNAL | GAIN_12X ));
+           adc_wreg(char(CHnSET + i), char(TEST_SIGNAL | GAIN_1X ));
         else   
-           adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X )); //report this channel with x12 gain
+           adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_1X )); //report this channel with x12 gain
     } 
    
     detectActiveChannels(); 
@@ -122,9 +122,13 @@ void ads_setupVariadito(int opciones) {
        adc_wreg(CONFIG1, LOW_POWR_250_SPS);
        adc_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
        adc_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
+   #define MISC1 0x15
+//   adc_wreg(MISC1,0x20); //set SRB1  
+     //con srb1 activado, todos los canales P se referencian a srb1.
+
        delay(150);
        for (int i = 1; i <= gMaxChan; i++){
-               adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X )); //report this channel with x12 gain
+               adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_1X )); //report this channel with x12 gain
         } 
         detectActiveChannels(); 
         break;       
@@ -135,10 +139,26 @@ void ads_setupVariadito(int opciones) {
        adc_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
        delay(150);
        for (int i = 1; i <= gMaxChan; i++){
-            adc_wreg(char(CHnSET + i), char(TEST_SIGNAL | GAIN_12X ));
+            adc_wreg(char(CHnSET + i), char(TEST_SIGNAL | GAIN_1X ));
+        } 
+        detectActiveChannels(); 
+        break;
+      case 3:
+       adc_wreg(GPIO, char(0));
+       adc_wreg(CONFIG1, LOW_POWR_250_SPS);
+       adc_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
+       adc_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
+   #define MISC1 0x15
+//   adc_wreg(MISC1,0x20); //set SRB1  
+     //con srb1 activado, todos los canales P se referencian a srb1.
+
+       delay(150);
+       for (int i = 1; i <= gMaxChan; i++){
+               adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X )); //report this channel with x12 gain
         } 
         detectActiveChannels(); 
         break;       
+            
    }
   //start streaming data
     isRDATAC = true;
@@ -419,6 +439,14 @@ void procesaComando(String texto){
               gSimuladaSignal=true;
 
             break;
+           case 4:
+              gSimuladaSignal=false;
+              gtestSignal=false;
+              ads_setupVariadito(3);
+
+            break;
+            
+            
          }       
       return;
       } else if(texto.startsWith("hlp")){

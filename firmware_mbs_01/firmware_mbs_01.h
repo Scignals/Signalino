@@ -1,6 +1,6 @@
 
 // variables modificables  durante debugging
-boolean gtestSignal=true;
+boolean gtestSignal=false;
 boolean gSimuladaSignal=false;
 boolean gtestHEX=false;
 boolean gtestCONTINUO=true;

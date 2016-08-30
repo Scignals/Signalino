@@ -2,12 +2,14 @@
 void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active channels
 
   gui.addRadioButton("Senal")
-   .setPosition(910,500)
+   .setPosition(910,300)
    .setSize(10,27)
    .setValue(1)
    .addItem("senal",1)
    .addItem("test",2)
    .addItem("simul",3)
+   .addItem("g=1",4)
+   
    ;
 
   gui.addTextlabel("Memboost")
@@ -62,6 +64,10 @@ public void Senal(int value){
      case 3:
        sendComando("sim3;",port);
        break;  
+     case 4:
+       sendComando("sim4;",port);
+       break;  
+
   }
 }
 

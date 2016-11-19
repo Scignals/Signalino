@@ -6,6 +6,8 @@ class Chart {
   int puntero_canales;
   ventana v;
   int[][] datos;
+  int[] visibles;
+
   Buffer bf;
 
   Chart (int x, int y, int w, int h, int n, float escala) {  
@@ -18,6 +20,9 @@ class Chart {
     puntero_canales=0;
 
     canales = new ArrayList<Canal>();
+    visibles= new int[n_canales];
+    for(int i=0;i<n_canales;i++)visibles[i]=1;
+    
     int alto_canal=alto/n_canales;
     ancho_canal=ancho-10;
     for(int i=0;i<n;i++){
@@ -37,7 +42,8 @@ class Chart {
   void update() {
      for(int i=0;i<n_canales;i++){
         Canal chx = canales.get(i);
-        chx.pinta(bf.lee_canal(i,ancho,chx.decimando));
+        if(visibles[i]==1)
+          chx.pinta(bf.lee_canal(i,ancho,chx.decimando));
      }
 //     bf.calcula_umbrales();
   } 
@@ -52,6 +58,10 @@ class Chart {
         Canal chx = canales.get(i);
         chx.decimando=e;
      }
+  }
+  
+  void setVisible(int e, int vis){
+     visibles[e]=vis;       
   }
 
 } 

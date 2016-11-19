@@ -16,11 +16,11 @@
 long ultima_lectura[8];
 long contador_muestras=0;
 
-#define TABLE_SIZE 48
+#define TABLE_SIZE 48*8*4
 #define TWO_PI (3.14159 * 2)
-#define AMPLITUD_SENAL 1500
+#define AMPLITUD_SENAL 500
 float samples [TABLE_SIZE];
-float phaseIncrement = TWO_PI/TABLE_SIZE;
+float phaseIncrement = TWO_PI/((float)TABLE_SIZE);
 
 void crea_seno(void){
   float currentPhase = 0.0;
@@ -376,42 +376,56 @@ void lee_datos_ads1299(void) {
     int i = 0;
     int jj=0;
     byte muestra[3];
+    int vnula=0;
+    long vlast=0;
+    long diff= 0;
+    
     numSerialBytes = 1 + (3 * gNumActiveChan); //8-bits header plus 24-bits per ACTIVE channel
 
       
 // cs a 0, empezamos a leer el ads1299	  
       digitalWrite(IPIN_CS, LOW);
+      contador_muestras++;
       serialBytes[i++] =SPI.transfer(0); //get 1st byte of header
       SPI.transfer(0); //skip 2nd byte of header
       SPI.transfer(0); //skip 3rd byte of header
       for (int ch = 1; ch <= gMaxChan; ch++) {
-        if( !gSimuladaSignal ){
-              serialBytes[i++] = SPI.transfer(0);
-              serialBytes[i++] = SPI.transfer(0);
-              serialBytes[i++] = SPI.transfer(0);
-              long vlast= to_Int32(serialBytes+i-3);
-              long diff= ultima_lectura[ch] - vlast;
-              if (abs(diff)>250000  ){
-                 to_3bytes(0,serialBytes+i-3);
-              } else {
-                 ultima_lectura[ch]=vlast;
-              }
-              
-        } else {      
-              // señal seno, creada al inicio 
-              jj=contador_muestras%TABLE_SIZE;
-              to_3bytes(samples[jj]*100,muestra);
-              if(ch!=166){
+           switch(gSenal_obtenida){
+              case SENAL_REAL:
+                serialBytes[i++] = SPI.transfer(0);
+                serialBytes[i++] = SPI.transfer(0);
+                serialBytes[i++] = SPI.transfer(0);
+                vlast= to_Int32(serialBytes+i-3);
+                diff= ultima_lectura[ch] - vlast;
+                if (abs(diff)>250000  ){
+               //    to_3bytes(0,serialBytes+i-3);
+                } else {
+                   ultima_lectura[ch]=vlast;
+                }
+                break;
+              case TABLA_SENO:
+                // señal seno, creada al inicio 
+                vnula = SPI.transfer(0);
+                vnula = SPI.transfer(0);
+                vnula = SPI.transfer(0);
+                to_3bytes(samples[contador_muestras%TABLE_SIZE]*100,muestra);
                   serialBytes[i++] = muestra[0];
                   serialBytes[i++] = muestra[1];
                   serialBytes[i++] = muestra[2];
-              } else {
-                  serialBytes[i++] = 0;
-                  serialBytes[i++] = 0;
-                  serialBytes[i++] = 0;
-              }
+                
+
+                vlast= to_Int32(serialBytes+i-3);
+                diff= ultima_lectura[ch] - vlast;
+                if (abs(diff)>250000  ){
+               //    to_3bytes(0,serialBytes+i-3);
+                } else {
+                   ultima_lectura[ch]=vlast;
+                }
+                break;
         }
       }
+                    
+
 // cs a 1, terminamos de leer el ads1299    
       delayMicroseconds(1);
       digitalWrite(IPIN_CS, HIGH);
@@ -427,35 +441,30 @@ void procesaComando(String texto){
          int p1=parametro.toInt();
          switch(p1){
             case 1:
-              gSimuladaSignal=false;
+              gSenal_obtenida=SENAL_REAL;
               gtestSignal=false;
               ads_misetup_ADS1299(MODE_SENAL_REAL_1x);
-            break;
+              break;
             case 2:
-              gSimuladaSignal=false;
+              gSenal_obtenida=SENAL_REAL;
               gtestSignal=true;
               ads_misetup_ADS1299(MODE_SENAL_TEST);
-
-            break;
+              break;
             case 3:
+              gSenal_obtenida=TABLA_SENO;
               gtestSignal=false;
-              gSimuladaSignal=true;
-
-            break;
+              break;
            case 4:
-              gSimuladaSignal=false;
+              gSenal_obtenida=SENAL_REAL;
               gtestSignal=false;
               ads_misetup_ADS1299(MODE_SENAL_REAL_12x);
-
-            break;
-            
-            
-         }       
-      return;
+              break;
+          }       
+        return;
       } else if(texto.startsWith("hlp")){
-       mensaje_inicio();
-       while(WiredSerial.available()==0);
-       return;
+          mensaje_inicio();
+          while(WiredSerial.available()==0);
+          return;
       } else if(texto.startsWith("frm")){
          parametro=texto.substring(3,4);
          int p1=parametro.toInt();
@@ -478,9 +487,9 @@ void procesaComando(String texto){
       } else if(texto.startsWith("gan")){ 
          parametro=texto.substring(3,4);
          int p1=parametro.toInt();
-         gSimuladaSignal=false;
-         gtestSignal=true;
-         ads_setupGanancia(p1);
+          gSenal_obtenida=SENAL_REAL;
+          gtestSignal=true;
+          ads_setupGanancia(p1);
          }       
       return;
 
@@ -504,7 +513,6 @@ void loop()
     
   if(gtestCONTINUO && isRDATAC && digitalRead(IPIN_DRDY) == LOW ){
      lee_datos_ads1299();
-     contador_muestras++;
 
      switch(modo_salida){
       case 1: 

@@ -47,6 +47,7 @@ class ventana {
     void pintaVector(int[] x1,float escala) {
       float cx1,cy1;
       dibuja_fondo();
+ //     rectMode(CORNER);
       stroke(250, 0, 0);     //red                          
       noFill();
       beginShape();        
@@ -56,9 +57,15 @@ class ventana {
         cy1=cy()+escala*x1[i];
         cy1=cy1<mrgS()?mrgS():cy1;
         vertex(cx1,  cy1>mrgF()?mrgF():cy1);
-      }
+        cy1=cy1<mrgS()?mrgS():cy1;
+        vertex(cx1,  cy1);
+
+    
+  }
       endShape();
-    }
+//      rectMode(CENTER);
+
+  }
 
 
 

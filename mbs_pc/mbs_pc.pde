@@ -15,7 +15,8 @@ import controlP5.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.io.FileWriter;
+ 
 import processing.serial.*;
 import javax.swing.JOptionPane;//For user input dialogs
 
@@ -40,6 +41,13 @@ boolean modo_test = false;
 
 ControlP5 gui;
 
+
+//create a file first    
+File file ;
+FileWriter fw;
+PrintWriter outputfile;
+    
+    
 void setup() {
   size(1000, 600);
   rectMode(CENTER);
@@ -55,8 +63,17 @@ void setup() {
      sendComando("frm6",port);
      sendComando("sim3",port);     
   }   
-  ADS4ch = new Chart(anchoPantalla/2-50,altoPantalla/2,anchoPantalla-100,altoPantalla-50,numCanales,0.0001);
+  ADS4ch = new Chart(anchoPantalla/2-50,altoPantalla/2,anchoPantalla-100,altoPantalla-50,numCanales,0.01);
   gui = new ControlP5(this);
+try {
+  file = new File("./datos_simula2.txt");
+  fw = new FileWriter(file);
+  outputfile = new PrintWriter(fw);
+} catch (IOException e) {
+  println("It Broke");
+  e.printStackTrace();
+} 
+//replace your System.out.print("your output");
   iniciaGui(gui);
 }
 

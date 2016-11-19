@@ -1,7 +1,18 @@
+//comandos sim1 sim2 sim3
+#define MODE_SENAL_TEST 2 
+#define MODE_SENAL_REAL_1x 1 
+#define MODE_SENAL_REAL_12x 3 
+
+#define SENAL_TEST 2 
+#define SENAL_REAL 1 
+#define TABLA_SENO 3 
+#define TABLA_LINEAL 4
+#define TABLA_RAMPA 5
+
 
 // variables modificables  durante debugging
+int  gSenal_obtenida=TABLA_SENO;
 boolean gtestSignal=false;
-boolean gSimuladaSignal=false;
 boolean gtestHEX=false;
 boolean gtestCONTINUO=true;
 // 1-hex 2-numeros 3-openeeg-hex 4-openeeg-bytes
@@ -11,10 +22,6 @@ int maxComando=8;
 int modo_salida=2;
 int ultimo_modo=8;
 
-//comandos sim1 sim2 sim3
-#define MODE_SENAL_TEST 2 
-#define MODE_SENAL_REAL_1x 1 
-#define MODE_SENAL_REAL_12x 3 
 
 
 

@@ -5,6 +5,12 @@ class arr_int {
     v1=new int[n];
     nelem=n;
   }
+  
+  public arr_int(int[] n) {
+    v1=n;
+    nelem=n.length;
+  }
+
   void set(int nn, int valor) {
     v1[nn]=valor;
   };
@@ -35,6 +41,23 @@ class arr_int {
     int mm=avg();
     return((int)sqrt(int(sum_x2() / nelem) - (mm * mm)));
   }
+  
+  int[] offset() {
+    int mm=avg();
+    for (int i=0; i<nelem; i++)v1[i] -= mm;
+    return(v1);
+  }
+ 
+   int[] zscore() {
+    int mm=avg();
+    for (int i=0; i<nelem; i++)v1[i] -= mm;
+    mm=std();
+    if(mm>0)
+    for (int i=0; i<nelem; i++)v1[i] /= mm;
+    
+    return(v1);
+  }
+ 
 
   int[] trocito(int principio, int fin) {
     int [] salida=new int[fin-principio+1];

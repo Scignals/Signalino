@@ -6,6 +6,8 @@ void serDecode(Buffer bf) { //assuming Arduino is only transfering active channe
   int packetBytes = 33; // modo openbci3
   int cabecero=2;
   byte[] rawData = new byte[10*packetBytes*2];
+  
+  byte[] localAdsByteBuffer = {0,0,0};
 
   int newlen = port.available();
   if (newlen < packetBytes) return;
@@ -13,14 +15,35 @@ void serDecode(Buffer bf) { //assuming Arduino is only transfering active channe
       while(port.available()>=packetBytes){
            int nn=port.readBytesUntil(0xC0, rawData);
            if(nn!=packetBytes)continue;
-           for (int i = 0; i < numCanales; i++) //first byte is status, then 3 bytes per channel
-                     lectura[i] =  (rawData[cabecero+(i*3)]  << 24) + (rawData[cabecero+1+(i*3)]  << 16) + (rawData[cabecero+2+(i*3) ]<<8); //load as 32bit to capture sign bit
-           for (int i = 0; i < numCanales; i++)
-                     lectura[i] = (lectura[i] >> 8); //convert 32-bit to 24-bit integer processing deals with the sign,           
-           bf.apunta(lectura);
+ 
+           for (int i = 0; i < numCanales; i++){
+                     localAdsByteBuffer[0]=rawData[cabecero+0+(i*3)];
+                     localAdsByteBuffer[1]=rawData[cabecero+1+(i*3)];
+                     localAdsByteBuffer[2]=rawData[cabecero+2+(i*3)];
+                     lectura[i] = interpret24bitAsInt32(localAdsByteBuffer);
+           }          
+//           outputfile.println(lectura[2]);           
+             bf.apunta(lectura);
        }
              
 } //void serDecode
+
+int interpret24bitAsInt32(byte[] byteArray) {     
+    //little endian
+    int newInt = ( 
+      ((0xFF & byteArray[0]) << 16) |
+      ((0xFF & byteArray[1]) << 8) | 
+      (0xFF & byteArray[2])
+      );
+    if ((newInt & 0x00800000) > 0) {
+      newInt |= 0xFF000000;
+    } else {
+      newInt &= 0x00FFFFFF;
+    }
+    return newInt;
+  }
+
+
 
 void serRand() { //numeros aleatorios
   for(int i=0;i<numCanales;i++){

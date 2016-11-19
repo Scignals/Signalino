@@ -9,3 +9,5 @@ no hay comunicacion bidireccional, aunque creo que el en el arduino esta impleme
 #version 0.1
 todo eso ya funciona.
 
+#version 0.2
+cambios cosmeticos en el codigo

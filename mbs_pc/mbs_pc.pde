@@ -1,3 +1,16 @@
+///////////////////////////////////////////////
+//
+// GUI for controlling the ADS1299-based signalino
+//
+// Created: Juan Barios, august 2016 - january 2017
+// Modified: 
+//
+// Requires ControP5 library
+//
+// No warranty.  Use at your own risk.  Use for whatever you'd like.
+// 
+///////////////////////////////////////////////
+
 import controlP5.*;
 
 import java.util.ArrayList;
@@ -31,7 +44,7 @@ void setup() {
   size(1000, 600);
   rectMode(CENTER);
 
-  println("Memoboost signal visor 0.1");
+  println("Signalino, signal visor 0.1 (c) 2017 ILSB ");
 
   lectura=new int[numCanales];
 

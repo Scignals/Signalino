@@ -11,8 +11,8 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
    
    ;
 
-  gui.addTextlabel("Memboost")
-   .setText("Memboost Signal visor")
+  gui.addTextlabel("Signalino")
+   .setText("Signalino visor 0.2")
    .setPosition(10,2)
    .setSize(10,27)
    .setColorValue(0xffffff00)
@@ -60,6 +60,22 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
                 
                 ;
 
+  gui.addRadioButton("Protocolo")
+                .setPosition(950, 120)
+                .setColorForeground(color(120))
+                .setColorActive(color(255))
+                .setColorLabel(color(255))
+                .setSize(8,10)
+                .addItem("p1", 0)
+                .addItem("p2", 1)
+                .addItem("p3", 2)
+                .addItem("p4", 3)
+                .addItem("p5", 4)
+                .addItem("p6", 5)
+                
+                ;
+
+
 }
 
 
@@ -67,6 +83,7 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
 public void controlEvent(ControlEvent theEvent) {
 //Is called whenever a GUI Event happened
 }
+
 public void Senal(int value){
   println("cambiando modo senal a "+value);
   switch(value){
@@ -95,4 +112,12 @@ public void Tiempo(int value){
 public void Ganancia(int value){
        sendComando("gan"+(value+1),port); 
        println("gan"+(value+1));
+}
+
+public void Protocolo(int value){
+  println("cambiando protocolo senal a "+value);
+  if(value>0 && value<7){
+       sendComando("frm"+(value),port); 
+       println("frm"+(value+1));
+  }
 }

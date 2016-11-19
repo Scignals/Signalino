@@ -70,7 +70,7 @@ void setPortNum()
      portStr[i] =  i+ " "+portStr[i] ;
    }  
    String respStr = (String) JOptionPane.showInputDialog(null,
-      "<html><div align='right'>Memboost v 0.1 (c) 2016</div>Choose COM port (if not listed: check drivers and power)</html>", "Select Memboost device",
+      "<html><div align='right'>Signalino v 0.2 (c) 2016</div>Choose COM port (if not listed: check drivers and power)</html>", "Select Signalino device",
       JOptionPane.PLAIN_MESSAGE, null,
       portStr, portStr[index]);
    serialPortNumber = Integer.parseInt(respStr.substring(0, 1));  
@@ -78,7 +78,9 @@ void setPortNum()
 
 void sendComando(String comando, Serial puerto)
 {
+   if(puerto!=null){ 
      delay(200); // incomprensiblemente imprescindible, debe ser un bug de alguna libreria. Y me ha costado un huevo descubrirlo (windows 10, pc de elche).
      puerto.write(comando+";");
+   }  
  
 }

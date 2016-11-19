@@ -11,6 +11,13 @@ int maxComando=8;
 int modo_salida=2;
 int ultimo_modo=8;
 
+//comandos sim1 sim2 sim3
+#define MODE_SENAL_TEST 2 
+#define MODE_SENAL_REAL_1x 1 
+#define MODE_SENAL_REAL_12x 3 
+
+
+
 #include "Arduino.h"
 #define isDUE  //Detect Arduino Due
 #define SERIAL_SPEED 57600  //57600

@@ -1,6 +1,6 @@
 
 /* adsCMD.cpp
- * simple library to light an LED for a duration given in milliseconds
+ *  
  */
 #include "Arduino.h"   // use: Wprogram.h for Arduino versions prior to 1.0
 #include "adsCMD.h"

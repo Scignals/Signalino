@@ -1,5 +1,7 @@
-// memboost, firmware v 02 rama master
-// juan Barios, agosto 2016
+// signalino, firmware v 02 rama master
+// juan Barios, agosto 2016 - enero 2017
+// No warranty: use it "as is"
+
 
 #include "ads1298.h"
 #include <stdlib.h>     /* strtoul */
@@ -29,17 +31,12 @@ void crea_seno(void){
       }
 }      
 
+
       
 
 void inicia_hw() {
   using namespace ADS1298;
 
-  //al empezar, reset
-   delay(800); //desde Power up, esperar 1 segundo para mover nada
-   digitalWrite(kPIN_RESET, LOW);
-   delay(100);
-   digitalWrite(kPIN_RESET, HIGH);
-   delay(240); //deberia bastar, tiempo en datasheet es 240 ms
 
 
   pinMode(IPIN_CS, OUTPUT);
@@ -48,7 +45,14 @@ void inicia_hw() {
   pinMode(kPIN_LED, OUTPUT);
   pinMode(kPIN_RESET, OUTPUT);
   pinMode(kPIN_CLKSEL, OUTPUT);
-  
+
+    //al empezar, reset
+   delay(800); //desde Power up, esperar 1 segundo para mover nada
+   digitalWrite(kPIN_RESET, LOW);
+   delay(100);
+   digitalWrite(kPIN_RESET, HIGH);
+   delay(260); //deberia bastar, tiempo en datasheet es 240 ms
+
   digitalWrite(PIN_START, LOW);
   digitalWrite(IPIN_CS, HIGH);
   digitalWrite(kPIN_CLKSEL, HIGH); // el reloj sea el interno
@@ -79,60 +83,33 @@ void inicia_hw() {
             gMaxChan = 0;
   }
 
+  // aqui podia ir una secuencia de leds para ver cuanto vale gmaxchan
+
 }
 
-void xads_setupSimple() {
-   using namespace ADS1298;
+/* 
+ *  MODE_SENAL_TEST .- ads saca senal test
+ *  MODE_SENAL_REAL_12x -- ads saca senal real a 24x
+ *  MODE_SENAL_REAL_1x -- ads saca senal real a 1x
+*/
 
-  adc_send_command(SDATAC); // dejamos el modo READ para emitir comandos
-  delay(10);
-
-   adc_wreg(GPIO, char(0));
-   adc_wreg(CONFIG1, LOW_POWR_250_SPS);
-   adc_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
-   adc_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
-   #define MISC1 0x15
-//   adc_wreg(MISC1,0x20); //set SRB1  
-     //con srb1 activado, todos los canales P se referencian a srb1.
-   delay(150);
-   for (int i = 1; i <= gMaxChan; i++){
-        if (gtestSignal)
-           adc_wreg(char(CHnSET + i), char(TEST_SIGNAL | GAIN_1X ));
-        else   
-           adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_1X )); //report this channel with x12 gain
-    } 
-   
-    detectActiveChannels(); 
-	
-	//start streaming data
-    isRDATAC = true;
-    adc_send_command(RDATAC); 
-    adc_send_command(START); 
-              
-}
-
-void ads_setupVariadito(int opciones) {
+void ads_misetup_ADS1299(int opciones) {
    using namespace ADS1298;
    adc_send_command(SDATAC); // dejamos el modo READ para emitir comandos
    delay(10);
 
    switch(opciones){
-     case 1:
+     case MODE_SENAL_REAL_1x:
        adc_wreg(GPIO, char(0));
        adc_wreg(CONFIG1, LOW_POWR_250_SPS);
        adc_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
        adc_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
-   #define MISC1 0x15
-//   adc_wreg(MISC1,0x20); //set SRB1  
-     //con srb1 activado, todos los canales P se referencian a srb1.
-
        delay(150);
        for (int i = 1; i <= gMaxChan; i++){
                adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_1X )); //report this channel with x12 gain
         } 
-        detectActiveChannels(); 
         break;       
-     case 2:
+     case MODE_SENAL_TEST:
        adc_wreg(GPIO, char(0));
        adc_wreg(CONFIG1, LOW_POWR_250_SPS);
        adc_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
@@ -141,26 +118,21 @@ void ads_setupVariadito(int opciones) {
        for (int i = 1; i <= gMaxChan; i++){
             adc_wreg(char(CHnSET + i), char(TEST_SIGNAL | GAIN_1X ));
         } 
-        detectActiveChannels(); 
         break;
-      case 3:
+      case MODE_SENAL_REAL_12x:
        adc_wreg(GPIO, char(0));
        adc_wreg(CONFIG1, LOW_POWR_250_SPS);
        adc_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
        adc_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
-   #define MISC1 0x15
-//   adc_wreg(MISC1,0x20); //set SRB1  
-     //con srb1 activado, todos los canales P se referencian a srb1.
-
        delay(150);
        for (int i = 1; i <= gMaxChan; i++){
                adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X )); //report this channel with x12 gain
         } 
-        detectActiveChannels(); 
         break;       
             
    }
   //start streaming data
+    detectActiveChannels(); 
     isRDATAC = true;
     adc_send_command(RDATAC); 
     adc_send_command(START); 
@@ -178,13 +150,13 @@ void ads_setupGanancia(int valor) {
        for (int i = 1; i <= gMaxChan; i++){
            switch(valor){
                case 1:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_1X )); break;
-               case 2:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_2X ));  break;
-               case 3:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_3X ));  break;
+               case 2:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_2X )); break;
+               case 3:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_3X )); break;
                case 4:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_4X )); break;
                case 5:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_2X )); break;
                case 6:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_6X )); break;
                case 7:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_8X )); break;
-               case 8:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X ));  break;
+               case 8:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X ));break;
            }
         } 
         detectActiveChannels(); 
@@ -193,7 +165,9 @@ void ads_setupGanancia(int valor) {
         adc_send_command(START); 
 }
 
-void detectActiveChannels() {  //actualiza gActiveChan y gNumActiveChan
+void detectActiveChannels() {  
+  //actualiza gActiveChan y gNumActiveChan
+  //
   using namespace ADS1298; 
   gNumActiveChan = 0;
   for (int i = 1; i <= gMaxChan; i++) {
@@ -206,13 +180,13 @@ void detectActiveChannels() {  //actualiza gActiveChan y gNumActiveChan
 
 void mensaje_inicio(){
    WiredSerial.println("");
-   WiredSerial.print(F("Memboost v "));
+   WiredSerial.print(F("Signalino v "));
    WiredSerial.println(build_version);   
    WiredSerial.print(F("build "));
    WiredSerial.println(build_fecha);   
-   WiredSerial.println(F("(c) Scignals Technologies"));
+   WiredSerial.println(F("(c) ILSB Technologies"));
+  
    // si hay 8 canales, es q esta vivo...
-   
    WiredSerial.print(F("canales activos:"));
    WiredSerial.println(gMaxChan);
    WiredSerial.println(F("Comandos: (separados por punto y coma)"));
@@ -243,19 +217,21 @@ void inicia_serial_pc(){
 
 
 void setup(){
-  inicia_serial_pc();
   crea_seno();
+  inicia_serial_pc();
   inicia_hw();
-  if( gtestSignal )
-      ads_setupVariadito(2);
-  else
-      ads_setupVariadito(1);
-      
+
   if(!gtestCONTINUO){
       mensaje_inicio();
       while(1);
       //nos quedamos colgados para terminar
   }
+  
+  if( gtestSignal )
+      ads_misetup_ADS1299(MODE_SENAL_TEST);
+  else
+      ads_misetup_ADS1299(MODE_SENAL_REAL_1x);
+  
 }
 
 void imprime_linea( boolean modo){
@@ -446,19 +422,19 @@ void procesaComando(String texto){
      WiredSerial.print(texto);
      WiredSerial.println("-->ok");
 
-     if(texto.startsWith("sim")){ // 1 normal  2 test 3 simulada
+     if(texto.startsWith("sim")){ // 1 normal  2 test 3 simulada 4 max ganancia
          parametro=texto.substring(3,4);
          int p1=parametro.toInt();
          switch(p1){
             case 1:
               gSimuladaSignal=false;
               gtestSignal=false;
-              ads_setupVariadito(1);
+              ads_misetup_ADS1299(MODE_SENAL_REAL_1x);
             break;
             case 2:
               gSimuladaSignal=false;
               gtestSignal=true;
-              ads_setupVariadito(2);
+              ads_misetup_ADS1299(MODE_SENAL_TEST);
 
             break;
             case 3:
@@ -469,7 +445,7 @@ void procesaComando(String texto){
            case 4:
               gSimuladaSignal=false;
               gtestSignal=false;
-              ads_setupVariadito(3);
+              ads_misetup_ADS1299(MODE_SENAL_REAL_12x);
 
             break;
             
@@ -499,7 +475,7 @@ void procesaComando(String texto){
             modo_salida=ultimo_modo;
          }
          return;
-      } else if(texto.startsWith("gan")){ // 1 normal  2 test 3 simulada
+      } else if(texto.startsWith("gan")){ 
          parametro=texto.substring(3,4);
          int p1=parametro.toInt();
          gSimuladaSignal=false;

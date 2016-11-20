@@ -10,26 +10,12 @@
 #include <SPI.h>  // include the SPI library:
 
 #include "firmware_mbs_01.h"
+#include "sig_simuladas.h"
 #include "version.h"
-//#include "serial_parser.h"
+
 
 long ultima_lectura[8];
 long contador_muestras=0;
-
-#define TABLE_SIZE 48*8*4
-#define TWO_PI (3.14159 * 2)
-#define AMPLITUD_SENAL 500
-float samples [TABLE_SIZE];
-float phaseIncrement = TWO_PI/((float)TABLE_SIZE);
-
-void crea_seno(void){
-  float currentPhase = 0.0;
-  int i;
-  for (i = 0; i < TABLE_SIZE; i ++){
-      samples[i] = AMPLITUD_SENAL*sin(currentPhase)+AMPLITUD_SENAL;
-      currentPhase += phaseIncrement;
-      }
-}      
 
 
       
@@ -217,7 +203,7 @@ void inicia_serial_pc(){
 
 
 void setup(){
-  crea_seno();
+  crea_tabla_seno();
   inicia_serial_pc();
   inicia_hw();
 
@@ -408,7 +394,7 @@ void lee_datos_ads1299(void) {
                 vnula = SPI.transfer(0);
                 vnula = SPI.transfer(0);
                 vnula = SPI.transfer(0);
-                to_3bytes(samples[contador_muestras%TABLE_SIZE]*100,muestra);
+                to_3bytes(samples_seno[contador_muestras%TABLE_SIZE]*100,muestra);
                   serialBytes[i++] = muestra[0];
                   serialBytes[i++] = muestra[1];
                   serialBytes[i++] = muestra[2];

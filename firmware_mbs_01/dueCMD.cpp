@@ -27,11 +27,11 @@ void due_inicia_hw() {
   SPI.setBitOrder(MSBFIRST);
   SPI.setDataMode(SPI_MODE1);
 
-  adc_send_command(SDATAC); // dejamos el modo READ para emitir comandos
+  ads9_send_command(SDATAC); // dejamos el modo READ para emitir comandos
   delay(10);
 
   // Determine model number and number of channels available
-  gIDval = adc_rreg(ID); //lower 5 bits of register 0 reveal chip type
+  gIDval = ads9_rreg(ID); //lower 5 bits of register 0 reveal chip type
   switch (gIDval & B00011111 ) { //least significant bits reports channels
           case  B10000: //16
             gMaxChan = 4; //ads1294

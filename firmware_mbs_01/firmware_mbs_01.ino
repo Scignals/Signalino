@@ -3,107 +3,21 @@
 // No warranty: use it "as is"
 
 
-#include "ads1298.h"
 #include <stdlib.h>     /* strtoul */
+#include <SPI.h>  // include the SPI library:
+#include "ads1298.h"
 #include "adsCMD.h"
 #include "util.h"
-#include <SPI.h>  // include the SPI library:
 
 #include "firmware_mbs_01.h"
 #include "sig_simuladas.h"
 #include "version.h"
 
 
-long ultima_lectura[8];
 long contador_muestras=0;
 
 
     
-
-void ads_misetup_ADS1299(int opciones) {
-   using namespace ADS1298;
-   adc_send_command(SDATAC); // dejamos el modo READ para emitir comandos
-   delay(10);
-
-   switch(opciones){
-     case MODE_SENAL_REAL_1x:
-       adc_wreg(GPIO, char(0));
-       adc_wreg(CONFIG1, LOW_POWR_250_SPS);
-       adc_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
-       adc_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
-       delay(150);
-       for (int i = 1; i <= gMaxChan; i++){
-               adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_1X )); //report this channel with x12 gain
-        } 
-        break;       
-     case MODE_SENAL_TEST:
-       adc_wreg(GPIO, char(0));
-       adc_wreg(CONFIG1, LOW_POWR_250_SPS);
-       adc_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
-       adc_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
-       delay(150);
-       for (int i = 1; i <= gMaxChan; i++){
-            adc_wreg(char(CHnSET + i), char(TEST_SIGNAL | GAIN_1X ));
-        } 
-        break;
-      case MODE_SENAL_REAL_12x:
-       adc_wreg(GPIO, char(0));
-       adc_wreg(CONFIG1, LOW_POWR_250_SPS);
-       adc_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
-       adc_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
-       delay(150);
-       for (int i = 1; i <= gMaxChan; i++){
-               adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X )); //report this channel with x12 gain
-        } 
-        break;       
-            
-   }
-  //start streaming data
-    detectActiveChannels(); 
-    isRDATAC = true;
-    adc_send_command(RDATAC); 
-    adc_send_command(START); 
-}
-
-void ads_setupGanancia(int valor) {
-       using namespace ADS1298;
-       adc_send_command(SDATAC); // dejamos el modo READ para emitir comandos
-       delay(10);
-       adc_wreg(GPIO, char(0));
-       adc_wreg(CONFIG1, LOW_POWR_250_SPS);
-       adc_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
-       adc_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
-       delay(150);
-       for (int i = 1; i <= gMaxChan; i++){
-           switch(valor){
-               case 1:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_1X )); break;
-               case 2:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_2X )); break;
-               case 3:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_3X )); break;
-               case 4:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_4X )); break;
-               case 5:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_2X )); break;
-               case 6:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_6X )); break;
-               case 7:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_8X )); break;
-               case 8:  adc_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X ));break;
-           }
-        } 
-        detectActiveChannels(); 
-        isRDATAC = true;
-        adc_send_command(RDATAC); 
-        adc_send_command(START); 
-}
-
-void detectActiveChannels() {  
-  //actualiza gActiveChan y gNumActiveChan
-  //
-  using namespace ADS1298; 
-  gNumActiveChan = 0;
-  for (int i = 1; i <= gMaxChan; i++) {
-     delayMicroseconds(1); 
-     int chSet = adc_rreg(CHnSET + i);
-     gActiveChan[i] = ((chSet & 7) != SHORTED);
-     if ( (chSet & 7) != SHORTED) gNumActiveChan ++;   
-  }
-}
 
 void mensaje_inicio(){
    WiredSerial.println("");
@@ -150,9 +64,9 @@ void setup(){
   }
   
   if( gtestSignal )
-      ads_misetup_ADS1299(MODE_SENAL_TEST);
+      ads9_misetup_ADS1299(MODE_SENAL_TEST);
   else
-      ads_misetup_ADS1299(MODE_SENAL_REAL_1x);
+      ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
   
 }
 
@@ -292,66 +206,6 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
 }
 
 
-void lee_datos_ads1299(void) { 
-// hardware puro, 
-// lee el ads y lo pone en serialBytes[]--numSerialBytes
-    int i = 0;
-    int jj=0;
-    byte muestra[3];
-    int vnula=0;
-    long vlast=0;
-    long diff= 0;
-    
-    numSerialBytes = 1 + (3 * gNumActiveChan); //8-bits header plus 24-bits per ACTIVE channel
-
-      
-// cs a 0, empezamos a leer el ads1299	  
-      digitalWrite(IPIN_CS, LOW);
-      contador_muestras++;
-      serialBytes[i++] =SPI.transfer(0); //get 1st byte of header
-      SPI.transfer(0); //skip 2nd byte of header
-      SPI.transfer(0); //skip 3rd byte of header
-      for (int ch = 1; ch <= gMaxChan; ch++) {
-           switch(gSenal_obtenida){
-              case SENAL_REAL:
-                serialBytes[i++] = SPI.transfer(0);
-                serialBytes[i++] = SPI.transfer(0);
-                serialBytes[i++] = SPI.transfer(0);
-                vlast= to_Int32(serialBytes+i-3);
-                diff= ultima_lectura[ch] - vlast;
-                if (abs(diff)>250000  ){
-               //    to_3bytes(0,serialBytes+i-3);
-                } else {
-                   ultima_lectura[ch]=vlast;
-                }
-                break;
-              case TABLA_SENO:
-                // señal seno, creada al inicio 
-                vnula = SPI.transfer(0);
-                vnula = SPI.transfer(0);
-                vnula = SPI.transfer(0);
-                to_3bytes(samples_seno[contador_muestras%TABLE_SIZE]*100,muestra);
-                  serialBytes[i++] = muestra[0];
-                  serialBytes[i++] = muestra[1];
-                  serialBytes[i++] = muestra[2];
-                
-
-                vlast= to_Int32(serialBytes+i-3);
-                diff= ultima_lectura[ch] - vlast;
-                if (abs(diff)>250000  ){
-               //    to_3bytes(0,serialBytes+i-3);
-                } else {
-                   ultima_lectura[ch]=vlast;
-                }
-                break;
-        }
-      }
-                    
-
-// cs a 1, terminamos de leer el ads1299    
-      delayMicroseconds(1);
-      digitalWrite(IPIN_CS, HIGH);
-}
 
 void procesaComando(String texto){
      String parametro;
@@ -365,12 +219,12 @@ void procesaComando(String texto){
             case 1:
               gSenal_obtenida=SENAL_REAL;
               gtestSignal=false;
-              ads_misetup_ADS1299(MODE_SENAL_REAL_1x);
+              ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
               break;
             case 2:
               gSenal_obtenida=SENAL_REAL;
               gtestSignal=true;
-              ads_misetup_ADS1299(MODE_SENAL_TEST);
+              ads9_misetup_ADS1299(MODE_SENAL_TEST);
               break;
             case 3:
               gSenal_obtenida=TABLA_SENO;
@@ -379,7 +233,7 @@ void procesaComando(String texto){
            case 4:
               gSenal_obtenida=SENAL_REAL;
               gtestSignal=false;
-              ads_misetup_ADS1299(MODE_SENAL_REAL_12x);
+              ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
               break;
           }       
         return;
@@ -411,7 +265,7 @@ void procesaComando(String texto){
          int p1=parametro.toInt();
           gSenal_obtenida=SENAL_REAL;
           gtestSignal=true;
-          ads_setupGanancia(p1);
+          ads9_setGanancia(p1);
          }       
       return;
 
@@ -434,7 +288,7 @@ void loop()
   leeSerial();
     
   if(gtestCONTINUO && isRDATAC && digitalRead(IPIN_DRDY) == LOW ){
-     lee_datos_ads1299();
+     ads9_lee_datos();
 
      switch(modo_salida){
       case 1: 

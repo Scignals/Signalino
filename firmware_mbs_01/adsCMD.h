@@ -3,17 +3,25 @@
  * Library header file for adsCMD library
  */
 #include "Arduino.h"
+#include "util.h"
+#include "sig_simuladas.h"
+#include "ads1298.h"
+#include "dueCMD.h"
 
-//constants define pins on Arduino 
-// const int IPIN_PWDN = 2; //not required for TI demo kit
-//const int PIN_CLKSEL = 6;//6;//*optional
-//const int IPIN_RESET  =3;//*optional
-const int PIN_START = 4;
-const int IPIN_DRDY = 5;
-const int IPIN_CS = 10;//10
-//const int PIN_DOUT = 11;//SPI out
-//const int PIN_DIN = 12;//SPI in
-//const int PIN_SCLK = 13;//SPI clock
+
+extern int gMaxChan;
+extern int gIDval; //Device ID : lower 5 bits of  ID Control Register 
+extern int gNumActiveChan;
+extern boolean gActiveChan[]; // reports whether channels 1..9 are active
+extern boolean isRDATAC;
+
+
+extern char *gLetra; // buffer usado en to_hex, inicializado en setup()
+extern int numSerialBytes;
+extern unsigned char serialBytes[];
+extern long contador_muestras;
+extern int  gSenal_obtenida;
+
 
 //function prototypes
 void adc_wreg(int reg, int val); //write register

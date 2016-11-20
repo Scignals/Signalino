@@ -86,8 +86,4 @@ unsigned char txBuf[33];  //17 en openeeg   32 enopenbci
 unsigned long indice_paquete=0;
 
 
-const int kPIN_LED = 13;//pin con luz led, en Teensy3, is ALSO spi clock!
-const int kPIN_RESET = 8; //Reset en Pin 8
-const int kPIN_CLKSEL = 7; //ClkSel en Pin 7
-
 

@@ -6,6 +6,7 @@
 #include "adsCMD.h"
 #include "ads1298.h"
 #include <SPI.h>  // include the SPI library:
+#include "dueCMD.h"
 
 
 

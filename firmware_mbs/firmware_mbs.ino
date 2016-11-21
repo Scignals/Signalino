@@ -9,7 +9,7 @@
 #include "adsCMD.h"
 #include "util.h"
 
-#include "firmware_mbs_01.h"
+#include "firmware_mbs.h"
 #include "sig_simuladas.h"
 #include "version.h"
 
@@ -20,6 +20,40 @@ long contador_muestras=0;
 #define HC06 Serial3  
 #define WiredSerial Serial
 
+
+// variables modificables  durante debugging
+// protocolo openEEG firmware P2, util para openvibe
+// solo registra 6 canales
+
+int  gSenal_obtenida=TABLA_SENO;
+boolean gtestSignal=false;
+boolean gtestHEX=false;
+boolean gtestCONTINUO=true;
+// 1-hex 2-numeros 3-openeeg-hex 4-openeeg-bytes
+// 5-openbci-numeros 6-openbci-bytes 7-openbci-hex 8-no imprime nada      
+int minComando=1;
+int maxComando=8;
+int modo_salida=2;
+int ultimo_modo=8;
+
+
+
+
+// globales
+int gMaxChan = 0; //maximum number of channels supported by ads1299 = 8
+int gIDval = 0; //Device ID : lower 5 bits of  ID Control Register 
+int gNumActiveChan = 0;
+boolean gActiveChan [9]; // reports whether channels 1..9 are active
+boolean isRDATAC = false;
+
+
+char *gLetra; // buffer usado en to_hex, inicializado en setup()
+int numSerialBytes=0;
+unsigned char serialBytes[80];
+
+
+unsigned char txBuf[33];  //17 en openeeg   32 enopenbci
+unsigned long indice_paquete=0;
 
 
 

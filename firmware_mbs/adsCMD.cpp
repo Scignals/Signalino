@@ -7,6 +7,7 @@
 #include "ads1298.h"
 #include <SPI.h>  // include the SPI library:
 #include "dueCMD.h"
+#include "firmware_mbs.h"
 
 long ultima_lectura[8];
 

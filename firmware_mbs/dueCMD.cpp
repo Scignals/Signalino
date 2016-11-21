@@ -1,4 +1,5 @@
 #include "dueCMD.h"
+#include "firmware_mbs.h"
 
 void due_inicia_hw() {
   using namespace ADS1298;

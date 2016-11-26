@@ -1,4 +1,7 @@
-
+float escala_multiplicador=1;
+float escala_base=0.00001; //valor para q se vea simul
+float escala_valor=1;
+ 
 void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active channels
 
   gui.addRadioButton("Senal")
@@ -20,16 +23,26 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
    ;
 
    
-  gui.addSlider("Escala")
-   .setPosition(910,30)
+  gui.addSlider("VisorGanancia")
+   .setPosition(960,10)
    .setRange(1, 20)
-   .setSize(80, 10)
+   .setSize(10, 60)
    .setNumberOfTickMarks(10)
    .setValue(10)
      ;
+
+  gui.addRadioButton("Escala")
+   .setPosition(900,30)
+   .setSize(27,10)
+   .setValue(1)
+   .addItem("x1",1)
+   .addItem("x10",2)
+   .addItem("x100",3)
+   
+   ;
  
   gui.addSlider("Tiempo")
-   .setPosition(910,80)
+   .setPosition(910,90)
    .setRange(1, 20)
    .setSize(80, 10)
    .setNumberOfTickMarks(10)
@@ -44,7 +57,7 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
    .setFont(createFont("Georgia",10))
    ;
 
-  gui.addRadioButton("Ganancia")
+  gui.addRadioButton("ADSGanancia")
                 .setPosition(910, 120)
                 .setColorForeground(color(120))
                 .setColorActive(color(255))
@@ -98,18 +111,40 @@ public void Senal(int value){
        break;  
 
   }
+  ADS4ch.reset();
 }
 
-public void Escala(float value){
-  float escala_base=0.00001;
-  ADS4ch.setEscala(value*escala_base);
+public void Escala(int value){
+  println("cambiando modo escala a "+value);
+  switch(value){
+     case 1:
+       escala_multiplicador=1;
+       break;
+     case 2:
+       escala_multiplicador=10;
+       break;
+     case 3:
+       escala_multiplicador=100;
+       break;  
+
+  }
+   float valor = gui.getController("VisorGanancia").getValue();;
+     ADS4ch.setEscala(valor*escala_base*escala_multiplicador);
+
+}
+
+public void VisorGanancia(float value){
+   ADS4ch.setEscala(value*escala_base*escala_multiplicador);
+ // ADS4ch.setEscala(value*0.0001);
+  // 0.0001 test, /10 simul, 
+  
 }
 
 public void Tiempo(int value){
   ADS4ch.setDecimando(value);
 }
 
-public void Ganancia(int value){
+public void ADSGanancia(int value){
        sendComando("gan"+(value+1),port); 
        println("gan"+(value+1));
 }

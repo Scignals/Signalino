@@ -29,6 +29,17 @@ class arr_int {
     for (int i=0; i<nelem; i++)suma += v1[i];
     return(suma);
   }
+  
+  int sum_x1(int num_elem, int num_puntos) {
+    int suma=0;
+        for (int i=0; i<num_elem; i++)suma += v1[i];
+        if(num_elem-num_puntos<0){
+           for (int i=nelem+(num_elem-num_puntos); i<nelem; i++)suma += v1[i];
+        }
+        return(suma);
+  }
+  
+  
   int sum_x2() {
     int suma=0;
     for (int i=0; i<nelem; i++)suma += (v1[i]*v1[i]);
@@ -41,6 +52,8 @@ class arr_int {
     int mm=avg();
     return((int)sqrt(int(sum_x2() / nelem) - (mm * mm)));
   }
+  
+  
   
   int[] offset() {
     int mm=avg();
@@ -55,6 +68,18 @@ class arr_int {
     if(mm>0)
     for (int i=0; i<nelem; i++)v1[i] /= mm;
     
+    return(v1);
+  }
+ 
+  int[] mov_avg(int npuntos) {
+    int suma=0;
+    for (int i=npuntos; i<nelem-npuntos; i++){
+       for (int j=1; j<npuntos; j++){
+         suma+=v1[i-j];
+       }
+       v1[i]=(v1[i]+suma)/npuntos+1;
+       suma=0;
+    }
     return(v1);
   }
  

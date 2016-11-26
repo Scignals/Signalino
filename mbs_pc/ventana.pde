@@ -58,8 +58,9 @@ class ventana {
         cy1=cy1<mrgS()?mrgS():cy1;
         vertex(cx1,  cy1>mrgF()?mrgF():cy1);
         cy1=cy1<mrgS()?mrgS():cy1;
-        vertex(cx1,  cy1);
-
+ //       vertex(cx1,  cy1);
+       vertex(cx1,  cy1>=mrgF()-1?mrgF():cy1);
+       // las lineas q apaecen abajo oblablemente tengan q ver con esto
     
   }
       endShape();

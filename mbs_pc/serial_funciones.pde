@@ -22,7 +22,7 @@ void serDecode(Buffer bf) { //assuming Arduino is only transfering active channe
                      localAdsByteBuffer[2]=rawData[cabecero+2+(i*3)];
                      lectura[i] = interpret24bitAsInt32(localAdsByteBuffer);
            }          
-//           outputfile.println(lectura[2]);           
+           outputfile.println(lectura[2]);           
              bf.apunta(lectura);
        }
              

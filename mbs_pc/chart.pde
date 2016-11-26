@@ -39,6 +39,10 @@ class Chart {
       bf.apunta(valores);
    }
  
+  void reset(){
+      bf.limpia();
+   }
+ 
   void update() {
      for(int i=0;i<n_canales;i++){
         Canal chx = canales.get(i);

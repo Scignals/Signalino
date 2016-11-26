@@ -5,6 +5,16 @@ void due_inicia_hw() {
   using namespace ADS1298;
 
 
+    //al empezar, reset
+    // en charmander, el orden de este trozo es critico. Primero reset, y luego set pin mode. Y ni idea de porque. En la anterior, daba igual.
+    
+   delay(800); //desde Power up, esperar 1 segundo para mover nada
+   digitalWrite(kPIN_RESET, LOW);
+   delay(100);
+   digitalWrite(kPIN_RESET, HIGH);
+   delay(260); //deberia bastar, tiempo en datasheet es 240 ms
+
+
 
   pinMode(IPIN_CS, OUTPUT);
   pinMode(PIN_START, OUTPUT);
@@ -13,12 +23,6 @@ void due_inicia_hw() {
   pinMode(kPIN_RESET, OUTPUT);
   pinMode(kPIN_CLKSEL, OUTPUT);
 
-    //al empezar, reset
-   delay(800); //desde Power up, esperar 1 segundo para mover nada
-   digitalWrite(kPIN_RESET, LOW);
-   delay(100);
-   digitalWrite(kPIN_RESET, HIGH);
-   delay(260); //deberia bastar, tiempo en datasheet es 240 ms
 
   digitalWrite(PIN_START, LOW);
   digitalWrite(IPIN_CS, HIGH);

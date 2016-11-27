@@ -53,6 +53,22 @@ class arr_int {
     return((int)sqrt(int(sum_x2() / nelem) - (mm * mm)));
   }
   
+  int var() {
+    //algoritmo de welford
+    //no testado
+    int M=0;
+    int S = 0;
+    int x;
+    int oldM;
+    for( int k=1;k<nelem;k++) {
+      x = v1[k];
+      oldM = M;
+      M += (x-M)/k;
+      S += (x-M)*(x-oldM);
+    }  
+    return S/(nelem-1); 
+  }
+  
   
   
   int[] offset() {

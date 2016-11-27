@@ -47,7 +47,7 @@ int interpret24bitAsInt32(byte[] byteArray) {
 
 void serRand() { //numeros aleatorios
   for(int i=0;i<numCanales;i++){
-           lectura[i]=(int) random(1,100);
+           lectura[i]=1000*(int) random(1,100);
         }
 } //void serRand
 
@@ -69,13 +69,17 @@ void serie_inicia()
     println(Serial.list());
     println("Hint: if you set serialPortNumber=0 the program will allow the user to select from a drop down list of available ports");
   }
-//  if(serialPortNumber>0){
+  try{
       port = new Serial(this, Serial.list()[serialPortNumber], BAUD_RATE);    
       //vaciamos el buffer del puerto y leemos hasta un 0xC0
      while (port.available() > 0)  port.read(); 
      byte[] basura=port.readBytesUntil(0xC0);
-        modo_conectado=true;  
- // } else exit();    
+        modo_conectado=true;
+  } catch (Exception e){ 
+          javax.swing.JOptionPane.showMessageDialog(frame,"No devices detected: please check Arduino power and drivers. Offline mode...");  
+          modo_conectado=false;
+    //exit();
+  }
 }
 
 void setPortNum() 

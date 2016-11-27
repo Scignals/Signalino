@@ -46,7 +46,7 @@ ControlP5 gui;
 File file ;
 FileWriter fw;
 PrintWriter outputfile;
-    
+  
     
 void setup() {
   size(1000, 600);
@@ -74,6 +74,7 @@ void setup() {
     e.printStackTrace();
   } 
   iniciaGui(gui);
+  
 }
 
 void draw() {

@@ -90,6 +90,7 @@ void ads9_misetup_ADS1299(int opciones) {
 }
 
 void ads9_setGanancia(int valor) {
+  // misterio: el caso 5 es 2x???? raro raro
        using namespace ADS1298;
        ads9_send_command(SDATAC); // dejamos el modo READ para emitir comandos
        delay(10);

@@ -9,3 +9,12 @@ no hay comunicacion bidireccional, aunque creo que el en el arduino esta impleme
 #version 0.1
 todo eso ya funciona.
 
+#version 0.2
+y mas cosas.
+#version 0.3 
+Reorganizar el codigo para que use la clase arr_int
+grabar la señal
+poder asignar ganancias variables a los canales
+fft de la señal
+
+

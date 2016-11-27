@@ -1,6 +1,7 @@
 // signalino, firmware v 02 rama master
-// juan Barios, agosto 2016 - enero 2017
-// No warranty: use it "as is"
+// firmware for controlling the ADS1299-based signalino
+// Created: JABarios, agosto 2016 - enero 2017
+// No warranty.  Use at your own risk.  Use for whatever you'd like.
 
 
 #include <stdlib.h>     /* strtoul */
@@ -29,6 +30,8 @@ int  gSenal_obtenida=TABLA_SENO;
 boolean gtestSignal=false;
 boolean gtestHEX=false;
 boolean gtestCONTINUO=true;
+boolean gserialVerbose=true;
+
 // 1-hex 2-numeros 3-openeeg-hex 4-openeeg-bytes
 // 5-openbci-numeros 6-openbci-bytes 7-openbci-hex 8-no imprime nada      
 int minComando=1;
@@ -50,6 +53,7 @@ boolean isRDATAC = false;
 char *gLetra; // buffer usado en to_hex, inicializado en setup()
 int numSerialBytes=0;
 unsigned char serialBytes[80];
+char buffer_comentaserial[50];
 
 
 unsigned char txBuf[33];  //17 en openeeg   32 enopenbci
@@ -166,6 +170,10 @@ void imprime_openEEG_p2(boolean modo){
 }
 
 void imprime_openBCI_V3(int modo_bci_protocolo){
+// protocolo interesante, descrito en 
+// https://github.com/OpenBCI/OpenBCI-V2hardware-DEPRECATED/wiki/Data-Format-for-OpenBCI-V3 
+// el ultimo byte es 0xCX, y según X se reinterpretan los últimos 6 bytes (acelerometro, fecha, o user defined)
+  
    int ind;
    int indj=0;
    static int count = -1;
@@ -181,13 +189,15 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
      txBuf[ind++] = serialBytes[i+1];
      txBuf[ind++] = serialBytes[i+2];
    }
-      //los acelerometros, no los tenemos...
+     //los acelerometros, no los tenemos asi que lo dejamos a cero
      txBuf[ind++] = 0;
      txBuf[ind++] = 0;
      txBuf[ind++] = 0;
      txBuf[ind++] = 0;
      txBuf[ind++] = 0;
      txBuf[ind++] = 0;
+     
+     //este ultimo es C0 para los acelerometros, pero podia ser otro
      txBuf[ind]=0xC0; 
 
    ind=0;
@@ -203,7 +213,8 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
         if(m<9)WiredSerial.print(SEPARADOR_SERIAL );
         ind+=3;
      }
-//añadimos un ; al final 
+
+    //añadimos un ; al final 
     WiredSerial.println(";");
     HC06.println(";");
 
@@ -221,14 +232,22 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
   }
 }
 
+void comentaSerial(String texto)
+{
+   if(gserialVerbose){
+     WiredSerial.print('#');
+     WiredSerial.println(texto);
+  }
+}
 
 
 void procesaComando(String texto){
      String parametro;
-     WiredSerial.print(texto);
-     WiredSerial.println("-->ok");
+     comentaSerial(texto);
+     comentaSerial("-->ok");
 
-     if(texto.startsWith("sim")){ // 1 normal  2 test 3 simulada 4 max ganancia
+     // 1 normal  2 test 3 simulada 4 max ganancia
+     if(texto.startsWith("sim")){ 
          parametro=texto.substring(3,4);
          int p1=parametro.toInt();
          switch(p1){
@@ -252,11 +271,14 @@ void procesaComando(String texto){
               ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
               break;
           }       
+         comentaSerial("cambiado modo senyal");
         return;
+     
       } else if(texto.startsWith("hlp")){
           mensaje_inicio();
           while(WiredSerial.available()==0);
           return;
+     
       } else if(texto.startsWith("frm")){
          parametro=texto.substring(3,4);
          int p1=parametro.toInt();
@@ -264,9 +286,12 @@ void procesaComando(String texto){
             if(++modo_salida>maxComando)modo_salida=minComando;
          } else if (p1<=maxComando){
             modo_salida=p1;
-            WiredSerial.println("cambiado modo");
-         }       
+         }    
+         sprintf(buffer_comentaserial,"cambiado modo_salida a %d",p1);
+         comentaSerial(buffer_comentaserial);
+   
       } else if(texto.startsWith("rec")){
+        // rec deberia apagar y encender el chorro, pero no parece hacer eso
          parametro=texto.substring(3,4);
          int p1=parametro.toInt();
          if(p1==0){
@@ -275,13 +300,18 @@ void procesaComando(String texto){
          } else {
             modo_salida=ultimo_modo;
          }
-         return;
+         sprintf(buffer_comentaserial,"cambiado modo_salida a %d. Esto creo que no tiene sentido",p1);
+         comentaSerial(buffer_comentaserial);
+        return;
       } else if(texto.startsWith("gan")){ 
          parametro=texto.substring(3,4);
          int p1=parametro.toInt();
           gSenal_obtenida=SENAL_REAL;
           gtestSignal=true;
           ads9_setGanancia(p1);
+         sprintf(buffer_comentaserial,"cambiado ganancia a %d",p1);
+         comentaSerial(buffer_comentaserial);
+
          }       
       return;
 

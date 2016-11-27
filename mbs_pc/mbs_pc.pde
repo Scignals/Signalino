@@ -2,7 +2,7 @@
 //
 // GUI for controlling the ADS1299-based signalino
 //
-// Created: Juan Barios, august 2016 - january 2017
+// Created: JA Barios, august 2016 - january 2017
 // Modified: 
 //
 // Requires ControP5 library
@@ -20,7 +20,7 @@ import java.io.FileWriter;
 import processing.serial.*;
 import javax.swing.JOptionPane;//For user input dialogs
 
-int BAUD_RATE = 57600;//230400;//921600;//460800;//921600; //921600 for Teensy2/Teensy3/Leonardo 460800
+int BAUD_RATE = 115200;//57600 230400;//921600;//460800;//921600; //921600 for Teensy2/Teensy3/Leonardo 460800
 int numCanales = 8; //number of channels to report
 int serialPortNumber = 0; //set to 0 for automatic detection
 
@@ -36,14 +36,15 @@ Chart ADS4ch;
 
 
 boolean modo_conectado = false;
-boolean modo_test = false;
+boolean modo_test      = false;
 
 
+// global var containing the gui
 ControlP5 gui;
 
 
-//create a file first    
-File file ;
+//create a file first for recording signal    
+File file;
 FileWriter fw;
 PrintWriter outputfile;
   
@@ -60,7 +61,11 @@ void setup() {
   if (!modo_test){
      serie_inicia();
      //pone el ads en modo 6, bytes openBCI
+     
      sendComando("frm6",port);
+     sendComando("frm6",port);
+     sendComando("frm6",port);
+     
      sendComando("sim3",port);     
   }   
   ADS4ch = new Chart(anchoPantalla/2-50,altoPantalla/2,anchoPantalla-100,altoPantalla-50,numCanales,0.01);

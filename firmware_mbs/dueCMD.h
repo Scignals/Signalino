@@ -8,13 +8,13 @@
 
 
 /*  pines utilizados  del arduino due
-  2 -- 
-  3 --
-  4 --
-  5 --
-  6 --
-  7 -- clksel
-  8 -- reset
+  2  -- 
+  3  --
+  4  -- START 
+  5  -- DRDY
+  6  --
+  7  -- clksel
+  8  -- reset
   10 -- CS
   11 -- spi out
   12 -- spi in 

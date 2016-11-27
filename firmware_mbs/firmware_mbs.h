@@ -17,7 +17,7 @@
 
 #include "Arduino.h"
 #define isDUE  //Detect Arduino Due
-#define SERIAL_SPEED 57600  //57600
+#define SERIAL_SPEED 115200  //57600
 #define SERIAL_SPEED_BT 115200
 #define SEPARADOR_SERIAL ','
 #define FINLINEA ";"

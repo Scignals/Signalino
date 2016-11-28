@@ -76,7 +76,9 @@ void serie_inicia()
      byte[] basura=port.readBytesUntil(0xC0);
         modo_conectado=true;
   } catch (Exception e){ 
-          javax.swing.JOptionPane.showMessageDialog(frame,"No devices detected: please check Arduino power and drivers. Offline mode...");  
+          javax.swing.JOptionPane.showMessageDialog(frame,
+            "<html><div align='center'>Signalino v 0.3 (c) 2016</div>"+
+           "<p>No devices detected: please check Arduino power and drivers. Offline mode...</p></html>");  
           modo_conectado=false;
     //exit();
   }
@@ -87,7 +89,9 @@ void setPortNum()
    String[] portStr = Serial.list();
    int nPort = portStr.length;
    if (nPort < 1) {
-      javax.swing.JOptionPane.showMessageDialog(frame,"No devices detected: please check Arduino power and drivers. Exiting program...");  
+      javax.swing.JOptionPane.showMessageDialog(frame,
+            "<html><div align='center'>Signalino v 0.3 (c) 2016</div>"+
+           "<p>No devices detected: please check Arduino power and drivers. Exiting program...</p></html>");  
       exit();    
       return;
    }
@@ -97,7 +101,9 @@ void setPortNum()
      portStr[i] =  i+ " "+portStr[i] ;
    }  
    String respStr = (String) JOptionPane.showInputDialog(null,
-      "<html><div align='right'>Signalino v 0.2 (c) 2016</div>Choose COM port (if not listed: check drivers and power)</html>", "Select Signalino device",
+      "<html><div align='center'>Signalino v 0.3 (c) 2016</div>"+
+      "<p>This program is free software; is distributed under GNU General Public License in the hope that it will be useful, but WITHOUT ANY WARRANTY</p>"+
+      "<p align='center'>Choose COM port (if not listed: check drivers and power)</p></html>", "Select Signalino device",
       JOptionPane.PLAIN_MESSAGE, null,
       portStr, portStr[index]);
    serialPortNumber = Integer.parseInt(respStr.substring(0, 1));  

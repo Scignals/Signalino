@@ -73,7 +73,7 @@ class arr_int {
   
   int[] offset() {
     int mm=avg();
-    for (int i=0; i<nelem; i++)v1[i] -= mm;
+      for (int i=0; i<nelem; i++)v1[i] -= mm;
     return(v1);
   }
  
@@ -88,12 +88,13 @@ class arr_int {
   }
  
   int[] mov_avg(int npuntos) {
-    int suma=0;
-    for (int i=npuntos; i<nelem-npuntos; i++){
-       for (int j=1; j<npuntos; j++){
+    double suma;
+    suma=0;
+    for (int i=nelem-npuntos; i>npuntos; i--){
+       for (int j=0; j<npuntos; j++){
          suma+=v1[i-j];
        }
-       v1[i]=(v1[i]+suma)/npuntos+1;
+       v1[i]=(int)((suma)/npuntos);
        suma=0;
     }
     return(v1);

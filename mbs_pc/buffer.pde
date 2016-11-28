@@ -28,18 +28,11 @@ class Buffer {
   
   
   void apunta(int[] x1) {
-    int ultima_lectura=0;
     if((++puntero)>=max_buffer)puntero=0;
     for(int i=0;i<num_canales;i++){
-      // eliminamos lecturas con un cambio muy brusco respecto al ultimo valor
-      if(puntero==0)ultima_lectura=datos[i][max_buffer-1];
-      else ultima_lectura=datos[i][puntero-1];
-      if((abs(x1[i]-ultima_lectura))<500000/8)
-         datos[i][puntero]=x1[i];
-      else
-         datos[i][puntero]=ultima_lectura;
+               datos[i][puntero]=x1[i];
       }
-       
+      
    }
 
   
@@ -60,18 +53,27 @@ class Buffer {
         System.arraycopy(datos[canal], max_buffer+puntero-longitud2, c, 0, longitud2-puntero );
         System.arraycopy(datos[canal], 0, c, longitud2-puntero, puntero );
     }
-    int suma=0;
-    float sumasq=0;
+
     for(int i=0;i<longitud;i++)d[i]=c[i*decimando];
+    
+    //moving average de 3 puntos (despues de decimar)
+    double suma,suma2;
+    int npuntos=3;
+    suma=0;suma2=0;
+    for (int i=longitud-npuntos; i>npuntos; i--){
+       for (int j=0; j<npuntos; j++){
+            suma+=d[i-j];
+       }
+       d[i]=(int)((suma)/npuntos);
+       suma2+=d[i];
+       suma=0;
+    }
+
     //quitamos offset 
     for(int i=0;i<longitud;i++){
-      suma+=d[i];
-      sumasq+=(d[i]*d[i]);
+       d[i]-=suma2/longitud;
     } 
-      for(int i=0;i<longitud;i++)d[i]-=suma/longitud;
-      float misd=sqrt((sumasq-(suma*suma)/(longitud+1))/(longitud+1));
-//      for(int i=0;i<longitud;i++)d[i]/=misd;
-//      for(int i=0;i<longitud;i++)d[i]*=1000;
+    
     return(d);    
      
   }

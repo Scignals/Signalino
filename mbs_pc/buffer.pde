@@ -4,24 +4,33 @@ class Buffer {
   int num_canales;
   int max_buffer;
   int puntero;
+  int cte_tiempo;
+  int p_cte_tiempo;
   int [] umbral_max;
   int [] umbral_min;
-  int [] offset;
+  int [][] offset;
+  int [] sum_offset;
+  
   
   
   Buffer(int nc , int mb ) {
         datos=new int [nc][mb] ;
         umbral_max=new int[nc];
         umbral_min=new int[nc];
-        offset=new int[nc];
+        cte_tiempo=512;  //numero magico, de momento. es mas o menos 1 segundo.
+        offset=new int[nc][cte_tiempo];
+        sum_offset=new int[nc];
+        
         
         
         puntero=0;
+        p_cte_tiempo=0;
+        
         num_canales=nc;
         max_buffer=mb;        
 
         for(int i=0;i<nc;i++)umbral_max[i]=1000000000;
-        for(int i=0;i<nc;i++)offset[i]=0;
+        for(int i=0;i<nc;i++)sum_offset[i]=0;
         
    
 }
@@ -29,23 +38,25 @@ class Buffer {
   
   void apunta(int[] x1) {
     if((++puntero)>=max_buffer)puntero=0;
+    if((++p_cte_tiempo)>=cte_tiempo)p_cte_tiempo=0;
+    int previo_offset;
+    
     for(int i=0;i<num_canales;i++){
-               datos[i][puntero]=x1[i];
-      }
-      
+               //calculamos offset de los ultimos cte_tiempo puntos
+               previo_offset=offset[i][p_cte_tiempo];               
+               offset[i][p_cte_tiempo]=x1[i];
+               sum_offset[i]+=(x1[i]-previo_offset);
+               //apuntamos el dato con el offset ya restado
+               datos[i][puntero]=x1[i]-sum_offset[i]/cte_tiempo;
+             }      
    }
 
-  
+
   int [] lee_canal(int canal,int longitud, int decimando) {
-  //print((datos[canal].length));
-  //print("puntero");
-  //println( puntero);
-  //println (longitud);
 
     int longitud2=longitud*decimando;
     int [] c=new int [longitud2];
     int [] d=new int [longitud];
-    
   
     if(puntero>longitud2)
         System.arraycopy(datos[canal], puntero-longitud2, c, 0, longitud2 );
@@ -61,7 +72,7 @@ class Buffer {
     int npuntos=3;
     suma=0;suma2=0;
     if(1==0){
-      //algoritmo "oficial"
+      //algoritmo "oficial", ineficaz, creo que se podrá borrar
           for (int i=longitud-npuntos; i>npuntos; i--){
              for (int j=0; j<npuntos; j++){
                   suma+=d[i-j];
@@ -75,6 +86,7 @@ class Buffer {
       // adaptado de http://www.dspguide.com/CH15.PDF
       // el mio va marcha atras, y asi no hace falta un segundo buffer
       // i99=i98+i97+i96+i5 (moving avr de 4 puntos) --> i=((i+1)*n-i+(i-npuntos))/npuntos;
+      // una formula para calcular frecuencia de corte aproximada es frec=fm*0.443/sqr(n²-1)
         int ii;
         for (ii=longitud-2; ii>longitud-npuntos-2; ii--){
              suma+=d[ii];
@@ -85,11 +97,6 @@ class Buffer {
            suma+=d[ii+1];
         }
     }
-
-    //quitamos offset 
-    for(int i=0;i<longitud;i++){
-       d[i]-=suma/longitud;
-    } 
     
     return(d);    
      
@@ -99,9 +106,11 @@ class Buffer {
         datos      = new int [num_canales][max_buffer] ;
         umbral_max = new int[num_canales];
         umbral_min = new int[num_canales];
-        offset     = new int[num_canales];
+        sum_offset = new int[num_canales];
         
-        for(int i=0;i<num_canales;i++)offset[i]=0;
+        for(int i=0;i<num_canales;i++)sum_offset[i]=0;
+        for(int i=0;i<num_canales;i++)for(int j=0;j<cte_tiempo;j++)offset[i][j]=0;
+        
  }
 
   void calcula_umbrales() {

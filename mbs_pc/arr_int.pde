@@ -100,6 +100,20 @@ class arr_int {
     return(v1);
   }
  
+ int[] mov_avg_r(int npuntos) {
+    double suma;
+    int i; //esta vez se usa fuera del bucle, y la reusamos con cuidadito
+    suma=0;
+    for (i=nelem-1; i>nelem-npuntos; i--){
+         suma+=v1[i];
+       }
+    v1[i]=(int)((suma)/npuntos);
+    for (i=nelem-npuntos-1; i>npuntos; i--){
+       v1[i]=v1[i+1]-(int)(v1[i-npuntos]/npuntos);
+    }
+    return(v1);
+  }
+
 
   int[] trocito(int principio, int fin) {
     int [] salida=new int[fin-principio+1];

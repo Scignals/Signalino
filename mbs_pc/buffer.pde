@@ -60,18 +60,35 @@ class Buffer {
     double suma,suma2;
     int npuntos=3;
     suma=0;suma2=0;
-    for (int i=longitud-npuntos; i>npuntos; i--){
-       for (int j=0; j<npuntos; j++){
-            suma+=d[i-j];
-       }
-       d[i]=(int)((suma)/npuntos);
-       suma2+=d[i];
-       suma=0;
+    if(1==0){
+      //algoritmo "oficial"
+          for (int i=longitud-npuntos; i>npuntos; i--){
+             for (int j=0; j<npuntos; j++){
+                  suma+=d[i-j];
+             }
+             d[i]=(int)((suma)/npuntos);
+             suma2+=d[i];
+             suma=0;
+          }
+      } else {
+      //algoritmo recursivo, operativo. muy chulo. 
+      // adaptado de http://www.dspguide.com/CH15.PDF
+      // el mio va marcha atras, y asi no hace falta un segundo buffer
+      // i99=i98+i97+i96+i5 (moving avr de 4 puntos) --> i=((i+1)*n-i+(i-npuntos))/npuntos;
+        int ii;
+        for (ii=longitud-2; ii>longitud-npuntos-2; ii--){
+             suma+=d[ii];
+           }
+        d[longitud-1]=(int)((suma)/npuntos);
+        for (ii=longitud-3; ii>npuntos; ii--){
+           d[ii+1]=(int)((npuntos*d[ii+2]-d[ii]+d[ii-npuntos+1])/npuntos);
+           suma+=d[ii+1];
+        }
     }
 
     //quitamos offset 
     for(int i=0;i<longitud;i++){
-       d[i]-=suma2/longitud;
+       d[i]-=suma/longitud;
     } 
     
     return(d);    

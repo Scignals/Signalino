@@ -19,6 +19,6 @@ class Canal {
 }
   
   void xpinta(arr_int x1) {
-      v.pintaVector(x1.mov_avg(30),escala);
+      v.pintaVector(x1.mov_avg_r(3),escala);
   }
 }  

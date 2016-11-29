@@ -22,8 +22,9 @@ void serDecode(Buffer bf) { //assuming Arduino is only transfering active channe
                      localAdsByteBuffer[2]=rawData[cabecero+2+(i*3)];
                      lectura[i] = interpret24bitAsInt32(localAdsByteBuffer);
            }          
-           outputfile.println(lectura[2]);           
-             bf.apunta(lectura);
+           bf.apunta(lectura);
+           if(gGrabando)bf.graba(lectura);
+
        }
              
 } //void serDecode
@@ -45,10 +46,13 @@ int interpret24bitAsInt32(byte[] byteArray) {
 
 
 
-void serRand() { //numeros aleatorios
+void serRand(Buffer bf) { //numeros aleatorios
   for(int i=0;i<numCanales;i++){
            lectura[i]=1000*(int) random(1,100);
         }
+  bf.apunta(lectura);
+  if(gGrabando)bf.graba(lectura);
+
 } //void serRand
 
 void serEco() { //numeros aleatorios

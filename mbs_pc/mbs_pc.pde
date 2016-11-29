@@ -57,6 +57,7 @@ Chart ADS4ch;
 
 boolean modo_conectado = false;
 boolean modo_test      = false;
+boolean gGrabando      = false;
 
 
 // global var containing the gui
@@ -104,8 +105,6 @@ void setup() {
 
 void draw() {
      if(modo_conectado)serDecode(ADS4ch.bf);
-     else serRand();
-   //  serEco();
-     ADS4ch.set(lectura);
+     else serRand(ADS4ch.bf);
      ADS4ch.update();
 }

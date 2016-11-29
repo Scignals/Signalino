@@ -17,7 +17,7 @@ class Buffer {
         datos=new int [nc][mb] ;
         umbral_max=new int[nc];
         umbral_min=new int[nc];
-        cte_tiempo=512;  //numero magico, de momento. es mas o menos 1 segundo.
+        cte_tiempo=128;  //numero magico, de momento. es mas o menos 1 segundo.
         offset=new int[nc][cte_tiempo];
         sum_offset=new int[nc];
         
@@ -35,8 +35,17 @@ class Buffer {
    
 }
   
+  void graba(int[] x1) {
+             int i=0;
+             for (i = 0; i < numCanales-1; i++){
+               outputfile.print(x1[i]);
+               outputfile.print(',');
+             }          
+             outputfile.println(x1[i]);
+  }  
   
   void apunta(int[] x1) {
+   
     if((++puntero)>=max_buffer)puntero=0;
     if((++p_cte_tiempo)>=cte_tiempo)p_cte_tiempo=0;
     int previo_offset;

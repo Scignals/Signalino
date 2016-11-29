@@ -57,10 +57,10 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
    .setFont(createFont("Georgia",10))
    ;
 
-  gui.addToggle("toggle")
+  gui.addToggle("grabando")
      .setPosition(910,550)
      .setSize(50,20)
-     .setValue(true)
+     .setValue(gGrabando)
      .setMode(ControlP5.SWITCH)
      ;
      
@@ -157,6 +157,12 @@ public void ADSGanancia(int value){
        println("gan"+(value+1));
 }
 
+public void grabando(boolean value){
+    gGrabando=value;
+   println("gabando:"+gGrabando);
+    
+  }
+  
 public void Protocolo(int value){
   println("cambiando protocolo senal a "+value);
   if(value>0 && value<7){

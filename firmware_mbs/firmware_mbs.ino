@@ -1,23 +1,8 @@
-/* 
-* signalino, firmware v 02 rama master
-* firmware for controlling the ADS1299-based signalino
-* Author: JABarios, agosto 2016 - enero 2017
-* Company: ILSB, Spain. 
-* No warranty.  Use at your own risk.  Use for whatever you'd like.
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
+// signalino, firmware v 02 rama master
+// firmware for controlling the ADS1299-based signalino
+// Created: JABarios, agosto 2016 - enero 2017
+// No warranty.  Use at your own risk.  Use for whatever you'd like.
 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
 
 #include <stdlib.h>     /* strtoul */
 #include <SPI.h>  // include the SPI library:
@@ -216,7 +201,8 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
      txBuf[ind]=0xC0; 
 
    ind=0;
-   if(modo_bci_protocolo==1){    
+   if(modo_bci_protocolo==1){ 
+    // protocolo open_bci V3, pero con mumeros ascii   
      for(int m=0;m<2;m++){
         WiredSerial.print(txBuf[ind]);
         WiredSerial.print(SEPARADOR_SERIAL );
@@ -235,8 +221,10 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
 
   } else {
     if(modo_bci_protocolo==2){
+    // protocolo open_bci V3, pero con bytes (es el que se usa en el visor_pc)
         WiredSerial.write(txBuf,33);
-    } else {    
+    } else {
+    // protocolo open_bci V3, pero en hexadecimal
          char letras[5];
          for(int jj=0;jj<33;jj++){
           sprintf(letras, "%02X",txBuf[jj]);
@@ -327,7 +315,12 @@ void procesaComando(String texto){
          sprintf(buffer_comentaserial,"cambiado ganancia a %d",p1);
          comentaSerial(buffer_comentaserial);
 
-         }       
+         }
+       } else if(texto.startsWith("oka")){ 
+          mensaje_inicio();
+          return;
+       }       
+               
       return;
 
 }

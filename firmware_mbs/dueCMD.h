@@ -43,6 +43,8 @@ Additionally, there is a native USB-serial port on the SAM3X chip, SerialUSB.
 y el Serial es el programming port
 */
 
+// tenemos un modulo HC06 en serial3, y por tanto en pines pins 15 (RX) and 14 (TX)
+// como serial usamos (xq lo prefiero) el programing port (Serial), parece mas estable
 
 
 void due_inicia_hw();

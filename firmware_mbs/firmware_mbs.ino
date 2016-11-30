@@ -315,7 +315,7 @@ void procesaComando(String texto){
          sprintf(buffer_comentaserial,"cambiado ganancia a %d",p1);
          comentaSerial(buffer_comentaserial);
 
-         }
+         
        } else if(texto.startsWith("oka")){ 
           mensaje_inicio();
           return;

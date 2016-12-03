@@ -110,7 +110,7 @@ void setPortNum()
       "<p align='center'>Choose COM port (if not listed: check drivers and power)</p></html>", "Select Signalino device",
       JOptionPane.PLAIN_MESSAGE, null,
       portStr, portStr[index]);
-      if(respStr!=null) serialPortNumber = Integer.parseInt(respStr.substring(0, 1));  
+   serialPortNumber = Integer.parseInt(respStr.substring(0, 1));  
 } //setPortNum()
 
 void sendComando(String comando, Serial puerto)

@@ -5,6 +5,8 @@
 namespace ADS1298 {
 #endif
 
+//modificado para que funcione, al menos algunas cosas, eso creo, en ads1299
+
 	enum spi_command {
 		// system commands
 		WAKEUP = 0x02,
@@ -55,7 +57,7 @@ namespace ADS1298 {
 
 		// other
 		GPIO = 0x14,
-		PACE = 0x15,
+		PACE = 0x15, //misc en ADS1299
 		RESP = 0x16,
 		CONFIG4 = 0x17,
 		WCT1 = 0x18,
@@ -167,6 +169,7 @@ namespace ADS1298 {
 		GAINn2 = 0x40,
 		GAINn1 = 0x20,
 		GAINn0 = 0x10,
+    SRB2n = 0x08,
 		MUXn2 = 0x04,
 		MUXn1 = 0x02,
 		MUXn0 = 0x01,
@@ -182,6 +185,7 @@ namespace ADS1298 {
 		GAIN_12X = (GAINn2 | GAINn1),
 
 		ELECTRODE_INPUT = 0x00,
+    SRB2_INPUT = SRB2n,
 		SHORTED = MUXn0,
 		RLD_INPUT = MUXn1,
 		MVDD = (MUXn1 | MUXn0),
@@ -197,7 +201,8 @@ namespace ADS1298 {
 		GAIN12 = 0x40,
 		GAIN11 = 0x20,
 		GAIN10 = 0x10,
-		MUX12 = 0x04,
+    SR21   = 0x08,
+    MUX12 = 0x04,
 		MUX11 = 0x02,
 		MUX10 = 0x01,
 
@@ -209,7 +214,8 @@ namespace ADS1298 {
 		GAIN22 = 0x40,
 		GAIN21 = 0x20,
 		GAIN20 = 0x10,
-		MUX22 = 0x04,
+    SR22   = 0x08,
+    MUX22 = 0x04,
 		MUX21 = 0x02,
 		MUX20 = 0x01,
 
@@ -221,6 +227,7 @@ namespace ADS1298 {
 		GAIN32 = 0x40,
 		GAIN31 = 0x20,
 		GAIN30 = 0x10,
+    SR23   = 0x08,
 		MUX32 = 0x04,
 		MUX31 = 0x02,
 		MUX30 = 0x01,
@@ -233,7 +240,8 @@ namespace ADS1298 {
 		GAIN42 = 0x40,
 		GAIN41 = 0x20,
 		GAIN40 = 0x10,
-		MUX42 = 0x04,
+		SR24   = 0x08,
+    MUX42 = 0x04,
 		MUX41 = 0x02,
 		MUX40 = 0x01,
 
@@ -245,8 +253,8 @@ namespace ADS1298 {
 		GAIN52 = 0x40,
 		GAIN51 = 0x20,
 		GAIN50 = 0x10,
-		MUX52 = 0x04,
-		MUX51 = 0x02,
+	  SR25   = 0x08,
+    MUX51 = 0x02,
 		MUX50 = 0x01,
 
 		CH5SET_const = 0x00
@@ -257,7 +265,8 @@ namespace ADS1298 {
 		GAIN62 = 0x40,
 		GAIN61 = 0x20,
 		GAIN60 = 0x10,
-		MUX62 = 0x04,
+		SR26   = 0x08,
+    MUX62 = 0x04,
 		MUX61 = 0x02,
 		MUX60 = 0x01,
 
@@ -269,7 +278,8 @@ namespace ADS1298 {
 		GAIN72 = 0x40,
 		GAIN71 = 0x20,
 		GAIN70 = 0x10,
-		MUX72 = 0x04,
+		SR27   = 0x08,
+    MUX72 = 0x04,
 		MUX71 = 0x02,
 		MUX70 = 0x01,
 
@@ -281,7 +291,8 @@ namespace ADS1298 {
 		GAIN82 = 0x40,
 		GAIN81 = 0x20,
 		GAIN80 = 0x10,
-		MUX82 = 0x04,
+		SR28   = 0x08,
+    MUX82 = 0x04,
 		MUX81 = 0x02,
 		MUX80 = 0x01,
 

@@ -22,7 +22,7 @@ long contador_muestras=0;
 #define WiredSerial Serial
 
 
-// variables modificables  durante debugging
+// variables modificaables  durante debugging
 // protocolo openEEG firmware P2, util para openvibe
 // solo registra 6 canales
 
@@ -315,11 +315,30 @@ void procesaComando(String texto){
          sprintf(buffer_comentaserial,"cambiado ganancia a %d",p1);
          comentaSerial(buffer_comentaserial);
 
-         
-       } else if(texto.startsWith("oka")){ 
+      } else if(texto.startsWith("inp")){ 
+             parametro=texto.substring(3,4);
+             int p1=parametro.toInt();
+             switch(p1){
+              case 1:
+              gSenal_obtenida=SENAL_REAL;
+              ads9_misetup_ADS1299(MODE_SENAL_SRB2);
+              comentaSerial("cambiado a modo chart");
+              break;
+              case 2:
+              gSenal_obtenida=SENAL_REAL;
+              ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
+              comentaSerial("cambiado a modo emg");
+              break;
+              case 3:
+              gSenal_obtenida=SENAL_REAL;
+              ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
+              comentaSerial("cambiado a modo eeg");
+              break;
+         } 
+      } else if(texto.startsWith("oka")){ 
           mensaje_inicio();
           return;
-       }       
+      }       
                
       return;
 

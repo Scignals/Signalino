@@ -32,6 +32,7 @@ const int kPIN_LED = 13;//pin con luz led, en Teensy3, is ALSO spi clock!
 const int kPIN_RESET = 8; //Reset en Pin 8
 const int kPIN_CLKSEL = 7; //ClkSel en Pin 7
 
+/* registramos por srb2 asi que las entradas van por N  */
 
 
 /* 

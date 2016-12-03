@@ -57,7 +57,7 @@ void ads9_misetup_ADS1299(int opciones) {
        ads9_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
        delay(150);
        for (int i = 1; i <= gMaxChan; i++){
-               ads9_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_1X )); //report this channel with x12 gain
+               ads9_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_1X & ~SRB2_INPUT )); //report this channel with x12 gain
         } 
         break;       
      case MODE_SENAL_TEST:
@@ -77,9 +77,33 @@ void ads9_misetup_ADS1299(int opciones) {
        ads9_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
        delay(150);
        for (int i = 1; i <= gMaxChan; i++){
-               ads9_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X )); //report this channel with x12 gain
+               ads9_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X & ~SRB2_INPUT )); //report this channel with x12 gain
         } 
         break;       
+
+       case MODE_SENAL_SRB1:
+       // set mode SRB1, util en EEG, inutil ahora xq la placa no tiene la srb1 disponible
+       // gaancia a 1
+       ads9_wreg(PACE, char(0x20)); //set SRB1. Es un electrodo q internamente se une a todas las entradas negativas
+       ads9_wreg(CONFIG1, LOW_POWR_250_SPS);
+       ads9_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
+       ads9_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
+       delay(150);
+       for (int i = 1; i <= gMaxChan; i++){
+               ads9_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X & ~SRB2_INPUT  )); //report this channel with x12 gain
+        } 
+        break;
+       case MODE_SENAL_SRB2:
+       // set mode SRB2, util en chart
+       // ganancia a 1
+       ads9_wreg(CONFIG1, LOW_POWR_250_SPS);
+       ads9_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
+       ads9_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
+       delay(150);
+       for (int i = 1; i <= gMaxChan; i++){
+               ads9_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_1X | SRB2_INPUT   )); //SRB2 y ganancia 1
+        } 
+        break;
             
    }
   //start streaming data
@@ -157,11 +181,6 @@ void ads9_lee_datos(void) {
                 serialBytes[i++] = SPI.transfer(0);
                 vlast= to_Int32(serialBytes+i-3);
                 diff= ultima_lectura[ch] - vlast;
-                if (abs(diff)>250000  ){
-                  // to_3bytes(0,serialBytes+i-3);
-                } else {
-                  // ultima_lectura[ch]=vlast;
-                }
                 break;
               case TABLA_SENO:
                 // señal seno, creada al inicio 
@@ -176,11 +195,6 @@ void ads9_lee_datos(void) {
 
                 vlast= to_Int32(serialBytes+i-3);
                 diff= ultima_lectura[ch] - vlast;
-               // if (abs(diff)>250000  ){
-               //    to_3bytes(0,serialBytes+i-3);
-               // } else {
-               //    ultima_lectura[ch]=vlast;
-               // }
                 break;
         }
       }

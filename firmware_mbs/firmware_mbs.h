@@ -7,7 +7,12 @@
 
 #define MODE_SENAL_TEST 2 
 #define MODE_SENAL_REAL_1x 1 
-#define MODE_SENAL_REAL_12x 3 
+#define MODE_SENAL_REAL_12x 3
+#define MODE_SENAL_SRB1 4
+#define MODE_SENAL_SRB2 5
+#define MODE_SENAL_BIP 6
+
+ 
 
 #define SENAL_TEST 2 
 #define SENAL_REAL 1 

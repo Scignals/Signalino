@@ -1,10 +1,7 @@
 float escala_multiplicador=1;
 float escala_base=0.00001; //valor para q se vea simul
 float escala_valor=1;
-String nombre_archivo="signalino_raw";
-DropdownList d1;
- StringList l;
-
+ 
 void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active channels
 
   gui.addRadioButton("Senal")
@@ -37,10 +34,10 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
   gui.addRadioButton("Escala")
    .setPosition(900,30)
    .setSize(27,10)
+   .setValue(1)
    .addItem("x1",1)
    .addItem("x10",2)
    .addItem("x100",3)
-   .setValue(1)
    
    ;
  
@@ -54,30 +51,17 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
 
   gui.addTextlabel("lab1")
    .setText("<esc>    exit")
-   .setPosition(10,580)
+   .setPosition(910,500)
    .setSize(10,10)
    .setColorValue(0x00000000)
    .setFont(createFont("Georgia",10))
    ;
- gui.addTextfield("NombreArchivo")
-   .setPosition(900,520)
-   .setSize(90,20)
-   .setFocus(true)
-   .setFont(createFont("Georgia",12))
-   .setColor(color(255,255,255))
-   .setAutoClear(false)
-   .setCaptionLabel("")
-   ;
 
   gui.addToggle("grabando")
-     .setCaptionLabel("Grabando")
      .setPosition(910,550)
      .setSize(50,20)
      .setValue(gGrabando)
      .setMode(ControlP5.SWITCH)
-     .setColorActive(color(64,64,64))
-     .setColorBackground(color(122,122,122))
-     .setColorForeground(color(122,122,122))
      ;
      
 
@@ -111,25 +95,11 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
                 .addItem("p6", 5)
                 
                 ;
-  
-   l=new StringList();
-   l.append("EMG");
-   l.append("EEG");
-   l.append("Cyberamp 80");
-   l.append("PSG");
-   gui.addScrollableList("Entrada")
-       .setPosition(200, 1)
-      // .setSize(200, 20)
-       .setBarHeight(20)
-       .setItemHeight(20)
-       .addItems(l.array())
-       .setValue(0)
-       .setType(ScrollableList.DROPDOWN) // currently supported DROPDOWN and LIST
-       ;
 
-   
- }
-    
+
+}
+
+
 
 public void controlEvent(ControlEvent theEvent) {
 //Is called whenever a GUI Event happened
@@ -166,7 +136,7 @@ public void Escala(int value){
        break;  
 
   }
-   float valor = gui.getController("VisorGanancia").getValue();
+   float valor = gui.getController("VisorGanancia").getValue();;
      ADS4ch.setEscala(valor*escala_base*escala_multiplicador);
 
 }
@@ -187,49 +157,10 @@ public void ADSGanancia(int value){
        println("gan"+(value+1));
 }
 
-public void Entrada(int value){
-  
-  println("cambiando Periférico de entrada a "+value);
-  switch(value){
-     case 0:
-      sendComando("inp1",port); 
-       break;
-     case 1:
-      sendComando("inp2",port); 
-       break;
-     case 2:
-      sendComando("inp3",port); 
-       break;  
-
-  }
- 
-}
-
 public void grabando(boolean value){
     gGrabando=value;
-    println("grabando:"+gGrabando);
-    nombre_archivo = gui.get(Textfield.class,"NombreArchivo").getText();
-    println("grabando:"+nombre_archivo);
-   
-    if(gGrabando){
-      if(nombre_archivo.length()<1)return;
-       gui.getController("grabando").setCaptionLabel("grabando");
-       gui.getController("grabando").setColorActive(color(0,255,0));
-       try {
-          file = new File(nombre_archivo);
-          fw = new FileWriter(file);
-          outputfile = new PrintWriter(fw);
-       } catch (IOException e) {
-          println("File error. Sorry...");
-          e.printStackTrace();
-      } 
-    }
+   println("gabando:"+gGrabando);
     
-    else {
-       gui.getController("grabando").setColorActive(color(255,0,0));
-       gui.getController("grabando").setCaptionLabel("no");
-    }
-   
   }
   
 public void Protocolo(int value){

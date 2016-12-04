@@ -1,7 +1,9 @@
 float escala_multiplicador=1;
 float escala_base=0.00001; //valor para q se vea simul
+float gCteTiempo=64;
 float escala_valor=1;
 String nombre_archivo="signalino_raw";
+
 DropdownList d1;
  StringList l;
 
@@ -10,15 +12,15 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
   gui.addRadioButton("Senal")
    .setPosition(910,300)
    .setSize(10,27)
-   .setValue(1)
-   .addItem("senal",1)
+   .setValue(3)
+   .addItem("senal",3)
    .addItem("test",2)
-   .addItem("simul",3)
+   .addItem("simul",1)
    
    ;
 
   gui.addTextlabel("Signalino")
-   .setText("Signalino visor 0.2")
+   .setText("Signalino visor 0.3")
    .setPosition(10,2)
    .setSize(10,27)
    .setColorValue(0xffffff00)
@@ -27,15 +29,16 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
 
    
   gui.addSlider("VisorGanancia")
-   .setPosition(960,10)
+   .setPosition(910,10)
    .setRange(1, 20)
    .setSize(10, 60)
    .setNumberOfTickMarks(10)
    .setValue(10)
+   .setCaptionLabel("Ganancia")
      ;
 
   gui.addRadioButton("Escala")
-   .setPosition(900,30)
+   .setPosition(950,30)
    .setSize(27,10)
    .addItem("x1",1)
    .addItem("x10",2)
@@ -43,13 +46,15 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
    .setValue(1)
    
    ;
+
  
   gui.addSlider("Tiempo")
-   .setPosition(910,90)
+   .setPosition(910,100)
    .setRange(1, 20)
    .setSize(80, 10)
    .setNumberOfTickMarks(10)
    .setValue(1)
+   .setCaptionLabel("barrido")
      ;
 
   gui.addTextlabel("lab1")
@@ -59,6 +64,8 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
    .setColorValue(0x00000000)
    .setFont(createFont("Georgia",10))
    ;
+   
+
  gui.addTextfield("NombreArchivo")
    .setPosition(900,520)
    .setSize(90,20)
@@ -82,17 +89,17 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
      
 
   gui.addRadioButton("ADSGanancia")
-                .setPosition(910, 120)
+                .setPosition(910, 150)
                 .setColorForeground(color(120))
                 .setColorActive(color(255))
                 .setColorLabel(color(255))
                 .setSize(8,10)
                 .addItem("1", 0)
                 .addItem("2", 1)
-                .addItem("3", 2)
-                .addItem("4", 3)
-                .addItem("6", 4)
-                .addItem("8", 5)
+                .addItem("4", 2)
+                .addItem("6", 3)
+                .addItem("8", 4)
+                .addItem("12", 5)
                 .addItem("24", 6)
                 
                 ;
@@ -103,6 +110,7 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
                 .setColorActive(color(255))
                 .setColorLabel(color(255))
                 .setSize(8,10)
+                .setVisible(false)
                 .addItem("p1", 0)
                 .addItem("p2", 1)
                 .addItem("p3", 2)
@@ -113,9 +121,9 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
                 ;
   
    l=new StringList();
-   l.append("EMG");
-   l.append("EEG");
-   l.append("Cyberamp 80");
+   l.append("Cyberamp 80"); //SRB2 min ganancia
+   l.append("EMG");         //bipolar min gaancia
+   l.append("EEG");         //bipolar max ganancia
    l.append("PSG");
    gui.addScrollableList("Entrada")
        .setPosition(200, 1)

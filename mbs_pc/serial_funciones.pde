@@ -1,5 +1,7 @@
 int v1=0;
 boolean debugeando=false;
+int gUltimotimestamp;
+float fm_calculada;
 
 void serDecode(Buffer bf) { //assuming Arduino is only transfering active channels
 
@@ -21,7 +23,14 @@ void serDecode(Buffer bf) { //assuming Arduino is only transfering active channe
                      localAdsByteBuffer[1]=rawData[cabecero+1+(i*3)];
                      localAdsByteBuffer[2]=rawData[cabecero+2+(i*3)];
                      lectura[i] = interpret24bitAsInt32(localAdsByteBuffer);
-           }          
+           }   
+           localAdsByteBuffer[0]=rawData[cabecero+0+(numCanales*3)];
+           localAdsByteBuffer[1]=rawData[cabecero+1+(numCanales*3)];
+           localAdsByteBuffer[2]=rawData[cabecero+2+(numCanales*3)];
+           int timestamp = interpret24bitAsInt32(localAdsByteBuffer);
+           fm_calculada=floor(1000000/(timestamp-gUltimotimestamp+1));
+           gUltimotimestamp=timestamp;
+           //println(fm_calculada);
            bf.apunta(lectura);
            if(gGrabando)bf.graba(lectura);
 

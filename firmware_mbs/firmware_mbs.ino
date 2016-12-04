@@ -179,6 +179,8 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
    static int count = -1;
    unsigned long ul;
    dos_int dosnum;
+   byte timestamp[3];
+
 
    ind=2;
    txBuf[0]=0xA0;
@@ -189,10 +191,13 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
      txBuf[ind++] = serialBytes[i+1];
      txBuf[ind++] = serialBytes[i+2];
    }
-     //los acelerometros, no los tenemos asi que lo dejamos a cero
-     txBuf[ind++] = 0;
-     txBuf[ind++] = 0;
-     txBuf[ind++] = 0;
+     //los 2 acelerometros, no los tenemos asi que lo dejamos a cero
+     //pero metemos un timestamp en el primero
+     to_3bytes(micros(),timestamp);
+                
+     txBuf[ind++] = timestamp[0];
+     txBuf[ind++] = timestamp[1];
+     txBuf[ind++] = timestamp[2];
      txBuf[ind++] = 0;
      txBuf[ind++] = 0;
      txBuf[ind++] = 0;
@@ -254,7 +259,12 @@ void procesaComando(String texto){
          parametro=texto.substring(3,4);
          int p1=parametro.toInt();
          switch(p1){
+
             case 1:
+              gSenal_obtenida=TABLA_SENO;
+              gtestSignal=false;
+              break;
+            case 3:
               gSenal_obtenida=SENAL_REAL;
               gtestSignal=false;
               ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
@@ -263,10 +273,6 @@ void procesaComando(String texto){
               gSenal_obtenida=SENAL_REAL;
               gtestSignal=true;
               ads9_misetup_ADS1299(MODE_SENAL_TEST);
-              break;
-            case 3:
-              gSenal_obtenida=TABLA_SENO;
-              gtestSignal=false;
               break;
            case 4:
               gSenal_obtenida=SENAL_REAL;
@@ -326,12 +332,12 @@ void procesaComando(String texto){
               break;
               case 2:
               gSenal_obtenida=SENAL_REAL;
-              ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
+              ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
               comentaSerial("cambiado a modo emg");
               break;
               case 3:
               gSenal_obtenida=SENAL_REAL;
-              ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
+              ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
               comentaSerial("cambiado a modo eeg");
               break;
          } 

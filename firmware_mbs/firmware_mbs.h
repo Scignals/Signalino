@@ -28,6 +28,7 @@
 #define FINLINEA ";"
 // tenemos un modulo HC06 en serial3, y por tanto en pines pins 15 (RX) and 14 (TX)
 // y prefiero el programing port (Serial), parece mas estable
+// de hecho, no logro hacer funcionar el SerialUSB
 
 
 

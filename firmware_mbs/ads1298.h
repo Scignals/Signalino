@@ -6,6 +6,9 @@ namespace ADS1298 {
 #endif
 
 //modificado para que funcione, al menos algunas cosas, eso creo, en ads1299
+// MISC1 aqui se llama PACE (srb1 es MISC1 bit 5)
+// el bit 4 de cada canal es SRB2
+
 
 	enum spi_command {
 		// system commands
@@ -92,19 +95,19 @@ namespace ADS1298 {
 		HR = 0x80,
 		DAISY_EN = 0x40,
 		CLK_EN = 0x20,
+    RES = 0x10,
 		DR2 = 0x04,
 		DR1 = 0x02,
 		DR0 = 0x01,
 
 		CONFIG1_const = 0x00,
-		HIGH_RES_32k_SPS = HR,
-		HIGH_RES_16k_SPS = (HR | DR0),
-		HIGH_RES_8k_SPS = (HR | DR1),
-		HIGH_RES_4k_SPS = (HR | DR1 | DR0),
-		HIGH_RES_2k_SPS = (HR | DR2),
-		HIGH_RES_1k_SPS = (HR | DR2 | DR0),
-		HIGH_RES_500_SPS = (HR | DR2 | DR1),
-		LOW_POWR_250_SPS = (DR2 | DR1)
+		HIGH_RES_16k_SPS = (HR | RES | 0x00),
+		HIGH_RES_8k_SPS = (HR | RES | DR0),
+		HIGH_RES_4k_SPS = (HR | RES | DR1 ),
+		HIGH_RES_2k_SPS = (HR | RES | DR1 | DR0),
+		HIGH_RES_1k_SPS = (HR | RES | DR2),
+		HIGH_RES_500_SPS = (HR | RES | DR2 | DR0),
+		HIGH_RES_250_SPS = (HR | RES | DR2 | DR1)
 	};
 
 	enum CONFIG2_bits {
@@ -169,6 +172,7 @@ namespace ADS1298 {
 		GAINn2 = 0x40,
 		GAINn1 = 0x20,
 		GAINn0 = 0x10,
+   
     SRB2n = 0x08,
 		MUXn2 = 0x04,
 		MUXn1 = 0x02,
@@ -176,13 +180,26 @@ namespace ADS1298 {
 
 		CHnSET_const = 0x00,
 
-		GAIN_1X = GAINn0,
+/*		
+ *  validos para ads1298
+    GAIN_1X = GAINn0,
 		GAIN_2X = GAINn1,
 		GAIN_3X = (GAINn1 | GAINn0),
 		GAIN_4X = GAINn2,
 		GAIN_6X = 0x00,
 		GAIN_8X = (GAINn2 | GAINn0),
 		GAIN_12X = (GAINn2 | GAINn1),
+    GAIN_24X = (GAINn2 | GAINn1),
+*/
+
+    GAIN_1X  = 0x00,
+    GAIN_2X  = GAINn0,
+    GAIN_4X  = GAINn1,
+    GAIN_6X  = (GAINn1 | GAINn0),
+    GAIN_8X  = GAINn2 ,
+    GAIN_12X = (GAINn2 | GAINn0),
+    GAIN_24X = (GAINn2 | GAINn1),
+
 
 		ELECTRODE_INPUT = 0x00,
     SRB2_INPUT = SRB2n,
@@ -458,13 +475,13 @@ namespace ADS1298 {
 
 		CONFIG4_const = 0x00,
 
-		RESP_FREQ_64k_Hz = 0x00,
-		RESP_FREQ_32k_Hz = RESP_FREQ0,
-		RESP_FREQ_16k_Hz = RESP_FREQ1,
-		RESP_FREQ_8k_Hz = (RESP_FREQ1 | RESP_FREQ0),
-		RESP_FREQ_4k_Hz = RESP_FREQ2,
-		RESP_FREQ_2k_Hz = (RESP_FREQ2 | RESP_FREQ0),
-		RESP_FREQ_1k_Hz = (RESP_FREQ2 | RESP_FREQ1),
+		RESP_FREQ_64k_Hz =  0x00,
+		RESP_FREQ_32k_Hz =  RESP_FREQ0,
+		RESP_FREQ_16k_Hz =  RESP_FREQ1,
+		RESP_FREQ_8k_Hz  = (RESP_FREQ1 | RESP_FREQ0),
+		RESP_FREQ_4k_Hz  =  RESP_FREQ2,
+		RESP_FREQ_2k_Hz  = (RESP_FREQ2 | RESP_FREQ0),
+		RESP_FREQ_1k_Hz  = (RESP_FREQ2 | RESP_FREQ1),
 		RESP_FREQ_500_Hz = (RESP_FREQ2 | RESP_FREQ1 | RESP_FREQ0)
 	};
 

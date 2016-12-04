@@ -37,7 +37,7 @@ import java.io.FileWriter;
 import processing.serial.*;
 import javax.swing.JOptionPane;//For user input dialogs
 
-int BAUD_RATE = 115200;//57600 230400;//921600;//460800;//921600; //921600 for Teensy2/Teensy3/Leonardo 460800
+int BAUD_RATE = 115200;//57600 115200 230400;//921600;//460800;//921600; //921600 for Teensy2/Teensy3/Leonardo 460800
 int numCanales = 8; //number of channels to report
 int anchoPantalla=1000;
 int altoPantalla=600;
@@ -79,7 +79,6 @@ void setup() {
      //pone el ads en modo 6 ( bytes openBCI ). antes manda un "oka" xq si no el arduino no responde
      sendComando("oka",port);
      sendComando("frm6",port);
-     sendComando("sim3",port);     
   }   
   ADS4ch = new Chart(anchoPantalla/2-50,altoPantalla/2,anchoPantalla-100,altoPantalla-50,numCanales,0.01);
   gui = new ControlP5(this);
@@ -92,6 +91,7 @@ void setup() {
     e.printStackTrace();
   } 
   iniciaGui(gui);
+  sendComando("sim1",port);
   
 }
 
@@ -99,4 +99,10 @@ void draw() {
      if(modo_conectado)serDecode(ADS4ch.bf);
      else serRand(ADS4ch.bf);
      ADS4ch.update();
+     fill(0,0,0);
+     rect(810,585,60,20);
+     fill(255,255,255);
+     text(fm_calculada+"  ",800,590); 
+      
+     
 }

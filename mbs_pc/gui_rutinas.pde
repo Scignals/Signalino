@@ -58,8 +58,24 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
      ;
 
   gui.addTextlabel("lab1")
-   .setText("<esc>    exit")
+   .setText("<esc> exit")
    .setPosition(10,580)
+   .setSize(10,10)
+   .setColorValue(0x00000000)
+   .setFont(createFont("Georgia",10))
+   ;
+
+  gui.addTextlabel("lab2")
+   .setText("<+/-> Ganancia")
+   .setPosition(90,580)
+   .setSize(10,10)
+   .setColorValue(0x00000000)
+   .setFont(createFont("Georgia",10))
+   ;
+
+  gui.addTextlabel("lab3")
+   .setText("<space> Pausa")
+   .setPosition(170,580)
    .setSize(10,10)
    .setColorValue(0x00000000)
    .setFont(createFont("Georgia",10))
@@ -186,16 +202,6 @@ public void VisorGanancia(float value){
   
 }
 
-void keyPressed() {
- if(key=='+') {
-     float value=gui.getController("VisorGanancia").getValue();
-     gui.getController("VisorGanancia").setValue(value+3);
- } 
-if(key=='-') {
-     float value=gui.getController("VisorGanancia").getValue();
-     gui.getController("VisorGanancia").setValue(value-3);
- } 
-}
 
 
 
@@ -259,4 +265,19 @@ public void Protocolo(int value){
        sendComando("frm"+(value),port); 
        println("frm"+(value+1));
   }
+}
+
+void keyPressed() {
+ if(key=='+') {
+     float value=gui.getController("VisorGanancia").getValue();
+     gui.getController("VisorGanancia").setValue(value+3);
+ } 
+if(key=='-') {
+     float value=gui.getController("VisorGanancia").getValue();
+     gui.getController("VisorGanancia").setValue(value-3);
+ }
+ if(key==' ') {
+     gui_running=!gui_running;
+ 
+ }
 }

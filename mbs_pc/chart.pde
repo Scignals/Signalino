@@ -50,6 +50,7 @@ class Chart {
           chx.pinta(bf.lee_canal(i,ancho,chx.decimando));
      }
 //     bf.calcula_umbrales();
+
   } 
   void setEscala(float e) {
      for(int i=0;i<n_canales;i++){
@@ -67,5 +68,8 @@ class Chart {
   void setVisible(int e, int vis){
      visibles[e]=vis;       
   }
+  
+  
+    
 
 } 

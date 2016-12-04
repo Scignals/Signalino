@@ -45,6 +45,8 @@ int altoPantalla=600;
 boolean modo_conectado = false;
 boolean modo_test      = false;
 boolean gGrabando      = false;
+boolean gui_running    = true;
+
 int serialPortNumber = 0; //set to 0 for automatic detection
 
 
@@ -69,7 +71,7 @@ void setup() {
   size(1000, 600);
   rectMode(CENTER);
 
-  println("Signalino, signal visor 0.2 (c) 2017 ILSB ");
+  println("Signalino, signal visor 0.3 (c) 2017 ILSB ");
 
   lectura=new int[numCanales];
 
@@ -98,11 +100,13 @@ void setup() {
 void draw() {
      if(modo_conectado)serDecode(ADS4ch.bf);
      else serRand(ADS4ch.bf);
-     ADS4ch.update();
-     fill(0,0,0);
-     rect(810,585,60,20);
-     fill(255,255,255);
-     text(fm_calculada+"  ",800,590); 
+     if(gui_running)ADS4ch.update();
+     
+     // esto hay q meterlo como metodo de gui2
+       fill(0,0,0);
+       rect(810,585,60,20);
+       fill(255,255,255);
+       text(fm_calculada+"  ",800,590); 
       
      
 }

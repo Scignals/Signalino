@@ -37,16 +37,12 @@ class Buffer {
   
   void graba(int[] x1) {
       
-              outputfile.println(x1[1]);
-              
-      //         outputfile.println("a");
-      //         return;
              int i=0;
-       //      for (i = 0; i < numCanales-1; i++){
-       //        outputfile.print(x1[i]);
-       //        outputfile.print(',');
-       //      }          
-       //      outputfile.println(x1[i]);
+             for (i = 0; i < numCanales-1; i++){
+               outputfile.print(x1[i]);
+               outputfile.print(',');
+             }          
+             outputfile.println(x1[i]);
   }  
   
   void apunta(int[] x1) {

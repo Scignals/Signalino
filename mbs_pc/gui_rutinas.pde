@@ -67,9 +67,9 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
    
 
  gui.addTextfield("NombreArchivo")
-   .setPosition(900,520)
+   .setPosition(905,520)
    .setSize(90,20)
-   .setFocus(true)
+//   .setFocus(true)
    .setFont(createFont("Georgia",12))
    .setColor(color(255,255,255))
    .setAutoClear(false)
@@ -78,7 +78,7 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
 
   gui.addToggle("grabando")
      .setCaptionLabel("Grabando")
-     .setPosition(910,550)
+     .setPosition(925,550)
      .setSize(50,20)
      .setValue(gGrabando)
      .setMode(ControlP5.SWITCH)
@@ -185,6 +185,19 @@ public void VisorGanancia(float value){
   // 0.0001 test, /10 simul, 
   
 }
+
+void keyPressed() {
+ if(key=='+') {
+     float value=gui.getController("VisorGanancia").getValue();
+     gui.getController("VisorGanancia").setValue(value+3);
+ } 
+if(key=='-') {
+     float value=gui.getController("VisorGanancia").getValue();
+     gui.getController("VisorGanancia").setValue(value-3);
+ } 
+}
+
+
 
 public void Tiempo(int value){
   ADS4ch.setDecimando(value);

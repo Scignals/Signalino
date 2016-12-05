@@ -1,13 +1,13 @@
-$Visor de signalino
-======================
+Scignals, a chart recorder
+==========================
 
-TI made a great chip, the ADS1299, focused on EEG signal recording. This is the signal visor of a board around it, a "shield", able to communicate with an Arduino Due and act as a bioamplifier.
+This is the signal visor for serial data, developed for Signalino, a ADS1299-based "shield", able to communicate with an Arduino Due and act as a bioamplifier for EEG, ECG or EOG signals.
 
 Features
 --------
 
 - display of 8 channels
-- Developed in java, using Processing environment, so it should "run everywhere" ;-). Tested in windows 10 and linux (ubuntu 14.04).
+- Developed in java, using Processing environment, so it should "run everywhere" ;-). Tested in windows XP & 7 & 10 and linux (ubuntu 14.04).
 
 Installation
 ------------
@@ -17,8 +17,8 @@ Install project by dwonloading the firmware to an arduino due. In monitor of the
 Contribute
 ----------
 
-- Issue Tracker: github.com/$project/$project/issues
-- Source Code: github.com/$project/$project
+- Issue Tracker: github.com/JABarios/mbs/issues
+- Source Code: github.com/JABarios/mbs/mbs_pc/
 
 Support
 -------
@@ -29,7 +29,7 @@ We have a mailing list located at: project@google-groups.com
 License
 -------
 
-The project is licensed under the BSD license.
+The project is licensed under the GNU GPLv3
 
 
 

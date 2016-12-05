@@ -30,9 +30,11 @@
 import controlP5.*;
 
 
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.io.FileWriter;
+
  
 import processing.serial.*;
 import javax.swing.JOptionPane;//For user input dialogs
@@ -94,6 +96,7 @@ void setup() {
   } 
   iniciaGui(gui);
   sendComando("sim1",port);
+  println("llegamos");
   
 }
 

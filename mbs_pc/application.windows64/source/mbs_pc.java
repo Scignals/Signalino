@@ -4,6 +4,7 @@ import processing.event.*;
 import processing.opengl.*; 
 
 import controlP5.*; 
+import java.util.*; 
 import java.util.ArrayList; 
 import java.util.Arrays; 
 import java.io.FileWriter; 
@@ -55,11 +56,14 @@ public class mbs_pc extends PApplet {
 
 
 
+
+
+
  
 
 //For user input dialogs
 
-int BAUD_RATE = 115200;//57600 230400;//921600;//460800;//921600; //921600 for Teensy2/Teensy3/Leonardo 460800
+int BAUD_RATE = 115200;//57600 115200 230400;//921600;//460800;//921600; //921600 for Teensy2/Teensy3/Leonardo 460800
 int numCanales = 8; //number of channels to report
 int anchoPantalla=1000;
 int altoPantalla=600;
@@ -67,6 +71,8 @@ int altoPantalla=600;
 boolean modo_conectado = false;
 boolean modo_test      = false;
 boolean gGrabando      = false;
+boolean gui_running    = true;
+
 int serialPortNumber = 0; //set to 0 for automatic detection
 
 
@@ -91,7 +97,7 @@ public void setup() {
   
   rectMode(CENTER);
 
-  println("Signalino, signal visor 0.2 (c) 2017 ILSB ");
+  println("Signalino, signal visor 0.3 (c) 2017 ILSB ");
 
   lectura=new int[numCanales];
 
@@ -101,7 +107,6 @@ public void setup() {
      //pone el ads en modo 6 ( bytes openBCI ). antes manda un "oka" xq si no el arduino no responde
      sendComando("oka",port);
      sendComando("frm6",port);
-     sendComando("sim3",port);     
   }   
   ADS4ch = new Chart(anchoPantalla/2-50,altoPantalla/2,anchoPantalla-100,altoPantalla-50,numCanales,0.01f);
   gui = new ControlP5(this);
@@ -114,14 +119,43 @@ public void setup() {
     e.printStackTrace();
   } 
   iniciaGui(gui);
+  sendComando("sim1",port);
+  println("llegamos");
   
 }
 
 public void draw() {
      if(modo_conectado)serDecode(ADS4ch.bf);
      else serRand(ADS4ch.bf);
-     ADS4ch.update();
+     if(gui_running)ADS4ch.update();
+     
+     // esto hay q meterlo como metodo de gui2
+       fill(0,0,0);
+       rect(810,585,60,20);
+       fill(255,255,255);
+       text(fm_calculada+"  ",800,590); 
+      
+     
 }
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//  
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+// MA  02110-1301, USA.
+// 
+//
+//  Copyright \u00a9 2016 JA Barios
+//  This file is part of project: SCIGNALS: a chart recorder
+//
 class arr_int {
   int[] v1;
   int nelem;
@@ -406,6 +440,25 @@ public  void fft512(double[] real, double[] imag) {
       break;
   }
 }
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//  
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+// MA  02110-1301, USA.
+// 
+//
+//  Copyright \u00a9 2016 JA Barios
+//  This file is part of project: SCIGNALS: a chart recorder
+//
 class Buffer {
   
   int [][] datos;
@@ -425,7 +478,7 @@ class Buffer {
         datos=new int [nc][mb] ;
         umbral_max=new int[nc];
         umbral_min=new int[nc];
-        cte_tiempo=64;  //numero magico, de momento. es mas o menos 1 segundo.
+        cte_tiempo=(int)gCteTiempo;  //numero magico, de momento. es mas o menos 1 segundo.
         offset=new int[nc][cte_tiempo];
         sum_offset=new int[nc];
         
@@ -444,6 +497,7 @@ class Buffer {
 }
   
   public void graba(int[] x1) {
+      
              int i=0;
              for (i = 0; i < numCanales-1; i++){
                outputfile.print(x1[i]);
@@ -486,7 +540,7 @@ class Buffer {
     
     //moving average de 3 puntos (despues de decimar)
     double suma,suma2;
-    int npuntos=4;
+    int npuntos=5;
     suma=0;suma2=0;
     if(1==0){
       //algoritmo "oficial", ineficaz, creo que se podr\u00e1 borrar
@@ -543,6 +597,25 @@ class Buffer {
   }
     
 }  
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//  
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+// MA  02110-1301, USA.
+// 
+//
+//  Copyright \u00a9 2016 JA Barios
+//  This file is part of project: SCIGNALS: a chart recorder
+//
 class Canal {
   
   int x;
@@ -554,7 +627,7 @@ class Canal {
   Canal(int x,int y,int w,int h,float e) {
         v=new ventana(x,y,w,h);
         escala=e;
-        decimando=2;
+        decimando=64;
   }
   public void pinta(int[] x1) {
   //    v.pintaVector(new arr_int((new arr_int(x1)).mov_avg(3)).zscore(),escala);
@@ -567,6 +640,25 @@ class Canal {
       v.pintaVector(x1.mov_avg_r(3),escala);
   }
 }  
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//  
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+// MA  02110-1301, USA.
+// 
+//
+//  Copyright \u00a9 2016 JA Barios
+//  This file is part of project: SCIGNALS: a chart recorder
+//
 int MAX_DECIMANDO=64;
 class Chart { 
   int ancho, alto, cx, cy;
@@ -619,6 +711,7 @@ class Chart {
           chx.pinta(bf.lee_canal(i,ancho,chx.decimando));
      }
 //     bf.calcula_umbrales();
+
   } 
   public void setEscala(float e) {
      for(int i=0;i<n_canales;i++){
@@ -636,26 +729,53 @@ class Chart {
   public void setVisible(int e, int vis){
      visibles[e]=vis;       
   }
+  
+  
+    
 
 } 
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//  
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+// MA  02110-1301, USA.
+// 
+//
+//  Copyright \u00a9 2016 JA Barios
+//  This file is part of project: SCIGNALS: a chart recorder
+//
 float escala_multiplicador=1;
 float escala_base=0.00001f; //valor para q se vea simul
+float gCteTiempo=64;
 float escala_valor=1;
- 
+String nombre_archivo="signalino_raw";
+
+DropdownList d1;
+ StringList l;
+
 public void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active channels
 
   gui.addRadioButton("Senal")
    .setPosition(910,300)
    .setSize(10,27)
-   .setValue(1)
-   .addItem("senal",1)
+   .setValue(3)
+   .addItem("senal",3)
    .addItem("test",2)
-   .addItem("simul",3)
+   .addItem("simul",1)
    
    ;
 
   gui.addTextlabel("Signalino")
-   .setText("Signalino visor 0.2")
+   .setText("Signalino visor 0.3")
    .setPosition(10,2)
    .setSize(10,27)
    .setColorValue(0xffffff00)
@@ -664,59 +784,93 @@ public void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering ac
 
    
   gui.addSlider("VisorGanancia")
-   .setPosition(960,10)
+   .setPosition(910,10)
    .setRange(1, 20)
    .setSize(10, 60)
    .setNumberOfTickMarks(10)
    .setValue(10)
+   .setCaptionLabel("Ganancia")
      ;
 
   gui.addRadioButton("Escala")
-   .setPosition(900,30)
+   .setPosition(950,30)
    .setSize(27,10)
-   .setValue(1)
    .addItem("x1",1)
    .addItem("x10",2)
    .addItem("x100",3)
+   .setValue(1)
    
    ;
+
  
   gui.addSlider("Tiempo")
-   .setPosition(910,90)
+   .setPosition(910,100)
    .setRange(1, 20)
    .setSize(80, 10)
    .setNumberOfTickMarks(10)
    .setValue(1)
+   .setCaptionLabel("barrido")
      ;
 
   gui.addTextlabel("lab1")
-   .setText("<esc>    exit")
-   .setPosition(910,500)
+   .setText("<esc> exit")
+   .setPosition(10,580)
    .setSize(10,10)
    .setColorValue(0x00000000)
    .setFont(createFont("Georgia",10))
    ;
 
+  gui.addTextlabel("lab2")
+   .setText("<+/-> Ganancia")
+   .setPosition(90,580)
+   .setSize(10,10)
+   .setColorValue(0x00000000)
+   .setFont(createFont("Georgia",10))
+   ;
+
+  gui.addTextlabel("lab3")
+   .setText("<space> Pausa")
+   .setPosition(170,580)
+   .setSize(10,10)
+   .setColorValue(0x00000000)
+   .setFont(createFont("Georgia",10))
+   ;
+   
+
+ gui.addTextfield("NombreArchivo")
+   .setPosition(905,520)
+   .setSize(90,20)
+//   .setFocus(true)
+   .setFont(createFont("Georgia",12))
+   .setColor(color(255,255,255))
+   .setAutoClear(false)
+   .setCaptionLabel("")
+   ;
+
   gui.addToggle("grabando")
-     .setPosition(910,550)
+     .setCaptionLabel("Grabando")
+     .setPosition(925,550)
      .setSize(50,20)
      .setValue(gGrabando)
      .setMode(ControlP5.SWITCH)
+     .setColorActive(color(64,64,64))
+     .setColorBackground(color(122,122,122))
+     .setColorForeground(color(122,122,122))
      ;
      
 
   gui.addRadioButton("ADSGanancia")
-                .setPosition(910, 120)
+                .setPosition(910, 150)
                 .setColorForeground(color(120))
                 .setColorActive(color(255))
                 .setColorLabel(color(255))
                 .setSize(8,10)
                 .addItem("1", 0)
                 .addItem("2", 1)
-                .addItem("3", 2)
-                .addItem("4", 3)
-                .addItem("6", 4)
-                .addItem("8", 5)
+                .addItem("4", 2)
+                .addItem("6", 3)
+                .addItem("8", 4)
+                .addItem("12", 5)
                 .addItem("24", 6)
                 
                 ;
@@ -727,6 +881,7 @@ public void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering ac
                 .setColorActive(color(255))
                 .setColorLabel(color(255))
                 .setSize(8,10)
+                .setVisible(false)
                 .addItem("p1", 0)
                 .addItem("p2", 1)
                 .addItem("p3", 2)
@@ -735,11 +890,25 @@ public void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering ac
                 .addItem("p6", 5)
                 
                 ;
+  
+   l=new StringList();
+   l.append("Cyberamp 80"); //SRB2 min ganancia
+   l.append("EMG");         //bipolar min gaancia
+   l.append("EEG");         //bipolar max ganancia
+   l.append("PSG");
+   gui.addScrollableList("Entrada")
+       .setPosition(200, 1)
+      // .setSize(200, 20)
+       .setBarHeight(20)
+       .setItemHeight(20)
+       .addItems(l.array())
+       .setValue(0)
+       .setType(ScrollableList.DROPDOWN) // currently supported DROPDOWN and LIST
+       ;
 
-
-}
-
-
+   
+ }
+    
 
 public void controlEvent(ControlEvent theEvent) {
 //Is called whenever a GUI Event happened
@@ -776,7 +945,7 @@ public void Escala(int value){
        break;  
 
   }
-   float valor = gui.getController("VisorGanancia").getValue();;
+   float valor = gui.getController("VisorGanancia").getValue();
      ADS4ch.setEscala(valor*escala_base*escala_multiplicador);
 
 }
@@ -788,6 +957,9 @@ public void VisorGanancia(float value){
   
 }
 
+
+
+
 public void Tiempo(int value){
   ADS4ch.setDecimando(value);
 }
@@ -797,10 +969,49 @@ public void ADSGanancia(int value){
        println("gan"+(value+1));
 }
 
+public void Entrada(int value){
+  
+  println("cambiando Perif\u00e9rico de entrada a "+value);
+  switch(value){
+     case 0:
+      sendComando("inp1",port); 
+       break;
+     case 1:
+      sendComando("inp2",port); 
+       break;
+     case 2:
+      sendComando("inp3",port); 
+       break;  
+
+  }
+ 
+}
+
 public void grabando(boolean value){
     gGrabando=value;
-   println("gabando:"+gGrabando);
+    println("grabando:"+gGrabando);
+    nombre_archivo = gui.get(Textfield.class,"NombreArchivo").getText();
+    println("grabando:"+nombre_archivo);
+   
+    if(gGrabando){
+      if(nombre_archivo.length()<1)return;
+       gui.getController("grabando").setCaptionLabel("grabando");
+       gui.getController("grabando").setColorActive(color(0,255,0));
+       try {
+          file = new File(nombre_archivo);
+          fw = new FileWriter(file);
+          outputfile = new PrintWriter(fw);
+       } catch (IOException e) {
+          println("File error. Sorry...");
+          e.printStackTrace();
+      } 
+    }
     
+    else {
+       gui.getController("grabando").setColorActive(color(255,0,0));
+       gui.getController("grabando").setCaptionLabel("no");
+    }
+   
   }
   
 public void Protocolo(int value){
@@ -810,8 +1021,25 @@ public void Protocolo(int value){
        println("frm"+(value+1));
   }
 }
+
+public void keyPressed() {
+ if(key=='+') {
+     float value=gui.getController("VisorGanancia").getValue();
+     gui.getController("VisorGanancia").setValue(value+3);
+ } 
+if(key=='-') {
+     float value=gui.getController("VisorGanancia").getValue();
+     gui.getController("VisorGanancia").setValue(value-3);
+ }
+ if(key==' ') {
+     gui_running=!gui_running;
+ 
+ }
+}
 int v1=0;
 boolean debugeando=false;
+int gUltimotimestamp;
+float fm_calculada;
 
 public void serDecode(Buffer bf) { //assuming Arduino is only transfering active channels
 
@@ -833,7 +1061,14 @@ public void serDecode(Buffer bf) { //assuming Arduino is only transfering active
                      localAdsByteBuffer[1]=rawData[cabecero+1+(i*3)];
                      localAdsByteBuffer[2]=rawData[cabecero+2+(i*3)];
                      lectura[i] = interpret24bitAsInt32(localAdsByteBuffer);
-           }          
+           }   
+           localAdsByteBuffer[0]=rawData[cabecero+0+(numCanales*3)];
+           localAdsByteBuffer[1]=rawData[cabecero+1+(numCanales*3)];
+           localAdsByteBuffer[2]=rawData[cabecero+2+(numCanales*3)];
+           int timestamp = interpret24bitAsInt32(localAdsByteBuffer);
+           fm_calculada=floor(1000000/(timestamp-gUltimotimestamp+1));
+           gUltimotimestamp=timestamp;
+           //println(fm_calculada);
            bf.apunta(lectura);
            if(gGrabando)bf.graba(lectura);
 
@@ -859,11 +1094,18 @@ public int interpret24bitAsInt32(byte[] byteArray) {
 
 
 public void serRand(Buffer bf) { //numeros aleatorios
-  for(int i=0;i<numCanales;i++){
-           lectura[i]=1000*(int) random(1,100);
-        }
-  bf.apunta(lectura);
-  if(gGrabando)bf.graba(lectura);
+  int timestamp=0;
+  for(int jj=1;jj<2;jj++){
+      for(int i=0;i<numCanales;i++){
+               lectura[i]=1000*(int) random(1,100);
+      }
+      timestamp = millis()*1000;
+      gUltimotimestamp=timestamp;
+              
+      bf.apunta(lectura);
+      if(gGrabando)bf.graba(lectura);
+  }
+  fm_calculada=floor(1000000/(timestamp-gUltimotimestamp+1));
 
 } //void serRand
 
@@ -889,8 +1131,10 @@ public void serie_inicia()
       port = new Serial(this, Serial.list()[serialPortNumber], BAUD_RATE);    
       //vaciamos el buffer del puerto y leemos hasta un 0xC0
      while (port.available() > 0)  port.read(); 
+     // aqui es donde sospecho que se cuelga, cuando no encuentra un signalino
      byte[] basura=port.readBytesUntil(0xC0);
         modo_conectado=true;
+
   } catch (Exception e){ 
           javax.swing.JOptionPane.showMessageDialog(frame,
             "<html><div align='center'>Signalino v 0.3 (c) 2016</div>"+
@@ -902,8 +1146,19 @@ public void serie_inicia()
 
 public void setPortNum() 
 {
-   String[] portStr = Serial.list();
-   int nPort = portStr.length;
+  String[] portStr = Serial.list();
+  int nPort = portStr.length;
+  serialPortNumber=-1;
+  
+  
+  
+  
+   
+//    List<String> new_portStr = Arrays.asList(portStr);
+//    new_portStr.add("Test signal");
+//    String[] temp_portStr = new String[new_portStr.size()];
+//    portStr = new_portStr.toArray(temp_portStr);
+
    if (nPort < 1) {
       javax.swing.JOptionPane.showMessageDialog(frame,
             "<html><div align='center'>Signalino v 0.3 (c) 2016</div>"+
@@ -913,16 +1168,31 @@ public void setPortNum()
    }
    int index = 0;
    for (int i=0; i<nPort; i++) {
+     // esta linea parece una fineza, apareceria resaltado si se llamara cu.us. El problema es q en windows se llama com1 , y en mi linux se llama acm1, y ...
+     // pero la mantengo, por si algun dia se me ocurre algo mejor
      if (match(portStr[i], "cu.us") != null) index = i; //Arduino/Teensy names like /dev/cu.usbmodem*" and our BlueTooth is  /dev/cu.us922k0000bt 
      portStr[i] =  i+ " "+portStr[i] ;
-   }  
+   }
+   
+  String[] array2 = new String[]{portStr.length+" SIMULATED noisy Signal"};
+  String[] array = new String[portStr.length + array2.length];
+  System.arraycopy(portStr, 0, array, 0, portStr.length);
+  System.arraycopy(array2, 0, array, portStr.length, array2.length);
+  nPort=nPort+1;
+  
    String respStr = (String) JOptionPane.showInputDialog(null,
-      "<html><div align='center'>Signalino v 0.3 (c) 2016</div>"+
+      "<html><div align='center'>Scignals v 0.3 (c) 2016</div>"+
       "<p>This program is free software; is distributed under GNU General Public License in the hope that it will be useful, but WITHOUT ANY WARRANTY</p>"+
       "<p align='center'>Choose COM port (if not listed: check drivers and power)</p></html>", "Select Signalino device",
       JOptionPane.PLAIN_MESSAGE, null,
-      portStr, portStr[index]);
-   serialPortNumber = Integer.parseInt(respStr.substring(0, 1));  
+      array, array[index]);
+      println(respStr);
+      try{
+         if(respStr!=null) serialPortNumber = Integer.parseInt(respStr.substring(0, 1));
+      } catch (Exception e){ 
+         // no hacer nada, es por si acaso
+      }    
+       
 } //setPortNum()
 
 public void sendComando(String comando, Serial puerto)
@@ -933,6 +1203,25 @@ public void sendComando(String comando, Serial puerto)
    }  
  
 }
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//  
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+// MA  02110-1301, USA.
+// 
+//
+//  Copyright \u00a9 2016 JA Barios
+//  This file is part of project: SCIGNALS: a chart recorder
+//
 class ventana {
   int _ctro_x;public int cx(){return(_ctro_x);}
   int _ctro_y;public int cy(){return(_ctro_y);}

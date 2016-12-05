@@ -93,8 +93,10 @@ void serie_inicia()
       port = new Serial(this, Serial.list()[serialPortNumber], BAUD_RATE);    
       //vaciamos el buffer del puerto y leemos hasta un 0xC0
      while (port.available() > 0)  port.read(); 
+     // aqui es donde sospecho que se cuelga, cuando no encuentra un signalino
      byte[] basura=port.readBytesUntil(0xC0);
         modo_conectado=true;
+
   } catch (Exception e){ 
           javax.swing.JOptionPane.showMessageDialog(frame,
             "<html><div align='center'>Signalino v 0.3 (c) 2016</div>"+
@@ -106,8 +108,19 @@ void serie_inicia()
 
 void setPortNum() 
 {
-   String[] portStr = Serial.list();
-   int nPort = portStr.length;
+  String[] portStr = Serial.list();
+  int nPort = portStr.length;
+  serialPortNumber=-1;
+  
+  
+  
+  
+   
+//    List<String> new_portStr = Arrays.asList(portStr);
+//    new_portStr.add("Test signal");
+//    String[] temp_portStr = new String[new_portStr.size()];
+//    portStr = new_portStr.toArray(temp_portStr);
+
    if (nPort < 1) {
       javax.swing.JOptionPane.showMessageDialog(frame,
             "<html><div align='center'>Signalino v 0.3 (c) 2016</div>"+
@@ -117,16 +130,31 @@ void setPortNum()
    }
    int index = 0;
    for (int i=0; i<nPort; i++) {
+     // esta linea parece una fineza, apareceria resaltado si se llamara cu.us. El problema es q en windows se llama com1 , y en mi linux se llama acm1, y ...
+     // pero la mantengo, por si algun dia se me ocurre algo mejor
      if (match(portStr[i], "cu.us") != null) index = i; //Arduino/Teensy names like /dev/cu.usbmodem*" and our BlueTooth is  /dev/cu.us922k0000bt 
      portStr[i] =  i+ " "+portStr[i] ;
-   }  
+   }
+   
+  String[] array2 = new String[]{portStr.length+" SIMULATED noisy Signal"};
+  String[] array = new String[portStr.length + array2.length];
+  System.arraycopy(portStr, 0, array, 0, portStr.length);
+  System.arraycopy(array2, 0, array, portStr.length, array2.length);
+  nPort=nPort+1;
+  
    String respStr = (String) JOptionPane.showInputDialog(null,
-      "<html><div align='center'>Signalino v 0.3 (c) 2016</div>"+
+      "<html><div align='center'>Scignals v 0.3 (c) 2016</div>"+
       "<p>This program is free software; is distributed under GNU General Public License in the hope that it will be useful, but WITHOUT ANY WARRANTY</p>"+
       "<p align='center'>Choose COM port (if not listed: check drivers and power)</p></html>", "Select Signalino device",
       JOptionPane.PLAIN_MESSAGE, null,
-      portStr, portStr[index]);
-      if(respStr!=null) serialPortNumber = Integer.parseInt(respStr.substring(0, 1));  
+      array, array[index]);
+      println(respStr);
+      try{
+         if(respStr!=null) serialPortNumber = Integer.parseInt(respStr.substring(0, 1));
+      } catch (Exception e){ 
+         // no hacer nada, es por si acaso
+      }    
+       
 } //setPortNum()
 
 void sendComando(String comando, Serial puerto)

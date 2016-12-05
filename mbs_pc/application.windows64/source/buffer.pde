@@ -36,7 +36,7 @@ class Buffer {
         datos=new int [nc][mb] ;
         umbral_max=new int[nc];
         umbral_min=new int[nc];
-        cte_tiempo=64;  //numero magico, de momento. es mas o menos 1 segundo.
+        cte_tiempo=(int)gCteTiempo;  //numero magico, de momento. es mas o menos 1 segundo.
         offset=new int[nc][cte_tiempo];
         sum_offset=new int[nc];
         
@@ -55,6 +55,7 @@ class Buffer {
 }
   
   void graba(int[] x1) {
+      
              int i=0;
              for (i = 0; i < numCanales-1; i++){
                outputfile.print(x1[i]);
@@ -97,7 +98,7 @@ class Buffer {
     
     //moving average de 3 puntos (despues de decimar)
     double suma,suma2;
-    int npuntos=4;
+    int npuntos=5;
     suma=0;suma2=0;
     if(1==0){
       //algoritmo "oficial", ineficaz, creo que se podrá borrar

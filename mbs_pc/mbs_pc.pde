@@ -74,7 +74,7 @@ PrintWriter outputfile;
 //global, usada por varias funciones (creo) 
 int[]  lectura;   // Datos leidos en el puerto serie PImage=img;  
  
-  
+PImage img1; 
     
 void setup() {
 
@@ -82,7 +82,8 @@ void setup() {
   rectMode(CENTER);
   println("Scignals, signal visor 0.3 (c) 2017 ILSB Technologies ");
   
-  background(loadImage("fondo.png"));
+  img1=loadImage("fondo.gif");
+  image(img1,0,0); //con background, petaba en linux a veces. image parece mas solido.
   
   lectura=new int[numCanales];
 

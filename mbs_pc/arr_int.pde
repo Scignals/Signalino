@@ -1,8 +1,9 @@
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
+// as published by the Free Software Foundation; either version 3
 // of the License, or (at your option) any later version.
 // 
+
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -15,7 +16,7 @@
 // 
 //
 //  Copyright © 2016 JA Barios
-//  This file is part of project: SCIGNALS: a chart recorder
+//  This file is part of project: SCIGNALS, a chart recorder.
 //
 class arr_int {
   int[] v1;

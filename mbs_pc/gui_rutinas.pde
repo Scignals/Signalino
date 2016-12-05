@@ -1,6 +1,6 @@
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
+// as published by the Free Software Foundation; either version 3
 // of the License, or (at your option) any later version.
 // 
 // This program is distributed in the hope that it will be useful,
@@ -15,13 +15,13 @@
 // 
 //
 //  Copyright © 2016 JA Barios
-//  This file is part of project: SCIGNALS: a chart recorder
+//  This file is part of project: SCIGNALS, a chart recorder.
 //
 float escala_multiplicador=1;
 float escala_base=0.00001; //valor para q se vea simul
 float gCteTiempo=64;
 float escala_valor=1;
-String nombre_archivo="signalino_raw";
+String nombre_archivo="scignals_raw";
 
 DropdownList d1;
  StringList l;
@@ -39,7 +39,7 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
    ;
 
   gui.addTextlabel("Signalino")
-   .setText("Signalino visor 0.3")
+   .setText("Scignals   0.3")
    .setPosition(10,2)
    .setSize(10,27)
    .setColorValue(0xffffff00)
@@ -259,7 +259,7 @@ public void grabando(boolean value){
    
     if(gGrabando){
       if(nombre_archivo.length()<1)return;
-       gui.getController("grabando").setCaptionLabel("grabando");
+       gui.getController("grabando").setCaptionLabel("Recording ON");
        gui.getController("grabando").setColorActive(color(0,255,0));
        try {
           file = new File(nombre_archivo);
@@ -273,7 +273,7 @@ public void grabando(boolean value){
     
     else {
        gui.getController("grabando").setColorActive(color(255,0,0));
-       gui.getController("grabando").setCaptionLabel("no");
+       gui.getController("grabando").setCaptionLabel("OFF");
     }
    
   }
@@ -299,4 +299,14 @@ if(key=='-') {
      gui_running=!gui_running;
  
  }
+ 
+ if(key==27) {
+   if(gGrabando){ 
+     key=0;   
+     javax.swing.JOptionPane.showMessageDialog(frame,
+            "<html><div align='center'>Scignals v 0.3 (c) 2016</div>"+
+           "<p>Recording is ON, please stop it before exit...</p></html>");  
+   }
+   
+ }   
 }

@@ -1,6 +1,6 @@
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
+// as published by the Free Software Foundation; either version 3
 // of the License, or (at your option) any later version.
 // 
 // This program is distributed in the hope that it will be useful,
@@ -15,7 +15,7 @@
 // 
 //
 //  Copyright © 2016 JA Barios
-//  This file is part of project: SCIGNALS: a chart recorder
+//  This file is part of project: SCIGNALS, a chart recorder.
 //
 class ventana {
   int _ctro_x;int cx(){return(_ctro_x);}
@@ -49,7 +49,7 @@ class ventana {
       rect(_ctro_x, _ctro_y, _ancho, _alto);
       
   }
-  // pinta cursor, si n<0, con valor relativo (-0.5, justo en la mitas), si n>0 en cx=n 
+  // pinta cursor, si n<0, con valor relativo (-0.5, justo en la mitad), si n>0 en cx=n 
   void cursor(float n){
      fill(255, 0, 0);  // color for the window background
      if(n<0){
@@ -61,12 +61,11 @@ class ventana {
      
   }
   
-    // 4 funciones, cambiando el tipo de los parametros de entrada, que pintan un vector en la ventana
-    // incluyen limpiar el fondo antes de dbujar
+    // pinta un vector en la ventana
+    // incluye limpiar el fondo antes de dbujar
     void pintaVector(int[] x1,float escala) {
       float cx1,cy1;
       dibuja_fondo();
- //     rectMode(CORNER);
       stroke(250, 0, 0);     //red                          
       noFill();
       beginShape();        
@@ -77,13 +76,11 @@ class ventana {
         cy1=cy1<mrgS()?mrgS():cy1;
         vertex(cx1,  cy1>mrgF()?mrgF():cy1);
         cy1=cy1<mrgS()?mrgS():cy1;
- //       vertex(cx1,  cy1);
        vertex(cx1,  cy1>=mrgF()-1?mrgF():cy1);
        // las lineas q apaecen abajo oblablemente tengan q ver con esto
     
-  }
+      }
       endShape();
-//      rectMode(CENTER);
 
   }
 

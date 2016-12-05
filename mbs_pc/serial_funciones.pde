@@ -1,3 +1,22 @@
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 3
+// of the License, or (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//  
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+// MA  02110-1301, USA.
+// 
+//
+//  Copyright © 2016 JA Barios
+//  This file is part of project: SCIGNALS, a chart recorder.
+//
 int v1=0;
 boolean debugeando=false;
 int gUltimotimestamp;
@@ -81,6 +100,7 @@ void serEco() { //numeros aleatorios
 
 void serie_inicia()
 {
+  byte[] basura = new byte[1000]; //tiene que ser grande, a veces se cuelga
   if (serialPortNumber == 0) {
     setPortNum();
   } else {
@@ -90,16 +110,23 @@ void serie_inicia()
     println("Hint: if you set serialPortNumber=0 the program will allow the user to select from a drop down list of available ports");
   }
   try{
+   //   modo_conectado=false;
       port = new Serial(this, Serial.list()[serialPortNumber], BAUD_RATE);    
       //vaciamos el buffer del puerto y leemos hasta un 0xC0
      while (port.available() > 0)  port.read(); 
      // aqui es donde sospecho que se cuelga, cuando no encuentra un signalino
-     byte[] basura=port.readBytesUntil(0xC0);
-        modo_conectado=true;
+     // no se si realmente hace algo
+       // int retorno=port.readBytesUntil(0xC0,basura);
+      basura=port.readBytesUntil(0xC0);
+      modo_conectado=true;
+        
+   //     print("retorno:");
+   //     println(retorno);
+   //     if(retorno>-1) modo_conectado=true;
 
   } catch (Exception e){ 
           javax.swing.JOptionPane.showMessageDialog(frame,
-            "<html><div align='center'>Signalino v 0.3 (c) 2016</div>"+
+            "<html><div align='center'>Scignals v 0.3 (c) 2016</div>"+
            "<p>No devices detected: please check Arduino power and drivers. Offline mode...</p></html>");  
           modo_conectado=false;
     //exit();
@@ -123,7 +150,7 @@ void setPortNum()
 
    if (nPort < 1) {
       javax.swing.JOptionPane.showMessageDialog(frame,
-            "<html><div align='center'>Signalino v 0.3 (c) 2016</div>"+
+            "<html><div align='center'>Scignals v 0.3 (c) 2016</div>"+
            "<p>No devices detected: please check Arduino power and drivers. Exiting program...</p></html>");  
       exit();    
       return;
@@ -144,8 +171,8 @@ void setPortNum()
   
    String respStr = (String) JOptionPane.showInputDialog(null,
       "<html><div align='center'>Scignals v 0.3 (c) 2016</div>"+
-      "<p>This program is free software; is distributed under GNU General Public License in the hope that it will be useful, but WITHOUT ANY WARRANTY</p>"+
-      "<p align='center'>Choose COM port (if not listed: check drivers and power)</p></html>", "Select Signalino device",
+      "<p>This program is free software, distributed under GNU General Public License (v3) in the hope that it will be useful, but WITHOUT ANY WARRANTY</p>"+
+      "<p align='center'>Choose COM port (if not listed: check drivers and power)</p></html>", "Select device",
       JOptionPane.PLAIN_MESSAGE, null,
       array, array[index]);
       println(respStr);

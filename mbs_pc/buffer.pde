@@ -1,6 +1,6 @@
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
+// as published by the Free Software Foundation; either version 3
 // of the License, or (at your option) any later version.
 // 
 // This program is distributed in the hope that it will be useful,
@@ -15,7 +15,7 @@
 // 
 //
 //  Copyright © 2016 JA Barios
-//  This file is part of project: SCIGNALS: a chart recorder
+//  This file is part of project: SCIGNALS, a chart recorder.
 //
 class Buffer {
   
@@ -96,21 +96,11 @@ class Buffer {
 
     for(int i=0;i<longitud;i++)d[i]=c[i*decimando];
     
-    //moving average de 3 puntos (despues de decimar)
+    //moving average de 5 puntos (despues de decimar)
     double suma,suma2;
     int npuntos=5;
     suma=0;suma2=0;
-    if(1==0){
-      //algoritmo "oficial", ineficaz, creo que se podrá borrar
-          for (int i=longitud-npuntos; i>npuntos; i--){
-             for (int j=0; j<npuntos; j++){
-                  suma+=d[i-j];
-             }
-             d[i]=(int)((suma)/npuntos);
-             suma2+=d[i];
-             suma=0;
-          }
-      } else {
+    
       //algoritmo recursivo, operativo. muy chulo. 
       // adaptado de http://www.dspguide.com/CH15.PDF
       // el mio va marcha atras, y asi no hace falta un segundo buffer
@@ -124,8 +114,7 @@ class Buffer {
         for (ii=longitud-3; ii>npuntos; ii--){
            d[ii+1]=(int)((npuntos*d[ii+2]-d[ii]+d[ii-npuntos+1])/npuntos);
            suma+=d[ii+1];
-        }
-    }
+        }    
     
     return(d);    
      
@@ -142,16 +131,6 @@ class Buffer {
         
  }
 
-  void calcula_umbrales() {
-    for(int i=0;i<num_canales;i++){
-       for(int j=0;j<max_buffer;j++){
-           umbral_max[i]+=abs(datos[i][j]);
-      }
-    }
-    
-    for(int i=0;i<num_canales;i++){
-           umbral_max[i]/=max_buffer;
-    }
-  }
+  
     
 }  

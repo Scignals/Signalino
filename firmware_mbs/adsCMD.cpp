@@ -1,3 +1,22 @@
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//  
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+// MA  02110-1301, USA.
+// 
+//
+//  Copyright © 2016 JABarios
+//  This file is part of project: signalino
+//
 
 /* adsCMD.cpp
  *  
@@ -9,37 +28,45 @@
 #include "dueCMD.h"
 #include "firmware_mbs.h"
 
-long ultima_lectura[8];
 
 void ads9_send_command(int cmd)
 {
-	digitalWrite(IPIN_CS, LOW);
-	SPI.transfer(cmd);
-	delayMicroseconds(1);
-	digitalWrite(IPIN_CS, HIGH);
+  SPI.beginTransaction(SPISettings(14000000, MSBFIRST, SPI_MODE1));
+  	digitalWrite(IPIN_CS, LOW);
+  	SPI.transfer(cmd);
+  	delayMicroseconds(1);
+  	digitalWrite(IPIN_CS, HIGH);
+  SPI.endTransaction();
+
 }
 
 void ads9_wreg(int reg, int val)
 {
   //see pages 40,43 of datasheet - 
-	digitalWrite(IPIN_CS, LOW);
-	SPI.transfer(ADS1298::WREG | reg);
-	SPI.transfer(0);	// number of registers to be read/written – 1
-	SPI.transfer(val);
-	delayMicroseconds(1);
-	digitalWrite(IPIN_CS, HIGH);
+	SPI.beginTransaction(SPISettings(14000000, MSBFIRST, SPI_MODE1));
+    digitalWrite(IPIN_CS, LOW);
+  	SPI.transfer(ADS1298::WREG | reg);
+  	SPI.transfer(0);	// number of registers to be read/written – 1
+  	SPI.transfer(val);
+  	delayMicroseconds(1);
+  	digitalWrite(IPIN_CS, HIGH);
+  SPI.endTransaction();
+
 }
 
 int ads9_rreg(int reg){
-  int out = 0;
-  digitalWrite(IPIN_CS, LOW);
-  SPI.transfer(ADS1298::RREG | reg);
-  delayMicroseconds(5);
-  SPI.transfer(0);	// number of registers to be read/written – 1
-  delayMicroseconds(5);
-  out = SPI.transfer(0);
-  	delayMicroseconds(1);
-  digitalWrite(IPIN_CS, HIGH);
+  SPI.beginTransaction(SPISettings(14000000, MSBFIRST, SPI_MODE1));
+      int out = 0;
+      digitalWrite(IPIN_CS, LOW);
+      SPI.transfer(ADS1298::RREG | reg);
+      delayMicroseconds(5);
+      SPI.transfer(0);	// number of registers to be read/written – 1
+      delayMicroseconds(5);
+      out = SPI.transfer(0);
+      	delayMicroseconds(1);
+      digitalWrite(IPIN_CS, HIGH);
+  SPI.endTransaction();
+
   return(out);
 }
 
@@ -163,48 +190,41 @@ void ads9_lee_datos(void) {
     int vnula=0;
     long vlast=0;
     long diff= 0;
-    
     numSerialBytes = 1 + (3 * gNumActiveChan); //8-bits header plus 24-bits per ACTIVE channel
 
       
 // cs a 0, empezamos a leer el ads1299    
-      digitalWrite(IPIN_CS, LOW);
-      contador_muestras++;
-      serialBytes[i++] =SPI.transfer(0); //get 1st byte of header
-      SPI.transfer(0); //skip 2nd byte of header
-      SPI.transfer(0); //skip 3rd byte of header
-      for (int ch = 1; ch <= gMaxChan; ch++) {
-           switch(gSenal_obtenida){
-              case SENAL_REAL:
-                serialBytes[i++] = SPI.transfer(0);
-                serialBytes[i++] = SPI.transfer(0);
-                serialBytes[i++] = SPI.transfer(0);
-//                vlast= to_Int32(serialBytes+i-3);
-//                diff= ultima_lectura[ch] - vlast;
-                break;
-              case TABLA_SENO:
-                // señal seno, creada al inicio 
-                vnula = SPI.transfer(0);
-                vnula = SPI.transfer(0);
-                vnula = SPI.transfer(0);
-                to_3bytes(samples_seno[contador_muestras%TABLE_SIZE]*100,muestra);
-              //  to_3bytes(micros(),muestra);
-                
-                  serialBytes[i++] = muestra[0];
-                  serialBytes[i++] = muestra[1];
-                  serialBytes[i++] = muestra[2];
-                
+      SPI.beginTransaction(SPISettings(14000000, MSBFIRST, SPI_MODE1));
+          digitalWrite(IPIN_CS, LOW);
+          contador_muestras++;
+          serialBytes[i++] =SPI.transfer(0); //get 1st byte of header
+          SPI.transfer(0); //skip 2nd byte of header
+          SPI.transfer(0); //skip 3rd byte of header
+          for (int ch = 1; ch <= gMaxChan; ch++) {
+               switch(gSenal_obtenida){
+                  case SENAL_REAL:
+                    serialBytes[i++] = SPI.transfer(0);
+                    serialBytes[i++] = SPI.transfer(0);
+                    serialBytes[i++] = SPI.transfer(0);
+                    break;
+                  case TABLA_SENO:
+                    // señal seno, creada al inicio 
+                    vnula = SPI.transfer(0);
+                    vnula = SPI.transfer(0);
+                    vnula = SPI.transfer(0);
+                    to_3bytes(samples_seno[contador_muestras%TABLE_SIZE]*100,muestra);
+                    serialBytes[i++] = muestra[0];
+                    serialBytes[i++] = muestra[1];
+                    serialBytes[i++] = muestra[2];
+                  break;
+            }
+          }
+                        
+          // cs a 1, terminamos de leer el ads1299    
+          delayMicroseconds(1);
+          digitalWrite(IPIN_CS, HIGH);
+      SPI.endTransaction();
 
-              //  vlast= to_Int32(serialBytes+i-3);
-              //  diff= ultima_lectura[ch] - vlast;
-                break;
-        }
-      }
-                    
-
-// cs a 1, terminamos de leer el ads1299    
-      delayMicroseconds(1);
-      digitalWrite(IPIN_CS, HIGH);
 }
 
 

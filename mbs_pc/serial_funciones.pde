@@ -56,15 +56,18 @@ int interpret24bitAsInt32(byte[] byteArray) {
 
 
 void serRand(Buffer bf) { //numeros aleatorios
-  for(int i=0;i<numCanales;i++){
-           lectura[i]=1000*(int) random(1,100);
+  int timestamp=0;
+  for(int jj=1;jj<2;jj++){
+      for(int i=0;i<numCanales;i++){
+               lectura[i]=1000*(int) random(1,100);
+      }
+      timestamp = millis()*1000;
+      gUltimotimestamp=timestamp;
+              
+      bf.apunta(lectura);
+      if(gGrabando)bf.graba(lectura);
   }
-  int timestamp = millis()*1000;
   fm_calculada=floor(1000000/(timestamp-gUltimotimestamp+1));
-  gUltimotimestamp=timestamp;
-          
-  bf.apunta(lectura);
-  if(gGrabando)bf.graba(lectura);
 
 } //void serRand
 

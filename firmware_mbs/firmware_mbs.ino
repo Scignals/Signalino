@@ -26,11 +26,13 @@ long contador_muestras=0;
 // protocolo openEEG firmware P2, util para openvibe
 // solo registra 6 canales
 
-int  gSenal_obtenida=TABLA_SENO;
+int     gSenal_obtenida=TABLA_SENO;
 boolean gtestSignal=false;
 boolean gtestHEX=false;
 boolean gtestCONTINUO=true;
 boolean gserialVerbose=true;
+boolean gBluetooth=false;
+
 
 // 1-hex 2-numeros 3-openeeg-hex 4-openeeg-bytes
 // 5-openbci-numeros 6-openbci-bytes 7-openbci-hex 8-no imprime nada      
@@ -67,6 +69,7 @@ void inicia_serial_pc(){
   gLetra=new char[80];  
   WiredSerial.begin(SERIAL_SPEED); 
   while (WiredSerial.read() >= 0) {} ;
+  delay(200);  // Catch Due reset problem
   HC06.begin(SERIAL_SPEED_BT); //use native port on Due
   while (HC06.read() >= 0) {} ;
   delay(200);  // Catch Due reset problem
@@ -96,22 +99,20 @@ void imprime_linea( boolean modo){
     long numero = to_Int32(serialBytes+i);
      if(modo) {
                   WiredSerial.print(numero,HEX);
-//                  WiredSerial.print(SEPARADOR_SERIAL );
-                  HC06.print(numero,HEX);
-//                  HC06.print(SEPARADOR_SERIAL );
+                  if(gBluetooth)HC06.print(numero,HEX);
      } else {
                   WiredSerial.print(numero);
-                  HC06.print(numero);
+                  if(gBluetooth)HC06.print(numero);
                   if(i<numSerialBytes-3){
                       WiredSerial.print(SEPARADOR_SERIAL );
-                      HC06.print(SEPARADOR_SERIAL );
+                      if(gBluetooth)HC06.print(SEPARADOR_SERIAL );
                   }
                   
             }      
     }
 //añadimos un ; al final 
     WiredSerial.println(FINLINEA);
-    HC06.println(FINLINEA);
+    if(gBluetooth)HC06.println(FINLINEA);
 }
 
 void no_imprime_nada( boolean modo){
@@ -150,19 +151,24 @@ void imprime_openEEG_p2(boolean modo){
    if(modo){    
      for(int m=0;m<4;m++){
         WiredSerial.print(txBuf[m]);
+        if(gBluetooth)HC06.print(txBuf[m]);
         WiredSerial.print(SEPARADOR_SERIAL );
+        if(gBluetooth)HC06.print(SEPARADOR_SERIAL );
         ind++;
      }
      for(int m=0;m<6;m++){
         int vv=((int)txBuf[ind++] << 8);
         vv += (int)txBuf[ind++] ;
         WiredSerial.print(vv );
+        if(gBluetooth)HC06.print(vv );
         WiredSerial.print(SEPARADOR_SERIAL );
+        if(gBluetooth)HC06.print(SEPARADOR_SERIAL );
      }
      WiredSerial.print(txBuf[ind]  );
+     if(gBluetooth)HC06.print(txBuf[ind]  );
 //añadimos un ; al final 
     WiredSerial.println(";");
-    HC06.println(";");
+    if(gBluetooth)HC06.println(";");
 
      } else {
      WiredSerial.write(txBuf,17);
@@ -222,20 +228,25 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
 
     //añadimos un ; al final 
     WiredSerial.println(";");
-    HC06.println(";");
+    if(gBluetooth)HC06.println(";");
 
   } else {
     if(modo_bci_protocolo==2){
     // protocolo open_bci V3, pero con bytes (es el que se usa en el visor_pc)
         WiredSerial.write(txBuf,33);
+        if(gBluetooth)HC06.write(txBuf,33);
+       
     } else {
     // protocolo open_bci V3, pero en hexadecimal
          char letras[5];
          for(int jj=0;jj<33;jj++){
           sprintf(letras, "%02X",txBuf[jj]);
           WiredSerial.print(letras);
+          if(gBluetooth)HC06.print(letras);
          }
          WiredSerial.println("");
+         if(gBluetooth)HC06.println("");
+
     }
   }
 }
@@ -325,22 +336,35 @@ void procesaComando(String texto){
              parametro=texto.substring(3,4);
              int p1=parametro.toInt();
              switch(p1){
-              case 1:
-              gSenal_obtenida=SENAL_REAL;
-              ads9_misetup_ADS1299(MODE_SENAL_SRB2);
-              comentaSerial("cambiado a modo chart");
-              break;
-              case 2:
-              gSenal_obtenida=SENAL_REAL;
-              ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
-              comentaSerial("cambiado a modo emg");
-              break;
-              case 3:
-              gSenal_obtenida=SENAL_REAL;
-              ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
-              comentaSerial("cambiado a modo eeg");
-              break;
-         } 
+                case 1:
+                gSenal_obtenida=SENAL_REAL;
+                ads9_misetup_ADS1299(MODE_SENAL_SRB2);
+                comentaSerial("cambiado a modo chart");
+                break;
+                case 2:
+                gSenal_obtenida=SENAL_REAL;
+                ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
+                comentaSerial("cambiado a modo emg");
+                break;
+                case 3:
+                gSenal_obtenida=SENAL_REAL;
+                ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
+                comentaSerial("cambiado a modo eeg");
+                break;
+             }
+        } else if(texto.startsWith("blt")){ 
+             parametro=texto.substring(3,4);
+             int p1=parametro.toInt();
+             switch(p1){
+                case 0:
+                gBluetooth=false;
+                comentaSerial("BT off");
+                break;
+                case 1:
+                gBluetooth=true;
+                comentaSerial("BT on");
+                break;
+             }
       } else if(texto.startsWith("oka")){ 
           mensaje_inicio();
           return;

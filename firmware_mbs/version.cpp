@@ -1,6 +1,6 @@
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
+// as published by the Free Software Foundation; either version 3
 // of the License, or (at your option) any later version.
 // 
 // This program is distributed in the hope that it will be useful,
@@ -14,8 +14,8 @@
 // MA  02110-1301, USA.
 // 
 //
-//  Copyright © 2016 JABarios
-//  This file is part of project: signalino
+//  Copyright © 2016 JA Barios, ILSB technologies, Spain.
+//  This file is part of project: SIGNALINO, a ADS1299-based bioamplifier
 //
 #include "version.h"
 
@@ -26,7 +26,7 @@ const char * build_fecha = "dic 4, 2016";
 
 void mensaje_inicio(){
    WiredSerial.println("");
-   WiredSerial.print(F("Signalino v "));
+   WiredSerial.print(F("SIGNALINO v "));
    WiredSerial.println(build_version);   
    WiredSerial.print(F("build "));
    WiredSerial.println(build_fecha);   

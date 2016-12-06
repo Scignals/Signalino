@@ -13,13 +13,14 @@ Features
 Installation
 ------------
 
-Install project by dwonloading the firmware to an arduino due. In monitor of te Arduino environment you shud see some numbers runing and running. 
+Install project by downloading the firmware to an arduino due. In option serial monitor of the Arduino IDE you should see some numbers running and running. 
 
 Contribute
 ----------
 
 - Issue Tracker: github.com/JABarios/mbs/issues
 - Source Code: github.com/JABarios/mbs/mbs_pc/
+
 Support
 -------
 
@@ -30,6 +31,15 @@ License
 -------
 
 The project is licensed under the GNU GPLv3 license.
+
+Credits
+-------
+
+This software has been inspired by the work of many people:
+
+Chris Rorden (original ADS1298 driver), see http://www.mccauslandcenter.sc.edu/crnl/open-source-eegecgemg
+Adam Feuer (Author of HackEEGShield), see https://github.com/adamfeuer
+And, of course, the Arduino team
 
 
 

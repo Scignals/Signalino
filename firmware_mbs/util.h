@@ -1,6 +1,6 @@
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
+// as published by the Free Software Foundation; either version 3
 // of the License, or (at your option) any later version.
 // 
 // This program is distributed in the hope that it will be useful,
@@ -14,8 +14,8 @@
 // MA  02110-1301, USA.
 // 
 //
-//  Copyright © 2016 JABarios
-//  This file is part of project: signalino
+//  Copyright © 2016 JA Barios, ILSB technologies, Spain.
+//  This file is part of project: SIGNALINO, a ADS1299-based bioamplifier
 //
 /* util.h */
 #ifndef UTIL_H

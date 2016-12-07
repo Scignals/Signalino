@@ -438,6 +438,7 @@ void loop()
   }
   if(tick%INTERVALO_LEESERIAL)leeSerial();
   tick++;
+  
      
 }
 

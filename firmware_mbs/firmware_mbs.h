@@ -41,7 +41,7 @@
 
 #include "Arduino.h"
 #define isDUE  //Detect Arduino Due
-#define SERIAL_SPEED 115200  //57600
+#define SERIAL_SPEED 460800  //57600 460800
 #define SERIAL_SPEED_BT 115200
 #define SEPARADOR_SERIAL ','
 #define FINLINEA ";"
@@ -57,6 +57,7 @@ extern int gIDval; //Device ID : lower 5 bits of  ID Control Register
 extern int gNumActiveChan;
 extern boolean gActiveChan[]; // reports whether channels 1..9 are active
 extern boolean isRDATAC;
+extern boolean gHayLectura;
 
 
 extern char *gLetra; // buffer usado en to_hex, inicializado en setup()

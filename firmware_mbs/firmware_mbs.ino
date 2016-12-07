@@ -47,7 +47,7 @@ long contador_muestras=0;
 
 #define HC06 Serial3  
 #define WiredSerial Serial
-#define INTERVALO_LEESERIAL 256*16
+#define INTERVALO_LEESERIAL 256
 
 // variables modificaables  durante debugging
 // protocolo openEEG firmware P2, util para openvibe
@@ -59,13 +59,13 @@ boolean gtestHEX=false;
 boolean gtestCONTINUO=true;
 boolean gserialVerbose=true;
 boolean gBluetooth=false;
-
+boolean gHayLectura=false;
 
 // 1-hex 2-numeros 3-openeeg-hex 4-openeeg-bytes
 // 5-openbci-numeros 6-openbci-bytes 7-openbci-hex 8-no imprime nada      
 // define el modo de salida por defecto, 
 // está en 2 porque lo lee el monitor del IDE de arduino
-int modo_salida=2;
+int modo_salida=6;
 
 
 
@@ -405,6 +405,7 @@ void setup(){
   crea_tabla_seno();
   inicia_serial_pc();
   due_inicia_hw();
+  attachInterrupt(digitalPinToInterrupt(IPIN_DRDY), ads9_lee_datos, FALLING);
 
   if(!gtestCONTINUO){
       mensaje_inicio();
@@ -421,23 +422,24 @@ void setup(){
 
 void loop()
 {
-  if(digitalRead(IPIN_DRDY) == LOW && gtestCONTINUO && isRDATAC ){
-     ads9_lee_datos();
-     if(1==1){
-         switch(modo_salida){
-          case 1: imprime_linea(true);break;
-          case 2: imprime_linea(false);break;
-          case 3: imprime_openEEG_p2(true);break;
-          case 4: imprime_openEEG_p2(false);break;
-          case 5: imprime_openBCI_V3(1);break;
-          case 6: imprime_openBCI_V3(2);break;
-          case 7: imprime_openBCI_V3(3);break;
-          case 8: no_imprime_nada(true);break;
+  // la lectura de datos se hace por interrupciones
+  if(gHayLectura && gtestCONTINUO && isRDATAC ){
+         gHayLectura=0;
+         tick++;    
+         if(tick%2==0){
+             switch(modo_salida){
+              case 1: imprime_linea(true);break;
+              case 2: imprime_linea(false);break;
+              case 3: imprime_openEEG_p2(true);break;
+              case 4: imprime_openEEG_p2(false);break;
+              case 5: imprime_openBCI_V3(1);break;
+              case 6: imprime_openBCI_V3(2);break;
+              case 7: imprime_openBCI_V3(3);break;
+              case 8: no_imprime_nada(true);break;
+             }
          }
-     }    
+         if(tick%(2*16)==0)leeSerial();
   }
-  if(tick%INTERVALO_LEESERIAL)leeSerial();
-  tick++;
   
      
 }

@@ -77,19 +77,9 @@ void ads9_misetup_ADS1299(int opciones) {
    delay(10);
 
    switch(opciones){
-     case MODE_SENAL_REAL_1x:
-       ads9_wreg(GPIO, char(0));
-       ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
-       ads9_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
-       ads9_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
-       delay(150);
-       for (int i = 1; i <= gMaxChan; i++){
-               ads9_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_1X & ~SRB2_INPUT )); //report this channel with x12 gain
-        } 
-        break;       
      case MODE_SENAL_TEST:
        ads9_wreg(GPIO, char(0));
-       ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
+       ads9_wreg(CONFIG1, HIGH_RES_2k_SPS);
        ads9_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
        ads9_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
        delay(150);
@@ -97,11 +87,17 @@ void ads9_misetup_ADS1299(int opciones) {
             ads9_wreg(char(CHnSET + i), char(TEST_SIGNAL | GAIN_1X ));
         } 
         break;
+     case MODE_SENAL_REAL_1x:
+       ads9_wreg(GPIO, char(0));
+       ads9_wreg(CONFIG1, HIGH_RES_2k_SPS);
+       delay(150);
+       for (int i = 1; i <= gMaxChan; i++){
+               ads9_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_1X & ~SRB2_INPUT )); //report this channel with x12 gain
+        } 
+        break;       
       case MODE_SENAL_REAL_12x:
        ads9_wreg(GPIO, char(0));
-       ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
-       ads9_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
-       ads9_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
+       ads9_wreg(CONFIG1, HIGH_RES_2k_SPS);
        delay(150);
        for (int i = 1; i <= gMaxChan; i++){
                ads9_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X & ~SRB2_INPUT )); //report this channel with x12 gain
@@ -113,9 +109,7 @@ void ads9_misetup_ADS1299(int opciones) {
        // gaancia a 1
        ads9_wreg(GPIO, char(0));
        ads9_wreg(PACE, char(0x20)); //set SRB1. Es un electrodo q internamente se une a todas las entradas negativas
-       ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
-       ads9_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
-       ads9_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
+       ads9_wreg(CONFIG1, HIGH_RES_2k_SPS);
        delay(150);
        for (int i = 1; i <= gMaxChan; i++){
                ads9_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X & ~SRB2_INPUT  )); //report this channel with x12 gain
@@ -125,9 +119,7 @@ void ads9_misetup_ADS1299(int opciones) {
        // set mode SRB2, util en chart
        // ganancia a 1
        ads9_wreg(GPIO, char(0));
-       ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
-       ads9_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
-       ads9_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
+       ads9_wreg(CONFIG1, HIGH_RES_2k_SPS);
        delay(150);
        for (int i = 1; i <= gMaxChan; i++){
                ads9_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_1X | SRB2_INPUT   )); //SRB2 y ganancia 1
@@ -143,7 +135,6 @@ void ads9_misetup_ADS1299(int opciones) {
 }
 
 void ads9_setGanancia(int valor) {
-  // misterio: el caso 5 es 2x???? raro raro
        using namespace ADS1298;
        ads9_send_command(SDATAC); // dejamos el modo READ para emitir comandos
        delay(10);
@@ -170,7 +161,6 @@ void ads9_setGanancia(int valor) {
 
 void ads9_detectActiveChannels() {  
   //actualiza gActiveChan y gNumActiveChan
-  //
   using namespace ADS1298; 
   gNumActiveChan = 0;
   for (int i = 1; i <= gMaxChan; i++) {
@@ -183,6 +173,7 @@ void ads9_detectActiveChannels() {
 
 void ads9_lee_datos(void) { 
 // hardware puro, 
+// se utiliza por interrupciones
 // lee el ads y lo pone en serialBytes[]--numSerialBytes
     int i = 0;
     int jj=0;
@@ -224,7 +215,7 @@ void ads9_lee_datos(void) {
           delayMicroseconds(1);
           digitalWrite(IPIN_CS, HIGH);
       SPI.endTransaction();
-
+      gHayLectura=1;
 }
 
 

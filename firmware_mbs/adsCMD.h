@@ -45,6 +45,6 @@ int  ads9_rreg(int reg); //read register
 void ads9_misetup_ADS1299(int opciones); // tambien inicializa
 void ads9_setGanancia(int valor); // eso
 void ads9_detectActiveChannels(); // usa vars del otro lado, no se si es de aqui
-void ads9_lee_datos(void);
+void ads9_lee_datos(void);  // esta va como interrupcion
 int  ads9_getCanales(void);
 

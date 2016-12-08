@@ -48,9 +48,6 @@ void due_inicia_hw() {
   digitalWrite(kPIN_CLKSEL, HIGH); // el reloj sea el interno
     
   SPI.begin(); //ojo, es imprscindible o se para el prog
-//  SPI.setBitOrder(MSBFIRST);
-//  SPI.setDataMode(SPI_MODE1);
-
   ads9_send_command(SDATAC); // dejamos el modo READ para emitir comandos
   delay(10);
 
@@ -79,5 +76,7 @@ void due_inicia_hw() {
      digitalWrite(kPIN_LED, LOW); // el reloj sea el interno
      delay(400/(1+gMaxChan));
   }
+  // y por fin nos preparamos para leer
+  attachInterrupt(digitalPinToInterrupt(IPIN_DRDY), ads9_lee_datos, FALLING);
   
 }

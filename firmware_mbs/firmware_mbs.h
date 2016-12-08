@@ -58,7 +58,7 @@ extern volatile int  gHayLectura;
 
 extern char *gLetra; // buffer usado en to_hex, inicializado en setup()
 extern int numSerialBytes;
-extern unsigned char serialBytes[];
+extern volatile unsigned char serialBytes[];
 extern long contador_muestras;
 extern int  gSenal_obtenida;
 

@@ -42,6 +42,7 @@
 #define MODO_HEX 1
 #define MODO_DEC 2
 #define MODO_NADA 0
+#define MAX_COMENTARIO_SERIAL 80
 
 
 extern int gWired_speed;
@@ -49,7 +50,7 @@ extern int gBT_speed;
 extern char *gLetra; // buffer usado en to_hex, inicializado en inicia_serial()
 extern boolean gserialVerbose;
 extern int numSerialBytes;
-extern unsigned char serialBytes[];
+extern volatile  unsigned char serialBytes[];
 extern boolean gBluetooth;
 extern unsigned char txBuf[];  //17 en openeeg   32 enopenbci
 extern unsigned long indice_paquete;

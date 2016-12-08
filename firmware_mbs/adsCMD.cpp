@@ -176,11 +176,6 @@ void ads9_lee_datos(void) {
 // se utiliza por interrupciones
 // lee el ads y lo pone en serialBytes[]--numSerialBytes
     int i = 0;
-    int jj=0;
-    byte muestra[3];
-    int vnula=0;
-    long vlast=0;
-    long diff= 0;
     numSerialBytes = 1 + (3 * gNumActiveChan); //8-bits header plus 24-bits per ACTIVE channel
 
       
@@ -200,13 +195,11 @@ void ads9_lee_datos(void) {
                     break;
                   case TABLA_SENO:
                     // señal seno, creada al inicio 
-                    vnula = SPI.transfer(0);
-                    vnula = SPI.transfer(0);
-                    vnula = SPI.transfer(0);
-                    to_3bytes(samples_seno[contador_muestras%TABLE_SIZE]*100,muestra);
-                    serialBytes[i++] = muestra[0];
-                    serialBytes[i++] = muestra[1];
-                    serialBytes[i++] = muestra[2];
+                    SPI.transfer(0);
+                    SPI.transfer(0);
+                    SPI.transfer(0);
+                    to_3bytes(samples_seno[contador_muestras%TABLE_SIZE]*100,serialBytes+i);
+                    i+=3;
                   break;
             }
           }

@@ -19,6 +19,8 @@
 //
 #include "serieCMD.h"
 
+char buffer_comentaserial[MAX_COMENTARIO_SERIAL];
+
 void inicia_serial_pc(){
   gLetra=new char[80];  
   WiredSerial.begin(SERIAL_SPEED); 

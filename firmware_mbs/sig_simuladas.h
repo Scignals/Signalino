@@ -27,7 +27,7 @@ extern float samples_seno[];
 extern float phaseIncrement;
 
 
-#define TABLE_SIZE 48*8*4
+#define TABLE_SIZE 48*8*4*8
 #define AMPLITUD_SENAL 500
 #define TWO_PI (3.14159 * 2)
 

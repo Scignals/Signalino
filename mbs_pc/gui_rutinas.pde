@@ -19,7 +19,7 @@
 //
 float escala_multiplicador=1;
 float escala_base=0.00001; //valor para q se vea simul
-float gCteTiempo=64;
+float gCteTiempo=64*4;
 float escala_valor=1;
 String nombre_archivo="scignals_raw";
 

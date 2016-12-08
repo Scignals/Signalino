@@ -110,7 +110,7 @@ void dos_hex(int num, int *buf)
   
 }
 
-long to_Int32( unsigned char* byteArray) {     
+long to_Int32(  volatile unsigned char* byteArray) {     
  long newInt = (  
      ((0xFF & byteArray[0]) << 16) |  
      ((0xFF & byteArray[1]) << 8) |   
@@ -133,7 +133,7 @@ void to_Int16( unsigned char* byteArray, unsigned char* byteArray2) {
 }  
 
 
-void to_3bytes(long i, unsigned char *j)
+void to_3bytes(long i, volatile unsigned char *j)
 {
   j[0]=( i & 0x00FF0000 ) >> 16;
   j[1]=( i & 0x0000FF00 ) >> 8;

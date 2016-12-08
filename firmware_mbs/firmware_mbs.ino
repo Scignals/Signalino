@@ -46,7 +46,8 @@
 long contador_muestras=0;
 
 
-#define INTERVALO_LEESERIAL 2*64
+#define INTERVALO_LEESERIAL 1*64
+
 
 // variables modificaables  durante debugging
 // protocolo openEEG firmware P2, util para openvibe
@@ -89,12 +90,14 @@ char *gLetra; // buffer usado en to_hex, inicializado en inicia_serial()
 int gWired_speed=0;
 int gBT_speed=0;
 
+//donde se apunta lo que vuelve de la interrupcion
+//es superimportante!
+ volatile unsigned char serialBytes[80];
 int numSerialBytes=0;
-unsigned char serialBytes[80];
-char buffer_comentaserial[50];
 
 
-unsigned char txBuf[33];  //17 en openeeg   32 enopenbci
+#define MAX_LEN_PACKET 33        //32+1, openbci V3
+unsigned char txBuf[MAX_LEN_PACKET];  //17 en openeeg   32 en openbci V3, 8 canales+3acelerometros
 unsigned long indice_paquete=0;
 
 
@@ -122,12 +125,13 @@ void loop()
   if(gHayLectura && gtestCONTINUO && isRDATAC ){
          gHayLectura=0;
          tick++;    
-         if(tick%2==0){
+         if(tick%1==0){
              switch(modo_salida){
               case 1: imprime_linea(MODO_HEX);break;
               case 2: imprime_linea(MODO_DEC);break;
-              case 3: imprime_openEEG_p2(true);break;
-              case 4: imprime_openEEG_p2(false);break;
+              case 3: imprime_openEEG_p2(1);break;
+              case 4: imprime_openEEG_p2(2);break;
+              case 9: imprime_openEEG_p2(3);break;
               case 5: imprime_openBCI_V3(1);break;
               case 6: imprime_openBCI_V3(2);break;
               case 7: imprime_openBCI_V3(3);break;

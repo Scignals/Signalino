@@ -18,46 +18,24 @@
 //  This file is part of project: SIGNALINO, a ADS1299-based bioamplifier
 //
 /* firmware_signalino.h */
-#ifndef FIRMWARE_MBS_01
-#define FIRMWARE_MBS_01
+#ifndef SIGNALINO_H
+#define SIGNALINO_H
 
 #include "Arduino.h"
+#include "ads1298.h"
+#include "adsCMD.h"
+#include "util.h"
+
+#include "firmware_mbs.h"
+#include "sig_simuladas.h"
+#include "version.h"
+#include "serieCMD.h"
 
 
-#define MODE_SENAL_TEST 2 
-#define MODE_SENAL_REAL_1x 1 
-#define MODE_SENAL_REAL_24x 3
-#define MODE_SENAL_SRB1 4
-#define MODE_SENAL_SRB2 5
-#define MODE_SENAL_BIP 6
-
- 
-
-#define SENAL_REAL 1 
-#define SENAL_TEST 2 
-#define TABLA_SENO 3 
-#define TABLA_LINEAL 4
-#define TABLA_RAMPA 5
-
-#include "Arduino.h"
-#define isDUE  //Detect Arduino Due
-// tenemos un modulo HC06 en serial3, y por tanto en pines pins 15 (RX) and 14 (TX)
-// y prefiero el programing port (Serial), parece mas estable
-// de hecho, no logro hacer funcionar el SerialUSB
-
-
-
-
-extern volatile int  gHayLectura;
-
-
-extern char *gLetra; // buffer usado en to_hex, inicializado en setup()
-extern long contador_muestras;
-extern int  gSenal_obtenida;
-
-extern unsigned char txBuf[];  
-extern unsigned long indice_paquete;
+void inicia_signalino(int p_gtestCONTINUO, int p_gtestSignal);
+void imprimeSerial_signalino(int p_modo_salida);
 
 
 
 #endif
+

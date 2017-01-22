@@ -29,6 +29,21 @@
 #include "firmware_mbs.h"
 
 
+//donde se apunta la lectra a a vuelta de la interrupcion
+//es superimportante!
+// son 80 por exceso (24 deberian bastar)
+volatile unsigned char serialBytes[80];
+int numSerialBytes=0;
+
+
+// globales
+int gMaxChan = 0; //maximum number of channels supported by ads1299 = 8
+int gIDval = 0; //Device ID : lower 5 bits of  ID Control Register 
+int gNumActiveChan = 0;
+boolean gActiveChan [9]; // reports whether channels 1..9 are active
+boolean isRDATAC = false;
+
+
 void ads9_send_command(int cmd)
 {
   SPI.beginTransaction(SPISettings(14000000, MSBFIRST, SPI_MODE1));
@@ -157,6 +172,18 @@ void ads9_setGanancia(int valor) {
         isRDATAC = true;
         ads9_send_command(RDATAC); 
         ads9_send_command(START); 
+}
+
+void ads9_set_fm(int p_samplefm) {
+//     p_samplefm = HIGH_RES_[16k,8k,4k,2k,1k,500,250]_SPS
+       using namespace ADS1298;
+       ads9_send_command(SDATAC); // dejamos el modo READ para emitir comandos
+       delay(10);
+       ads9_wreg(GPIO, char(0));
+       ads9_wreg(CONFIG1, p_samplefm);
+       isRDATAC = true;
+       ads9_send_command(RDATAC); 
+       ads9_send_command(START); 
 }
 
 void ads9_detectActiveChannels() {  

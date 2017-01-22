@@ -19,7 +19,21 @@
 //
 #include "serieCMD.h"
 
+#define MAX_LEN_PACKET 33        //32+1, openbci V3
+unsigned char txBuf[MAX_LEN_PACKET];  //17 en openeeg   32 en openbci V3, 8 canales+3acelerometros
+unsigned long indice_paquete=0;
+
+// velocidad de los puertos, 0 si cerrados
+int gWired_speed=0;
+int gBT_speed=0;
+
 char buffer_comentaserial[MAX_COMENTARIO_SERIAL];
+char *gLetra; // buffer usado en to_hex, inicializado en inicia_serial()
+
+int minComando=1;
+int maxComando=8;
+int ultimo_modo=8;
+
 
 void inicia_serial_pc(){
   gLetra=new char[80];  
@@ -238,7 +252,7 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
 
 
 
-void leeSerial(){
+void leeSerial_signalino(){
     if(WiredSerial.available()==0)return;
     
      String comando;

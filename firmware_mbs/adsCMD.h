@@ -38,6 +38,16 @@
 #define MODE_SENAL_BIP 6
 
 
+extern int numSerialBytes;
+extern volatile unsigned char serialBytes[];
+
+
+extern int gMaxChan;
+extern int gIDval; //Device ID : lower 5 bits of  ID Control Register 
+extern int gNumActiveChan;
+extern boolean gActiveChan[]; // reports whether channels 1..9 are active
+extern boolean isRDATAC;
+
 //function prototypes
 void ads9_wreg(int reg, int val); //write register
 void ads9_send_command(int cmd); //send command

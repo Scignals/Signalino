@@ -65,7 +65,7 @@ extern char buffer_comentaserial[];
 
 
 void inicia_serial_pc();
-void leeSerial();
+void leeSerial_signalino();
 void comentaSerial(String texto);
 void imprime_linea( int modo_hex_dec_nada);
 void imprime_openEEG_p2(int modo);

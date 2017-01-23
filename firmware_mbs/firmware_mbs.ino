@@ -34,7 +34,6 @@
 #include <SPI.h>  // include the SPI library:
 #include "signalino.h"
 
-long contador_muestras=0;
 
 
 #define INTERVALO_LEESERIAL 1*16

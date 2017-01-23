@@ -35,6 +35,8 @@
 volatile unsigned char serialBytes[80];
 int numSerialBytes=0;
 
+long contador_muestras=0;
+
 
 // globales
 int gMaxChan = 0; //maximum number of channels supported by ads1299 = 8

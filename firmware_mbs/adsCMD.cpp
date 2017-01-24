@@ -96,7 +96,7 @@ void ads9_misetup_ADS1299(int opciones) {
    switch(opciones){
      case MODE_SENAL_TEST:
        ads9_wreg(GPIO, char(0));
-       ads9_wreg(CONFIG1, HIGH_RES_2k_SPS);
+       ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
        ads9_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
        ads9_wreg(CONFIG3,char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
        delay(150);
@@ -106,7 +106,7 @@ void ads9_misetup_ADS1299(int opciones) {
         break;
      case MODE_SENAL_REAL_1x:
        ads9_wreg(GPIO, char(0));
-       ads9_wreg(CONFIG1, HIGH_RES_2k_SPS);
+       ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
        delay(150);
        for (int i = 1; i <= gMaxChan; i++){
                ads9_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_1X & ~SRB2_INPUT )); //report this channel with x12 gain
@@ -114,7 +114,7 @@ void ads9_misetup_ADS1299(int opciones) {
         break;       
       case MODE_SENAL_REAL_12x:
        ads9_wreg(GPIO, char(0));
-       ads9_wreg(CONFIG1, HIGH_RES_2k_SPS);
+       ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
        delay(150);
        for (int i = 1; i <= gMaxChan; i++){
                ads9_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X & ~SRB2_INPUT )); //report this channel with x12 gain
@@ -126,7 +126,7 @@ void ads9_misetup_ADS1299(int opciones) {
        // gaancia a 1
        ads9_wreg(GPIO, char(0));
        ads9_wreg(PACE, char(0x20)); //set SRB1. Es un electrodo q internamente se une a todas las entradas negativas
-       ads9_wreg(CONFIG1, HIGH_RES_2k_SPS);
+       ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
        delay(150);
        for (int i = 1; i <= gMaxChan; i++){
                ads9_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_12X & ~SRB2_INPUT  )); //report this channel with x12 gain
@@ -136,7 +136,7 @@ void ads9_misetup_ADS1299(int opciones) {
        // set mode SRB2, util en chart
        // ganancia a 1
        ads9_wreg(GPIO, char(0));
-       ads9_wreg(CONFIG1, HIGH_RES_2k_SPS);
+       ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
        delay(150);
        for (int i = 1; i <= gMaxChan; i++){
                ads9_wreg(char(CHnSET + i), char(ELECTRODE_INPUT | GAIN_1X | SRB2_INPUT   )); //SRB2 y ganancia 1

@@ -28,6 +28,16 @@
 #include "dueCMD.h"
 #include "firmware_mbs.h"
 
+// variables modificaables  durante debugging
+
+int     gSenal_obtenida=TABLA_SENO;
+boolean gtestSignal=false;
+boolean gtestHEX=false;
+boolean gtestCONTINUO=true;
+boolean gserialVerbose=true;
+boolean gBluetooth=false;
+volatile int gHayLectura=0;
+
 
 //donde se apunta la lectra a a vuelta de la interrupcion
 //es superimportante!
@@ -44,6 +54,7 @@ int gIDval = 0; //Device ID : lower 5 bits of  ID Control Register
 int gNumActiveChan = 0;
 boolean gActiveChan [9]; // reports whether channels 1..9 are active
 boolean isRDATAC = false;
+
 
 
 void ads9_send_command(int cmd)

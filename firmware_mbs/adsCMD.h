@@ -27,6 +27,16 @@
 #include "ads1298.h"
 #include "dueCMD.h"
 
+
+extern int     gSenal_obtenida;
+extern boolean gtestSignal;
+extern boolean gtestHEX;
+extern boolean gtestCONTINUO;
+extern boolean gserialVerbose;
+extern boolean gBluetooth;
+extern volatile int gHayLectura;
+
+
 #define SENAL_TEST 2 
 #define SENAL_REAL 1 
 

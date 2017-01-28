@@ -39,18 +39,8 @@
 #define INTERVALO_LEESERIAL 1*16
 
 
-// variables modificaables  durante debugging
 // protocolo openEEG firmware P2, util para openvibe
 // solo registra 6 canales
-
-int     gSenal_obtenida=TABLA_SENO;
-boolean gtestSignal=false;
-boolean gtestHEX=false;
-boolean gtestCONTINUO=true;
-boolean gserialVerbose=true;
-boolean gBluetooth=false;
-volatile int gHayLectura=0;
-
 // 1-hex 2-numeros 3-openeeg-hex 4-openeeg-bytes
 // 5-openbci-numeros 6-openbci-bytes 7-openbci-hex 8-no imprime nada      
 // define el modo de salida por defecto, 
@@ -62,9 +52,6 @@ int modo_salida=6;
 
 
 unsigned long tick=0;
-
-
-
 
 
 void setup(){

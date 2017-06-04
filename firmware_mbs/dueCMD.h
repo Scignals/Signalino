@@ -24,6 +24,8 @@
 #include "ads1298.h"
 #include <SPI.h>  // include the SPI library:
 #include "adsCMD.h"
+#include "version.h"
+
 
 
 /*  pines utilizados  del arduino due
@@ -41,15 +43,24 @@
   14 -- HC06
   15 -- HC06
 */
-const int PIN_START = 4;
-const int IPIN_DRDY = 5;
-const int IPIN_CS = 10;//10
-//const int PIN_DOUT = 11;//SPI out
-//const int PIN_DIN = 12;//SPI in
-//const int PIN_SCLK = 13;//SPI clock
-const int kPIN_LED = 13;//pin con luz led, en Teensy3, is ALSO spi clock!
-const int kPIN_RESET = 8; //Reset en Pin 8
-const int kPIN_CLKSEL = 7; //ClkSel en Pin 7
+
+// no se si usamos el 13 pa a
+
+/*  pines utilizados  del teensy 3.2
+  2  -- 
+  3  --
+  4  -- START 
+  5  -- DRDY
+  6  --
+  7  -- clksel
+  8  -- reset
+  10 -- CS
+  11 -- spi out
+  12 -- spi in 
+  13 -- spi luz led (preasignado) 
+  26 -- HC06
+  31 -- HC06
+*/
 
 /* registramos por srb2 asi que las entradas van por N  */
 
@@ -64,15 +75,49 @@ y el Serial es el programming port
 */
 
 /* 
- * en teensy, los puertos serial 1 a 6 van por otros pines, el Serial3 son los pines 7(RX) y 8(TX) 
+ * en teensy, los puertos serial 1 a 6 van por otros pines, el Serial3 son los pines 7(RX) y 8(TX), que estan usados
+ * mejor pasarlo al serial2 que son 26 y 31, lo que pasa es que estan por detras
  * el Serial es el USB, como el due
  */
+
+
+
 
 // tenemos un modulo HC06 en serial3, y por tanto en pines pins 15 (RX) and 14 (TX)
 // como serial usamos (xq lo prefiero) el programing port (Serial), parece mas estable
 
 
+#if defined(BOARD_DUE)
+
+const int PIN_START = 4;
+const int IPIN_DRDY = 5;
+const int IPIN_CS = 10;//10
+//const int PIN_DOUT = 11;//SPI out
+//const int PIN_DIN = 12;//SPI in
+//const int PIN_SCLK = 13;//SPI clock
+const int kPIN_LED = 13;//pin con luz led, en Teensy3, is ALSO spi clock!
+const int kPIN_RESET = 8; //Reset en Pin 8
+const int kPIN_CLKSEL = 7; //ClkSel en Pin 7
+
+#elif defined(BOARD_TS3x2)
+
+const int PIN_START = 4;
+const int IPIN_DRDY = 5;
+const int IPIN_CS = 10;//10
+//const int PIN_DOUT = 11;//SPI out
+//const int PIN_DIN = 12;//SPI in
+//const int PIN_SCLK = 13;//SPI clock
+const int kPIN_LED = 13;//pin con luz led, en Teensy3, is ALSO spi clock!
+const int kPIN_RESET = 8; //Reset en Pin 8
+const int kPIN_CLKSEL = 7; //ClkSel en Pin 7
+
+#endif
+
+
+
 void due_inicia_hw();
+void parpadea(int intervalo);
+
 
 #endif 
 

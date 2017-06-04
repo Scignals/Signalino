@@ -34,6 +34,9 @@
 #include <SPI.h>  // include the SPI library:
 #include "signalino.h"
 
+#define BOARD_DUE
+//#define BOARD_TS3x2
+
 
 
 #define INTERVALO_LEESERIAL 1*16
@@ -69,6 +72,8 @@ void loop()
          if(tick%1==0)imprimeSerial_signalino(modo_salida);
          if(tick%(INTERVALO_LEESERIAL)==0)leeSerial_signalino();
   }
+//  parpadea(500);
+//  mensaje_inicio();
   
      
 }

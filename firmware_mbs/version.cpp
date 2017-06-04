@@ -22,6 +22,12 @@
 const char * build_version = "0.3";
 const char * build_fecha = "dic 4, 2016";
 
+#if defined(BOARD_DUE)
+const char * build_board = "Arduino Due";
+#elif defined(BOARD_TS3x2)
+const char * build_board = "Teensy 3.2";
+#endif
+
 
 
 void mensaje_inicio(){
@@ -29,7 +35,9 @@ void mensaje_inicio(){
    WiredSerial.print(F("SIGNALINO v "));
    WiredSerial.println(build_version);   
    WiredSerial.print(F("build "));
-   WiredSerial.println(build_fecha);   
+   WiredSerial.println(build_fecha);  
+   WiredSerial.print(F("board "));
+   WiredSerial.println(build_board);
    WiredSerial.println(F("(c) ILSB Technologies"));
   
    // si hay 8 canales, es q esta vivo...

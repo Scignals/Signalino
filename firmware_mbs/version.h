@@ -23,8 +23,13 @@
 
 #include "Arduino.h"
 
+
+#define BOARD_DUE
+//#define BOARD_TS3x2
+
 #define HC06 Serial3  
 #define WiredSerial Serial
+
 
 extern const char * build_version;
 extern const char * build_fecha;

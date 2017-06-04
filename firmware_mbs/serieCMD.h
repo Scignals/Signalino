@@ -30,11 +30,6 @@
 
 
 
-
-#define HC06 Serial3  
-#define WiredSerial Serial
-
-
 #define SERIAL_SPEED 115200  //57600 460800
 #define SERIAL_SPEED_BT 115200
 #define SEPARADOR_SERIAL ','

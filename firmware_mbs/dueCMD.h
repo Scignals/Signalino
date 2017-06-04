@@ -63,6 +63,11 @@ Additionally, there is a native USB-serial port on the SAM3X chip, SerialUSB.
 y el Serial es el programming port
 */
 
+/* 
+ * en teensy, los puertos serial 1 a 6 van por otros pines, el Serial3 son los pines 7(RX) y 8(TX) 
+ * el Serial es el USB, como el due
+ */
+
 // tenemos un modulo HC06 en serial3, y por tanto en pines pins 15 (RX) and 14 (TX)
 // como serial usamos (xq lo prefiero) el programing port (Serial), parece mas estable
 

@@ -207,6 +207,7 @@ public void BT(int value){
   println("pasando bluetooth a "+value);
   switch(value){
      case 1:
+     
        sendComando("blt1;",port); 
        break;
      case 0:

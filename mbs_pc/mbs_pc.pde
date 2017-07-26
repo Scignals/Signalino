@@ -93,6 +93,8 @@ void setup() {
      //pone el ads en modo 6 ( bytes openBCI ). antes manda un "oka" xq si no el arduino no responde
      sendComando("oka",port);
      sendComando("frm6",port);
+     sendComando("oka",port);
+     sendComando("blt1",port);
   }   
   background(200);
   

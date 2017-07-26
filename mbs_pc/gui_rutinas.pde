@@ -37,6 +37,14 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
    .addItem("simul",1)
    
    ;
+  gui.addRadioButton("BT")
+   .setPosition(350,1)
+   .setSize(27,10)
+   .setValue(0)
+   .addItem("BT on",1)
+   .addItem("off",0)
+   
+   ;
 
   gui.addTextlabel("Signalino")
    .setText("Scignals   0.3")
@@ -191,6 +199,19 @@ public void Senal(int value){
        sendComando("sim3;",port);
        break;  
 
+  }
+  ADS4ch.reset();
+}
+
+public void BT(int value){
+  println("pasando bluetooth a "+value);
+  switch(value){
+     case 1:
+       sendComando("blt1;",port); 
+       break;
+     case 0:
+       sendComando("blt0;",port);
+       break;
   }
   ADS4ch.reset();
 }

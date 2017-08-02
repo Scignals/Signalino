@@ -1,5 +1,6 @@
 #include "signalino.h"
 
+
 void inicia_signalino(int p_gtestCONTINUO,int p_gtestSignal){
   crea_tabla_seno();
   inicia_serial_pc();

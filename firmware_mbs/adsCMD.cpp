@@ -30,7 +30,9 @@
 
 // variables modificaables  durante debugging
 
-int     gSenal_obtenida=TABLA_SENO;
+//int     gSenal_obtenida=TABLA_SENO;
+int     gSenal_obtenida=SENAL_REAL;
+
 boolean gtestSignal=false;
 boolean gtestHEX=false;
 boolean gtestCONTINUO=true;

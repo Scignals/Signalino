@@ -34,6 +34,7 @@
 extern const char * build_version;
 extern const char * build_fecha;
 extern int gMaxChan;
+extern int gWired_speed;
 
 void mensaje_inicio(void);
 

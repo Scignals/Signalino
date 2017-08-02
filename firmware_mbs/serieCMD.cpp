@@ -175,7 +175,7 @@ void imprime_openEEG_p2(int modo_openeeg_protocolo){
  }
 }
 
-// protocolo openbci V3, el que usamos ahora (por defecto, modo 2)
+// protocolo openbci V3, el que usbamos antes por defecto, modo 2;
 void imprime_openBCI_V3(int modo_bci_protocolo){
 // protocolo interesante, descrito en 
 // https://github.com/OpenBCI/OpenBCI-V2hardware-DEPRECATED/wiki/Data-Format-for-OpenBCI-V3 
@@ -277,7 +277,6 @@ void procesaComando(String texto){
          parametro=texto.substring(3,4);
          int p1=parametro.toInt();
          switch(p1){
-
             case 1:
               gSenal_obtenida=TABLA_SENO;
               gtestSignal=false;
@@ -298,9 +297,8 @@ void procesaComando(String texto){
               ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
               break;
           }       
-         comentaSerial("cambiado modo senyal");
-        return;
-     
+         sprintf(buffer_comentaserial,"cambiado modo senyal a %d",p1);
+         comentaSerial(buffer_comentaserial);
       } else if(texto.startsWith("hlp")){
           mensaje_inicio();
           while(WiredSerial.available()==0);
@@ -329,15 +327,16 @@ void procesaComando(String texto){
          }
          sprintf(buffer_comentaserial,"cambiado modo_salida a %d. Esto creo que no tiene sentido",p1);
          comentaSerial(buffer_comentaserial);
-        return;
+         // return;
+
       } else if(texto.startsWith("gan")){ 
-         parametro=texto.substring(3,4);
-         int p1=parametro.toInt();
+          parametro=texto.substring(3,4);
+          int p1=parametro.toInt();
           gSenal_obtenida=SENAL_REAL;
           gtestSignal=true;
           ads9_setGanancia(p1);
-         sprintf(buffer_comentaserial,"cambiado ganancia a %d",p1);
-         comentaSerial(buffer_comentaserial);
+          sprintf(buffer_comentaserial,"cambiado ganancia a %d",p1);
+          comentaSerial(buffer_comentaserial);
 
       } else if(texto.startsWith("inp")){ 
              parametro=texto.substring(3,4);
@@ -347,16 +346,19 @@ void procesaComando(String texto){
                 gSenal_obtenida=SENAL_REAL;
                 ads9_misetup_ADS1299(MODE_SENAL_SRB2);
                 comentaSerial("cambiado a modo chart");
+                // todos a SRB2
                 break;
                 case 2:
                 gSenal_obtenida=SENAL_REAL;
                 ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
                 comentaSerial("cambiado a modo emg");
+                // bipolares 1x
                 break;
                 case 3:
                 gSenal_obtenida=SENAL_REAL;
                 ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
                 comentaSerial("cambiado a modo eeg");
+                //bipolares 12x
                 break;
              }
         } else if(texto.startsWith("blt")){ 
@@ -374,7 +376,7 @@ void procesaComando(String texto){
              }
       } else if(texto.startsWith("oka")){ 
           mensaje_inicio();
-          return;
+         // return;
       }       
                
       return;

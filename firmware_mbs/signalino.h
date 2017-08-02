@@ -32,6 +32,7 @@
 #include "serieCMD.h"
 
 
+
 void inicia_signalino(int p_gtestCONTINUO, int p_gtestSignal);
 void imprimeSerial_signalino(int p_modo_salida);
 

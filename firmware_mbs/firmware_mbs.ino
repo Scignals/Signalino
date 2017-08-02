@@ -50,8 +50,9 @@
 // está en 2 porque lo lee el monitor del IDE de arduino
 // lo paso a 6 porque no hace mas que colgarse al inicio
 // sigue siendo muy inestable la comunicacion hacia el signalino
-int modo_salida=6;
 
+//gtestSignal=false;
+int modo_salida=1; //6
 
 
 unsigned long tick=0;

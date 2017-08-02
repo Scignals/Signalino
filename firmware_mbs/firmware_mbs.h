@@ -21,7 +21,6 @@
 #ifndef FIRMWARE_MBS_01
 #define FIRMWARE_MBS_01
 
-#include "Arduino.h"
 
 
 #define MODE_SENAL_TEST 2 
@@ -39,7 +38,6 @@
 #define TABLA_LINEAL 4
 #define TABLA_RAMPA 5
 
-#include "Arduino.h"
 #define isDUE  //Detect Arduino Due
 // tenemos un modulo HC06 en serial3, y por tanto en pines pins 15 (RX) and 14 (TX)
 // y prefiero el programing port (Serial), parece mas estable

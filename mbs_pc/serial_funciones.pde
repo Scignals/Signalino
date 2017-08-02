@@ -26,16 +26,24 @@ void serDecode(Buffer bf) { //assuming Arduino is only transfering active channe
 
   int packetBytes = 33; // modo openbci3
   int cabecero=2;
-  byte[] rawData = new byte[10*packetBytes*2];
+  byte[] rawData = new byte[10*packetBytes*200];
   
   byte[] localAdsByteBuffer = {0,0,0};
 
   int newlen = port.available();
+  
+  // println("almacenado en newlen hay ... "+newlen);
   if (newlen < packetBytes) return;
+  if (newlen > 50*packetBytes*2){
+                 port.clear();
+                 return;
+   }
 
       while(port.available()>=packetBytes){
            int nn=port.readBytesUntil(0xC0, rawData);
-           if(nn!=packetBytes)continue;
+
+           //si no coincide la longitud, debe ser un error de lectura
+           if(nn!=packetBytes) continue;
  
            for (int i = 0; i < numCanales; i++){
                      localAdsByteBuffer[0]=rawData[cabecero+0+(i*3)];
@@ -110,20 +118,10 @@ void serie_inicia()
     println("Hint: if you set serialPortNumber=0 the program will allow the user to select from a drop down list of available ports");
   }
   try{
-   //   modo_conectado=false;
+      modo_conectado=false;
       port = new Serial(this, Serial.list()[serialPortNumber], BAUD_RATE);    
-      //vaciamos el buffer del puerto y leemos hasta un 0xC0
-     while (port.available() > 0)  port.read(); 
-     // aqui es donde sospecho que se cuelga, cuando no encuentra un signalino
-     // no se si realmente hace algo
-       // int retorno=port.readBytesUntil(0xC0,basura);
-      basura=port.readBytesUntil(0xC0);
+      port.readBytesUntil(0xC0,basura);
       modo_conectado=true;
-        
-   //     print("retorno:");
-   //     println(retorno);
-   //     if(retorno>-1) modo_conectado=true;
-
   } catch (Exception e){ 
           javax.swing.JOptionPane.showMessageDialog(frame,
             "<html><div align='center'>Scignals v 0.3 (c) 2016</div>"+
@@ -138,15 +136,6 @@ void setPortNum()
   String[] portStr = Serial.list();
   int nPort = portStr.length;
   serialPortNumber=-1;
-  
-  
-  
-  
-   
-//    List<String> new_portStr = Arrays.asList(portStr);
-//    new_portStr.add("Test signal");
-//    String[] temp_portStr = new String[new_portStr.size()];
-//    portStr = new_portStr.toArray(temp_portStr);
 
    if (nPort < 1) {
       javax.swing.JOptionPane.showMessageDialog(frame,

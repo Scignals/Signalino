@@ -69,10 +69,11 @@ Serial port;
 File file;
 FileWriter fw;
 PrintWriter outputfile;
-
+String timestamp;
 
 //global, usada por varias funciones (creo) 
 int[]  lectura;   // Datos leidos en el puerto serie PImage=img;  
+
  
 PImage img1; 
     
@@ -100,18 +101,14 @@ void setup() {
   
   ADS4ch = new Chart(anchoPantalla/2-50,altoPantalla/2,anchoPantalla-100,altoPantalla-50,numCanales,0.01);
   gui = new ControlP5(this);
-  try {
-    file = new File("./scignals_rawdata.txt");
-    fw = new FileWriter(file);
-    outputfile = new PrintWriter(fw);
-  } catch (IOException e) {
-    println("File error. Sorry...");
-    e.printStackTrace();
-  } 
   iniciaGui(gui);
   sendComando("sim1",port);
+  sendComando("frm6",port);
   println("llegamos");
-  
+  timestamp = year() + nf(month(),2) + nf(day(),2) + "-"  + nf(hour(),2) + nf(minute(),2) + nf(second(),2);
+  println(timestamp);
+  gui.get(Textfield.class,"NombreArchivo").setValue("scs-"+timestamp+".csv");
+
 }
 
 void draw() {

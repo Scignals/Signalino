@@ -277,25 +277,31 @@ public void grabando(boolean value){
     gGrabando=value;
     println("grabando:"+gGrabando);
     nombre_archivo = gui.get(Textfield.class,"NombreArchivo").getText();
-    println("grabando:"+nombre_archivo);
    
     if(gGrabando){
-      if(nombre_archivo.length()<1)return;
-       gui.getController("grabando").setCaptionLabel("Recording ON");
-       gui.getController("grabando").setColorActive(color(0,255,0));
+      //if(nombre_archivo.length()<1)return;
        try {
           file = new File(nombre_archivo);
-          fw = new FileWriter(file);
+          fw = new FileWriter(file,true);
           outputfile = new PrintWriter(fw);
        } catch (IOException e) {
-          println("File error. Sorry...");
-          e.printStackTrace();
-      } 
+          println("File error while creating file. Sorry...");
+          //e.printStackTrace();
+          gGrabando=false;
+          gui.getController("grabando").setColorActive(color(255,0,0));
+          gui.getController("grabando").setCaptionLabel("OFF");
+          return;
+      }
+      gui.getController("grabando").setCaptionLabel("Recording ON");
+      gui.getController("grabando").setColorActive(color(0,255,0));
+
     }
     
     else {
        gui.getController("grabando").setColorActive(color(255,0,0));
        gui.getController("grabando").setCaptionLabel("OFF");
+       outputfile.flush();  // Writes the remaining data to the file
+       outputfile.close();  // Finishes the file
     }
    
   }

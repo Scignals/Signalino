@@ -237,7 +237,7 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
     // protocolo open_bci V3, pero con bytes (es el que se usa en el visor_pc)
         WiredSerial.write(txBuf,33);
         if(gBluetooth)HC06.write(txBuf,33);
-        if(gBluetooth)HC06.println(" y probando...");
+//        if(gBluetooth)HC06.println(" y probando...");
         
        
     } else {

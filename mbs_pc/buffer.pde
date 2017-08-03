@@ -57,6 +57,7 @@ class Buffer {
   void graba(int[] x1) {
       
              int i=0;
+             outputfile.print(millis());             
              for (i = 0; i < numCanales-1; i++){
                outputfile.print(x1[i]);
                outputfile.print(',');

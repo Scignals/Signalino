@@ -112,6 +112,7 @@ void setup() {
 }
 
 void draw() {
+     background(150);
      if(modo_conectado)serDecode(ADS4ch.bf);
      else serRand(ADS4ch.bf);
      if(gui_running)ADS4ch.update();

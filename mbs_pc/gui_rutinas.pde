@@ -289,9 +289,10 @@ public void grabando(boolean value){
           //e.printStackTrace();
           gGrabando=false;
           gui.getController("grabando").setColorActive(color(255,0,0));
-          gui.getController("grabando").setCaptionLabel("OFF");
+          gui.getController("grabando").setCaptionLabel("OFF            ");
           return;
       }
+      
       gui.getController("grabando").setCaptionLabel("Recording ON");
       gui.getController("grabando").setColorActive(color(0,255,0));
 
@@ -299,9 +300,12 @@ public void grabando(boolean value){
     
     else {
        gui.getController("grabando").setColorActive(color(255,0,0));
-       gui.getController("grabando").setCaptionLabel("OFF");
-       outputfile.flush();  // Writes the remaining data to the file
-       outputfile.close();  // Finishes the file
+       gui.getController("grabando").setCaptionLabel("                ");
+       gui.getController("grabando").setCaptionLabel("OFF         ");
+       if(outputfile != null) {
+         outputfile.flush();  // Writes the remaining data to the file
+         outputfile.close();  // Finishes the file
+       }  
     }
    
   }

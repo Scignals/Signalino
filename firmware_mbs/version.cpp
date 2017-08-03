@@ -19,8 +19,8 @@
 //
 #include "version.h"
 
-const char * build_version = "0.3";
-const char * build_fecha = "dic 4, 2016";
+const char * build_version = "0.4";
+const char * build_fecha = "ago 4, 2017";
 
 #if defined(BOARD_DUE)
 const char * build_board = "Arduino Due";

@@ -80,9 +80,9 @@ void due_inicia_hw() {
   // y por fin nos preparamos para leer
   attachInterrupt(digitalPinToInterrupt(IPIN_DRDY), ads9_lee_datos, FALLING);
 #if defined(BOARD_DUE)
-  Serial.println("kk --- dale todo");
+  Serial.println("Due transmiting");
 #elif defined(BOARD_TS3x2)
-  Serial.println("kk --- dale el teensy");
+  Serial.println("Teensy transmiting");
 #endif
 }
 

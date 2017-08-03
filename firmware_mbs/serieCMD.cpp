@@ -42,7 +42,7 @@ void inicia_serial_pc(){
   delay(200);  // Catch Due reset problem
   gWired_speed=SERIAL_SPEED;
   
-  HC06.begin(SERIAL_SPEED_BT); //use native port on Due
+  HC06.begin(SERIAL_SPEED_BT); 
   while (HC06.read() >= 0) {} ;
   delay(200);  // Catch Due reset problem
   gBT_speed=SERIAL_SPEED_BT;
@@ -86,7 +86,7 @@ void imprime_linea( int modo_hex){
   if(modo_hex){
 //   imprime_linea2( modo_hex, &WiredSerial );
    imprime_linea2( modo_hex, Serial );
-   if(gBluetooth) imprime_linea2( modo_hex, HC06 );
+   if(gBluetooth) imprime_linea2( modo_hex, HC06 ); //ponia modo_hex
   }
 }
 
@@ -237,6 +237,8 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
     // protocolo open_bci V3, pero con bytes (es el que se usa en el visor_pc)
         WiredSerial.write(txBuf,33);
         if(gBluetooth)HC06.write(txBuf,33);
+        if(gBluetooth)HC06.println(" y probando...");
+        
        
     } else {
     // protocolo open_bci V3, pero en hexadecimal

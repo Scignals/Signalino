@@ -36,6 +36,13 @@ class Canal {
     //   v.pintaVector((new arr_int(x1)).mov_avg(3),escala);
  
 }
+
+  void fondo() {
+  //    v.pintaVector(new arr_int((new arr_int(x1)).mov_avg(3)).zscore(),escala);
+        v.dibuja_fondo();
+    //   v.pintaVector((new arr_int(x1)).mov_avg(3),escala);
+ 
+}
   
   void xpinta(arr_int x1) {
       v.pintaVector(x1.mov_avg_r(3),escala);

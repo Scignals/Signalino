@@ -41,17 +41,18 @@ class Chart {
     canales = new ArrayList<Canal>();
     visibles= new int[n_canales];
     for(int i=0;i<n_canales;i++)visibles[i]=1;
+    visibles[3]=0;
+    visibles[6]=0;
+    
     
     int alto_canal=alto/n_canales;
     ancho_canal=ancho-10;
     for(int i=0;i<n;i++){
-      canales.add(new Canal(cx,v.mrgS()+3+alto_canal/2+(alto_canal)*i,ancho-10, alto_canal, escala));
+      canales.add(new Canal(cx,v.mrgS()+3+alto_canal/2+(alto_canal)*i,ancho_canal, alto_canal, escala));
     }
     
-    bf=new Buffer(n,w*MAX_DECIMANDO);
+    bf=new Buffer(n_canales,w*MAX_DECIMANDO);
     
-    
-  
    }
    
    void set(int [] valores){
@@ -64,11 +65,15 @@ class Chart {
  
   void update() {
      for(int i=0;i<n_canales;i++){
-        Canal chx = canales.get(i);
-        if(visibles[i]==1)
-          chx.pinta(bf.lee_canal(i,ancho,chx.decimando));
+         Canal cx=canales.get(i);
+        if(visibles[i]==1){
+          cx.pinta(bf.lee_canal(i,ancho,cx.decimando));
+        } else {
+          cx.fondo();
+        }
      }
 //     bf.calcula_umbrales();
+     
 
   } 
   void setEscala(float e) {

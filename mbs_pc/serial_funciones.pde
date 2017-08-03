@@ -124,7 +124,7 @@ void serie_inicia()
       modo_conectado=true;
   } catch (Exception e){ 
           javax.swing.JOptionPane.showMessageDialog(frame,
-            "<html><div align='center'>Scignals v 0.3 (c) 2016</div>"+
+            "<html><div align='center'>Scignals v "+version_software+" (c) 2016</div>"+
            "<p>No devices detected: please check Arduino power and drivers. Offline mode...</p></html>");  
           modo_conectado=false;
     //exit();
@@ -139,7 +139,7 @@ void setPortNum()
 
    if (nPort < 1) {
       javax.swing.JOptionPane.showMessageDialog(frame,
-            "<html><div align='center'>Scignals v 0.3 (c) 2016</div>"+
+            "<html><div align='center'>Scignals v "+version_software+" (c) 2016</div>"+
            "<p>No devices detected: please check Arduino power and drivers. Exiting program...</p></html>");  
       exit();    
       return;
@@ -159,7 +159,7 @@ void setPortNum()
   nPort=nPort+1;
   
    String respStr = (String) JOptionPane.showInputDialog(null,
-      "<html><div align='center'>Scignals v 0.3 (c) 2016</div>"+
+      "<html><div align='center'>Scignals v "+version_software+" (c) 2016</div>"+
       "<p>This program is free software, distributed under GNU General Public License (v3) in the hope that it will be useful, but WITHOUT ANY WARRANTY</p>"+
       "<p align='center'>Choose COM port (if not listed: check drivers and power)</p></html>", "Select device",
       JOptionPane.PLAIN_MESSAGE, null,

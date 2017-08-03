@@ -44,6 +44,8 @@ import java.io.FileWriter;
 import processing.serial.*;
 import javax.swing.JOptionPane;//For user input dialogs
 
+String version_software="0.4";
+
 int BAUD_RATE = 115200;//57600 115200 230400;//921600;//460800;//921600; //921600 for Teensy2/Teensy3/Leonardo 460800
 int numCanales = 8; //number of channels to report
 int anchoPantalla=1000;
@@ -55,6 +57,7 @@ boolean gGrabando      = false;
 boolean gui_running    = true;
 
 int serialPortNumber = 0; //set to 0 for automatic detection
+
 
 
 // global vars containing the gui
@@ -84,14 +87,14 @@ void setup() {
   println("Scignals, signal visor 0.3 (c) 2017 ILSB Technologies ");
   
   img1=loadImage("fondo.gif");
-  image(img1,0,0); //con background, petaba en linux a veces. image parece mas solido.
+  image(img1,0,0); //con background, petaba en linux a veces. image parece mas solido. En windows 10, no se ve el gif, aunque no se cuelga
   
   lectura=new int[numCanales];
 
   modo_conectado=false;
   if (!modo_test){
      serie_inicia();
-     //pone el ads en modo 6 ( bytes openBCI ). antes manda un "oka" xq si no el arduino no responde
+     //pone el ads en modo 6 ( bytes openBCI ). antes manda un "oka" xq si no el arduino no responde (antes del bug, igual ahora funciona sin oka
      sendComando("oka",port);
      sendComando("frm6",port);
      sendComando("oka",port);
@@ -104,7 +107,7 @@ void setup() {
   iniciaGui(gui);
   sendComando("sim1",port);
   sendComando("frm6",port);
-  println("llegamos");
+  println("winter is coming...");
   timestamp = year() + nf(month(),2) + nf(day(),2) + "-"  + nf(hour(),2) + nf(minute(),2) + nf(second(),2);
   println(timestamp);
   gui.get(Textfield.class,"NombreArchivo").setValue("scs-"+timestamp+".csv");
@@ -112,7 +115,7 @@ void setup() {
 }
 
 void draw() {
-     background(150);
+//     background(150);
      if(modo_conectado)serDecode(ADS4ch.bf);
      else serRand(ADS4ch.bf);
      if(gui_running)ADS4ch.update();

@@ -47,7 +47,7 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
    ;
 
   gui.addTextlabel("Signalino")
-   .setText("Scignals   0.3")
+   .setText("Scignals   "+version_software)
    .setPosition(10,2)
    .setSize(10,27)
    .setColorValue(0xffffff00)
@@ -183,6 +183,7 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
     
 
 public void controlEvent(ControlEvent theEvent) {
+   if(gui_running)background(150);
 //Is called whenever a GUI Event happened
 }
 
@@ -274,6 +275,7 @@ public void Entrada(int value){
 }
 
 public void grabando(boolean value){
+    float[] pos;
     gGrabando=value;
     println("grabando:"+gGrabando);
     nombre_archivo = gui.get(Textfield.class,"NombreArchivo").getText();
@@ -289,10 +291,12 @@ public void grabando(boolean value){
           //e.printStackTrace();
           gGrabando=false;
           gui.getController("grabando").setColorActive(color(255,0,0));
-          gui.getController("grabando").setCaptionLabel("OFF            ");
+          gui.getController("grabando").setCaptionLabel("               ");       
+          gui.getController("grabando").setCaptionLabel("OFF");
           return;
       }
       
+      gui.getController("grabando").setCaptionLabel("            ");
       gui.getController("grabando").setCaptionLabel("Recording ON");
       gui.getController("grabando").setColorActive(color(0,255,0));
 
@@ -301,7 +305,7 @@ public void grabando(boolean value){
     else {
        gui.getController("grabando").setColorActive(color(255,0,0));
        gui.getController("grabando").setCaptionLabel("                ");
-       gui.getController("grabando").setCaptionLabel("OFF         ");
+       gui.getController("grabando").setCaptionLabel("OFF");
        if(outputfile != null) {
          outputfile.flush();  // Writes the remaining data to the file
          outputfile.close();  // Finishes the file
@@ -336,7 +340,7 @@ if(key=='-') {
    if(gGrabando){ 
      key=0;   
      javax.swing.JOptionPane.showMessageDialog(frame,
-            "<html><div align='center'>Scignals v 0.3 (c) 2016</div>"+
+            "<html><div align='center'>Scignals v "+version_software+" (c) 2016</div>"+
            "<p>Recording is ON, please stop it before exit...</p></html>");  
    }
    

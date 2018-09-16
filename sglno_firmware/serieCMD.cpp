@@ -37,7 +37,8 @@ int ultimo_modo=8;
 
 void inicia_serial_pc(){
   gLetra=new char[80];  
-  WiredSerial.begin(SERIAL_SPEED); 
+  WiredSerial.begin(SERIAL_SPEED);
+  while(!WiredSerial); 
   while (WiredSerial.read() >= 0) {} ;
   delay(200);  // Catch Due reset problem
   gWired_speed=SERIAL_SPEED;
@@ -85,7 +86,7 @@ void imprime_linea2( int modo_hex, Stream &port_serial ){
 void imprime_linea( int modo_hex){
   if(modo_hex){
 //   imprime_linea2( modo_hex, &WiredSerial );
-   imprime_linea2( modo_hex, Serial );
+   imprime_linea2( modo_hex, WiredSerial );
    if(gBluetooth) imprime_linea2( modo_hex, HC06 ); //ponia modo_hex
   }
 }
@@ -175,7 +176,7 @@ void imprime_openEEG_p2(int modo_openeeg_protocolo){
  }
 }
 
-// protocolo openbci V3, el que usbamos antes por defecto, modo 2;
+// protocolo openbci V3, el que usabamos antes por defecto, modo 2;
 void imprime_openBCI_V3(int modo_bci_protocolo){
 // protocolo interesante, descrito en 
 // https://github.com/OpenBCI/OpenBCI-V2hardware-DEPRECATED/wiki/Data-Format-for-OpenBCI-V3 
@@ -258,14 +259,23 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
 
 
 void leeSerial_signalino(){
-    if(WiredSerial.available()==0)return;
-    
-     String comando;
-     while( (comando = WiredSerial.readStringUntil(';')).length()>0){
-         comando.toLowerCase();
-         comando.trim();
-         procesaComando(comando);
-     }
+	if(WiredSerial.available()!=0){
+		String comando;
+		while( (comando = WiredSerial.readStringUntil(';')).length()>0){
+			comando.toLowerCase();
+			comando.trim();
+			procesaComando(comando);
+		}
+	}
+	if(HC06.available()!=0){
+		String comando;
+		while( (comando = HC06.readStringUntil(';')).length()>0){
+			comando.toLowerCase();
+			comando.trim();
+			procesaComando(comando);
+		}
+	}
+
 }
 
 
@@ -304,7 +314,9 @@ void procesaComando(String texto){
          comentaSerial(buffer_comentaserial);
       } else if(texto.startsWith("hlp")){
           mensaje_inicio();
-          while(WiredSerial.available()==0);
+          mensaje_inicio_bt();
+          
+          while(WiredSerial.available()==0 && HC06.available()==0 );
           return;
      
       } else if(texto.startsWith("frm")){
@@ -379,6 +391,8 @@ void procesaComando(String texto){
              }
       } else if(texto.startsWith("oka")){ 
           mensaje_inicio();
+          mensaje_inicio_bt();
+          
          // return;
       }       
                
@@ -386,4 +400,8 @@ void procesaComando(String texto){
 
 }
 
+// estas macros no se usan, pero es una idea a estudiar
 
+#define Signalino_write(texto) WiredSerial.write(texto); if(gBluetooth)HC06.write(texto  ); 
+
+#define Signalino_print(texto) WiredSerial.print(texto); if(gBluetooth)HC06.print(texto  ); 

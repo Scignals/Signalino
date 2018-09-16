@@ -59,3 +59,31 @@ void mensaje_inicio(){
    
 }
 
+void mensaje_inicio_bt(){
+   HC06.println("");
+   HC06.print(F("SIGNALINO v "));
+   HC06.println(build_version);   
+   HC06.print(F("build "));
+   HC06.println(build_fecha);  
+   HC06.print(F("board "));
+   HC06.println(build_board);
+   HC06.println(F("(c) ILSB Technologies"));
+  
+   // si hay 8 canales, es q esta vivo...
+   HC06.print(F("canales activos: "));
+   HC06.println(gMaxChan);
+   HC06.print(F("speed com: "));
+   HC06.println(gWired_speed);
+   HC06.println(F("Comandos: (separados por punto y coma)"));
+   HC06.println(F("hlp  -- ayuda "));
+   HC06.println(F("rec  -- chorro datos on/off")); 
+   HC06.println(F("sim  -- señal simulada on/off"));    
+   HC06.println(F("simN -- N1, señal normal. N2, test. N3, simulada")); 
+   HC06.println(F("ganN -- ganancia del ads1299 N=1..8 --> 1,2,4,4,6,8,12,24x"));
+   HC06.println(F("frmN -- formatos de salida: N=0,va cambiando. Ahora hay 8. Por defecto, 6"));
+   HC06.println(F("inpN -- parametros de adquisición: N1:ref2x1 N2:bipx24 N3:refx24"));
+   HC06.println(F("bltN -- bluetooth 1=on 2=off"));
+   
+    
+   
+}

@@ -28,7 +28,7 @@
 //#define BOARD_TS3x2
 
 #define HC06 Serial3  
-#define WiredSerial Serial
+#define WiredSerial Serial   // funciona tb con serialUSB
 
 
 extern const char * build_version;
@@ -37,6 +37,7 @@ extern int gMaxChan;
 extern int gWired_speed;
 
 void mensaje_inicio(void);
+void mensaje_inicio_bt(void);
 
 
 

@@ -37,12 +37,12 @@ boolean gtestSignal=false;
 boolean gtestHEX=false;
 boolean gtestCONTINUO=true;
 boolean gserialVerbose=true;
-boolean gBluetooth=false;
+boolean gBluetooth=true;
 volatile int gHayLectura=0;
 
 
-//donde se apunta la lectra a a vuelta de la interrupcion
-//es superimportante!
+// donde se apunta la lectura a la vuelta de la interrupcion
+// es superimportante!
 // son 80 por exceso (24 deberian bastar)
 volatile unsigned char serialBytes[80];
 int numSerialBytes=0;
@@ -251,6 +251,7 @@ void ads9_lee_datos(void) {
           digitalWrite(IPIN_CS, HIGH);
       SPI.endTransaction();
       gHayLectura=1;
+      // se me ocurre q si este fuese gHayLectura++ podria servir como indicador de q no se pudo leer el anterior, tal vez porque va lento...
 }
 
 

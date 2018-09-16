@@ -275,6 +275,7 @@ void procesaComando(String texto){
      comentaSerial("-->ok");
 
      // 1 normal  2 test 3 simulada 4 max ganancia
+     // creo q en el  comentario de arriba estan mal los numeros
      if(texto.startsWith("sim")){ 
          parametro=texto.substring(3,4);
          int p1=parametro.toInt();

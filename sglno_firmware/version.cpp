@@ -20,7 +20,7 @@
 #include "version.h"
 
 const char * build_version = "0.4";
-const char * build_fecha = "ago 4, 2017";
+const char * build_fecha = "sep 16, 2018";
 
 #if defined(BOARD_DUE)
 const char * build_board = "Arduino Due";

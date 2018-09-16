@@ -71,6 +71,7 @@ void due_inicia_hw() {
   }
   // parpadeo del led 13 q avisa si hemos leido los canales adecuados
   // esto segun esta no funciona en teensy, por lo del pin 13 que lleva el reloj SPI
+  // creo q habria q usar la rutina parpadea, es lo q falta aqui
   for (int i = 0; i < gMaxChan; i++) {
     digitalWrite(kPIN_LED, HIGH); // el reloj sea el interno
     delay(400 / (1 + gMaxChan));
@@ -89,6 +90,9 @@ void due_inicia_hw() {
 void parpadea(int intervalo)
 {
 #if defined(BOARD_TS3x2)
+  // SCK pin goes to 14 in teensy, play with led, and then back
+  //https://forum.pjrc.com/threads/25727-an-FYI-on-remapping-the-Teensy-3-LED-and-using-SPI
+  // be careful, not sure if more complex things are needed here
   SPI.setSCK(14);
 #endif
   const int ledPin = 13;

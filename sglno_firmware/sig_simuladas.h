@@ -39,6 +39,3 @@ extern float phaseIncrement;
 void crea_tabla_seno(void);
 
 #endif 
-
-
-

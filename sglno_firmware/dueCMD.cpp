@@ -47,7 +47,7 @@ void due_inicia_hw() {
   digitalWrite(IPIN_CS, HIGH);
   digitalWrite(kPIN_CLKSEL, HIGH); // el reloj sea el interno
 
-  SPI.begin(); //ojo, es imprscindible o se para el prog
+  SPI.begin(); //ojo, es imprescindible o se para el prog
   ads9_send_command(SDATAC); // dejamos el modo READ para emitir comandos
   delay(10);
 

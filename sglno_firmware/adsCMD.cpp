@@ -74,13 +74,13 @@ void ads9_wreg(int reg, int val)
 {
   //see pages 40,43 of datasheet - 
 	SPI.beginTransaction(SPISettings(14000000, MSBFIRST, SPI_MODE1));
-    digitalWrite(IPIN_CS, LOW);
-  	SPI.transfer(ADS1298::WREG | reg);
-  	SPI.transfer(0);	// number of registers to be read/written – 1
-  	SPI.transfer(val);
-  	delayMicroseconds(1);
-  	digitalWrite(IPIN_CS, HIGH);
-  SPI.endTransaction();
+	digitalWrite(IPIN_CS, LOW);
+	SPI.transfer(ADS1298::WREG | reg);
+	SPI.transfer(0);	// number of registers to be read/written – 1
+	SPI.transfer(val);
+	delayMicroseconds(1);
+	digitalWrite(IPIN_CS, HIGH);
+  	SPI.endTransaction();
 
 }
 
@@ -93,7 +93,7 @@ int ads9_rreg(int reg){
       SPI.transfer(0);	// number of registers to be read/written – 1
       delayMicroseconds(5);
       out = SPI.transfer(0);
-      	delayMicroseconds(1);
+      delayMicroseconds(1);
       digitalWrite(IPIN_CS, HIGH);
   SPI.endTransaction();
 
@@ -251,7 +251,7 @@ void ads9_lee_datos(void) {
           digitalWrite(IPIN_CS, HIGH);
       SPI.endTransaction();
       gHayLectura=1;
-      // se me ocurre q si este fuese gHayLectura++ podria servir como indicador de q no se pudo leer el anterior, tal vez porque va lento...
+      // se me ocurre q si este fuese gHayLectura++ podria servir como indicador de q no se pudo leer el anterior, tal vez porque va lento (overflow)...
 }
 
 

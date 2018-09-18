@@ -48,7 +48,7 @@ extern volatile int gHayLectura;
 #define MODE_SENAL_BIP 6
 
 
-extern int numSerialBytes;
+extern volatile int numSerialBytes;
 extern volatile unsigned char serialBytes[];
 
 

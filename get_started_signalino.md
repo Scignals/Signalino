@@ -22,7 +22,7 @@ It includes firmware of the shield and the software Scignals visor. This one dep
     
 4. Open the Scignals visor (sgnlino_visor/sgnlino_visor.pde) and start playing. If everything is okay, you will see a /dev/ACM0 between the list of devices at the start. Connect!
 
-5. Attach EKG electrodes to your fingers, connect to channel 1 in  P and N, and enjoy.
+5. Attach EKG electrodes to your fingers, connect to channel 1 in  P and N, and enjoy (pins 4 and 5).
 
 
 ## Bluetooth connection

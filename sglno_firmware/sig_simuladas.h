@@ -29,7 +29,7 @@ extern float phaseIncrement;
 
 #define TABLE_SIZE 48*8*4*8
 #define AMPLITUD_SENAL 500
-#define TWO_PI (3.14159 * 2)
+//#define TWO_PI (3.14159 * 2)
 
 #define TABLA_SENO 3 
 #define TABLA_LINEAL 4

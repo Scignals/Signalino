@@ -28,7 +28,7 @@
 #include "dueCMD.h"
 #include "firmware_mbs.h"
 
-// variables modificaables  durante debugging
+// variables modificables  durante debugging
 
 //int     gSenal_obtenida=TABLA_SENO;
 int     gSenal_obtenida=SENAL_REAL;
@@ -45,7 +45,7 @@ volatile int gHayLectura=0;
 // es superimportante!
 // son 80 por exceso (24 deberian bastar)
 volatile unsigned char serialBytes[80];
-int numSerialBytes=0;
+volatile int numSerialBytes=0;
 
 long contador_muestras=0;
 

@@ -1,3 +1,5 @@
+#include <SPI.h>
+
 ///////////////////////////////////////////////
 // SIGNALINO: a bioamplifier
 // firmware for controlling a ADS1299-based shield for Arduino Due

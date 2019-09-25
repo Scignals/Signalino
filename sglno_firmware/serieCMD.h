@@ -44,7 +44,7 @@ extern int gWired_speed;
 extern int gBT_speed;
 extern char *gLetra; // buffer usado en to_hex, inicializado en inicia_serial()
 extern boolean gserialVerbose;
-extern int numSerialBytes;
+extern volatile int numSerialBytes;
 extern volatile  unsigned char serialBytes[];
 extern boolean gBluetooth;
 extern unsigned char txBuf[];  //17 en openeeg   32 enopenbci

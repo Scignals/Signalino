@@ -17,10 +17,10 @@ It includes firmware of the shield and the software Scignals visor. This one dep
 2. Connect the programming port of the DUE (the usb port nearest to the power connector) to a serial port in a PC, better if it is a notebook running on batteries
 3. The PC should identify the signalino as a new device.
 3. Now, open Processing. In linux
-   `$ sudo ./processing  `
+   `$ sudo ./processing  
    In windows, click in the icon.
     
-4. Open the Scignals visor (sgnlino_visor/sgnlino_visor.pde) and start playing. If everything is okay, you will see a /dev/ACM0 between the list of devices at the start. Connect!
+4. Open the Scignals visor (signalino_visor/signalino_visor.pde) and start playing. If everything is okay, you will see a /dev/ACM0 (or /dev/ttyACM0) between the list of devices at the start. Connect!
 
 5. Attach EKG electrodes to your fingers, connect to channel 1 in  P and N, and enjoy (pins 4 and 5).
 
@@ -59,7 +59,11 @@ It includes firmware of the shield and the software Scignals visor. This one dep
     
 6. Open the Scignals visor and start playing. If everything is okay, you will see a /dev/rfcomm0 between the list of devices at the start. Connect!
 
+## Compliling code
 
+- in my PC (Ubuntu 19.0), it compiles cleanly. In a "fresh install" of Arduino IDE, you need to add Arduino due Board (SAM boards) and point to that device as object compiling (if not, tou will obtain several errors about "Serial3" device. 
+
+- in linux, serial port access is yet a problem.   
 
 
 

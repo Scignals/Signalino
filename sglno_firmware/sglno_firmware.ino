@@ -80,9 +80,5 @@ void loop()
 //  parpadea(500);
 //  mensaje_inicio();
   
-     
+//If you know x to be non-negative, and b to be a power of two, you can use x & (b - 1)     
 }
-
-
-
-

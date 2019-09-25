@@ -68,9 +68,13 @@ void imprime_linea2( int modo_hex, Stream &port_serial ){
    for (int i = 1; i < numSerialBytes; i+=3)
    {
     long numero = to_Int32(serialBytes+i);
-     if(modo_hex==2) {
-                  port_serial.print(numero,HEX);
-     } else {
+    switch(modo_hex) {
+    case 0:
+    	break;
+    case 2:
+    	port_serial.print(numero,HEX);
+    	break;
+    default:
                   port_serial.print(numero);
                   if(i<numSerialBytes-3){
                       port_serial.print(SEPARADOR_SERIAL );
@@ -85,9 +89,8 @@ void imprime_linea2( int modo_hex, Stream &port_serial ){
 // protocolo simple, solo numeros
 void imprime_linea( int modo_hex){
   if(modo_hex){
-//   imprime_linea2( modo_hex, &WiredSerial );
-   imprime_linea2( modo_hex, WiredSerial );
-   if(gBluetooth) imprime_linea2( modo_hex, HC06 ); //ponia modo_hex
+     imprime_linea2( modo_hex, WiredSerial );
+     if(gBluetooth) imprime_linea2( modo_hex, HC06 ); //ponia modo_hex
   }
 }
 
@@ -330,7 +333,7 @@ void procesaComando(String texto){
          comentaSerial(buffer_comentaserial);
    
       } else if(texto.startsWith("rec")){
-        // rec deberia apagar y encender el chorro, pero no parece hacer eso
+        // rec0 apaga el chorro
          parametro=texto.substring(3,4);
          int p1=parametro.toInt();
          if(p1==0){
@@ -339,7 +342,7 @@ void procesaComando(String texto){
          } else {
             modo_salida=ultimo_modo;
          }
-         sprintf(buffer_comentaserial,"cambiado modo_salida a %d. Esto creo que no tiene sentido",p1);
+         sprintf(buffer_comentaserial,"cambiado modo_salida a %d",p1);
          comentaSerial(buffer_comentaserial);
          // return;
 

@@ -32,9 +32,9 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
    .setPosition(910,300)
    .setSize(10,27)
    .setValue(3)
-   .addItem("senal",3)
+   .addItem("senal",1)
    .addItem("test",2)
-   .addItem("simul",1)
+   .addItem("simul",3)
    
    ;
   gui.addRadioButton("BT")

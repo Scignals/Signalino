@@ -222,7 +222,7 @@ namespace ADS1298 {
 
 
 		ELECTRODE_INPUT = 0x00,
-    		SRB2_INPUT = SRB2n,
+    	SRB2_INPUT = SRB2n,
 		SHORTED = MUXn0,
 		RLD_INPUT = MUXn1,
 		MVDD = (MUXn1 | MUXn0),

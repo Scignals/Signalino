@@ -19,7 +19,7 @@
 //
 #include "version.h"
 
-const char * build_version = "0.41";
+const char * build_version = "0.42";
 const char * build_fecha = "sep 26, 2019";
 
 #if defined(BOARD_DUE)

@@ -29,6 +29,9 @@ const char * build_board = "Teensy 3.2";
 #endif
 
 
+extern boolean gBluetooth;
+
+
 
 
 
@@ -36,18 +39,21 @@ const char * build_board = "Teensy 3.2";
 void _mensaje_inicio(Stream &port_serial){
    port_serial.println("");
    port_serial.print(F("SIGNALINO v "));
-   port_serial.println(build_version);   
+   port_serial.print(build_version);   
    port_serial.print(F("build "));
-   port_serial.println(build_fecha);  
+   port_serial.print(build_fecha);  
    port_serial.print(F("board "));
    port_serial.println(build_board);
    port_serial.println(F("(c) ILSB Technologies"));
   
    // si hay 8 canales, es q esta vivo...
-   port_serial.print(F("canales activos: "));
-   port_serial.println(gMaxChan);
-   port_serial.print(F("speed com: "));
-   port_serial.println(gWired_speed);
+   port_serial.print(F("canales: "));
+   port_serial.print(gMaxChan);
+   port_serial.print(F("; bps: "));
+   port_serial.print(gWired_speed);
+   port_serial.print(F("; format: "));
+   port_serial.print(gWired_speed);
+   
    port_serial.println(F("Comandos: (separados por punto y coma)"));
    port_serial.println(F("recN -- chorro datos 0:off 1:on")); 
    port_serial.println(F("simN -- N1:1X N2:cuadrada(ADS) N3:seno(arduino) N4:12x")); 
@@ -72,8 +78,7 @@ void _mensaje_inicio(Stream &port_serial){
 
 
 }
-
 void mensaje_inicio(void){
   _mensaje_inicio(WiredSerial);
-  _mensaje_inicio(HC06);  
+  if(gBluetooth)_mensaje_inicio(HC06);  
 }

@@ -33,6 +33,7 @@ char *gLetra; // buffer usado en to_hex, inicializado en inicia_serial()
 int minComando=1;
 int maxComando=8;
 int ultimo_modo=8;
+//int modo_salida=1;
 
 
 void inicia_serial_pc(){

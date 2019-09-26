@@ -282,24 +282,37 @@ void leeSerial_signalino(){
 }
 
 
+// Comandos de control:
+// gan: ganancia del amplificador
+// inp: input mode (CHART, EEG, EMG)
+// sim: señal de salida del signalino (real 1x, onda cuadrada del ads, señal simulada por software, real 12x )
+// frm: formato de salida de datos ()
+// rec: rec0 apaga salida, rec1 la restaura
+// hlp: mensaje de inicio y espera un enter por wiredsignal
+// oka: mensaje de inicio y sigue corriendo
+// blt: bluetooth 1:on/0:off
+
+
+
 void procesaComando(String texto){
      String parametro;
      comentaSerial(texto);
-     comentaSerial("-->ok");
+     comentaSerial("#-->ok");
 
      // 1 normal  2 test 3 simulada 4 max ganancia
      if(texto.startsWith("sim")){ 
          parametro=texto.substring(3,4);
          int p1=parametro.toInt();
          switch(p1){
-            case 2:
-              gSenal_obtenida=TABLA_SENO;
-              gtestSignal=false;
-              break;
             case 1:
               gSenal_obtenida=SENAL_REAL;
               gtestSignal=false;
               ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
+              break;
+            case 2:
+              gSenal_obtenida=TABLA_SENO;
+              gtestSignal=false;
+              /* no activamos ads9_misetup porque... */
               break;
             case 3:
               gSenal_obtenida=SENAL_REAL;
@@ -312,12 +325,10 @@ void procesaComando(String texto){
               ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
               break;
           }       
-         sprintf(buffer_comentaserial,"cambiado modo senyal a %d",p1);
+         sprintf(buffer_comentaserial,"#Signal mode changed to %d",p1);
          comentaSerial(buffer_comentaserial);
       } else if(texto.startsWith("hlp")){
-          mensaje_inicio();
-          mensaje_inicio_bt();
-          
+          mensaje_inicio();          
           while(WiredSerial.available()==0 && HC06.available()==0 );
           return;
      
@@ -329,7 +340,7 @@ void procesaComando(String texto){
          } else if (p1<=maxComando){
             modo_salida=p1;
          }    
-         sprintf(buffer_comentaserial,"cambiado modo_salida a %d",p1);
+         sprintf(buffer_comentaserial,"#Data format changed to %d",p1);
          comentaSerial(buffer_comentaserial);
    
       } else if(texto.startsWith("rec")){
@@ -342,7 +353,7 @@ void procesaComando(String texto){
          } else {
             modo_salida=ultimo_modo;
          }
-         sprintf(buffer_comentaserial,"cambiado modo_salida a %d",p1);
+         sprintf(buffer_comentaserial,"#Data format restored to  %d",p1);
          comentaSerial(buffer_comentaserial);
          // return;
 
@@ -352,7 +363,7 @@ void procesaComando(String texto){
           gSenal_obtenida=SENAL_REAL;
           gtestSignal=true;
           ads9_setGanancia(p1);
-          sprintf(buffer_comentaserial,"cambiado ganancia a %d",p1);
+          sprintf(buffer_comentaserial,"#Gain changed to %d",p1);
           comentaSerial(buffer_comentaserial);
 
       } else if(texto.startsWith("inp")){ 
@@ -362,19 +373,19 @@ void procesaComando(String texto){
                 case 1:
                 gSenal_obtenida=SENAL_REAL;
                 ads9_misetup_ADS1299(MODE_SENAL_SRB2);
-                comentaSerial("cambiado a modo chart");
+                comentaSerial("#CHART mode (all channels to SRB2)");
                 // todos a SRB2
                 break;
                 case 2:
                 gSenal_obtenida=SENAL_REAL;
                 ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
-                comentaSerial("cambiado a modo emg");
+                comentaSerial("#EMG mode (bipolar channels, 1x)");
                 // bipolares 1x
                 break;
                 case 3:
                 gSenal_obtenida=SENAL_REAL;
                 ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
-                comentaSerial("cambiado a modo eeg");
+                comentaSerial("#EEG mode (bipolar channels, 1x)");
                 //bipolares 12x
                 break;
              }
@@ -384,16 +395,15 @@ void procesaComando(String texto){
              switch(p1){
                 case 0:
                 gBluetooth=false;
-                comentaSerial("BT off");
+                comentaSerial("#BT off");
                 break;
                 case 1:
                 gBluetooth=true;
-                comentaSerial("BT on");
+                comentaSerial("#BT on");
                 break;
              }
       } else if(texto.startsWith("oka")){ 
           mensaje_inicio();
-          mensaje_inicio_bt();
           
          // return;
       }       

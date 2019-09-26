@@ -44,16 +44,6 @@
 #define INTERVALO_LEESERIAL 1*16
 
 
-// protocolo openEEG firmware P2, util para openvibe
-// solo registra 6 canales
-// 1-numeros 2-hex 3-openeeg-hex 4-openeeg-bytes
-// 5-openbci-numeros 6-openbci-bytes 7-openbci-hex 8-no imprime nada      
-// define el modo de salida por defecto, 
-// está en 2 porque lo lee el monitor del IDE de arduino
-// lo paso a 6 porque no hace mas que colgarse al inicio
-// sigue siendo muy inestable la comunicacion hacia el signalino
-// ya lo he mejorado, vuelve a ser 2 y ya no se cuelga al inicio, habia un buffer overrun en la 
-// rutina de lectura del puerto serie
 
 //gtestSignal=false;
 int modo_salida=1; //6

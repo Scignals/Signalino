@@ -62,6 +62,7 @@ extern char buffer_comentaserial[];
 void inicia_serial_pc();
 void leeSerial_signalino();
 void comentaSerial(String texto);
+void imprime_linea2( int modo_hex_dec_nada, Stream &port_serial );
 void imprime_linea( int modo_hex_dec_nada);
 void imprime_openEEG_p2(int modo);
 void imprime_openBCI_V3(int modo_bci_protocolo);

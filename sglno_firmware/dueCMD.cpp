@@ -71,7 +71,7 @@ void due_inicia_hw() {
   }
   // parpadeo del led 13 q avisa si hemos leido los canales adecuados
   for (int i = 0; i < gMaxChan; i++) {
-    parpadea(200 / (1 + gMaxChan);
+    parpadea(1000 / (1 + gMaxChan));
   }
   // y por fin activamos la interrupcion
   attachInterrupt(digitalPinToInterrupt(IPIN_DRDY), ads9_lee_datos, FALLING);
@@ -101,4 +101,3 @@ void parpadea(int intervalo)
 #endif
 
 }
-

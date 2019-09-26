@@ -37,7 +37,7 @@ extern int gMaxChan;
 extern int gWired_speed;
 
 void mensaje_inicio(void);
-void mensaje_inicio_bt(void);
+
 
 
 

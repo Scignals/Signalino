@@ -19,8 +19,8 @@
 //
 #include "version.h"
 
-const char * build_version = "0.4";
-const char * build_fecha = "sep 16, 2018";
+const char * build_version = "0.41";
+const char * build_fecha = "sep 26, 2019";
 
 #if defined(BOARD_DUE)
 const char * build_board = "Arduino Due";
@@ -30,60 +30,50 @@ const char * build_board = "Teensy 3.2";
 
 
 
-void mensaje_inicio(){
-   WiredSerial.println("");
-   WiredSerial.print(F("SIGNALINO v "));
-   WiredSerial.println(build_version);   
-   WiredSerial.print(F("build "));
-   WiredSerial.println(build_fecha);  
-   WiredSerial.print(F("board "));
-   WiredSerial.println(build_board);
-   WiredSerial.println(F("(c) ILSB Technologies"));
+
+
+
+void _mensaje_inicio(Stream &port_serial){
+   port_serial.println("");
+   port_serial.print(F("SIGNALINO v "));
+   port_serial.println(build_version);   
+   port_serial.print(F("build "));
+   port_serial.println(build_fecha);  
+   port_serial.print(F("board "));
+   port_serial.println(build_board);
+   port_serial.println(F("(c) ILSB Technologies"));
   
    // si hay 8 canales, es q esta vivo...
-   WiredSerial.print(F("canales activos: "));
-   WiredSerial.println(gMaxChan);
-   WiredSerial.print(F("speed com: "));
-   WiredSerial.println(gWired_speed);
-   WiredSerial.println(F("Comandos: (separados por punto y coma)"));
-   WiredSerial.println(F("hlp  -- ayuda "));
-   WiredSerial.println(F("rec  -- chorro datos on/off")); 
-   WiredSerial.println(F("sim  -- señal simulada on/off"));    
-   WiredSerial.println(F("simN -- N1, señal normal. N2, test. N3, simulada")); 
-   WiredSerial.println(F("ganN -- ganancia del ads1299 N=1..8 --> 1,2,4,4,6,8,12,24x"));
-   WiredSerial.println(F("frmN -- formatos de salida: N=0,va cambiando. Ahora hay 8. Por defecto, 6"));
-   WiredSerial.println(F("inpN -- parametros de adquisición: N1:ref2x1 N2:bipx24 N3:refx24"));
-   WiredSerial.println(F("bltN -- bluetooth 1=on 2=off"));
+   port_serial.print(F("canales activos: "));
+   port_serial.println(gMaxChan);
+   port_serial.print(F("speed com: "));
+   port_serial.println(gWired_speed);
+   port_serial.println(F("Comandos: (separados por punto y coma)"));
+   port_serial.println(F("recN -- chorro datos 0:off 1:on")); 
+   port_serial.println(F("simN -- N1:1X N2:cuadrada(ADS) N3:seno(arduino) N4:12x")); 
+   port_serial.println(F("ganN -- ganancia del ads1299 N=1..8 --> 1,2,4,4,6,8,12,24x"));
+   port_serial.println(F("frmN -- data format: N=0..8(6)"));
+   port_serial.println(F("inpN -- input parameters: N1:ref2x1 N2:bipx24 N3:refx24"));
+   port_serial.println(F("bltN -- bluetooth 1=on 0=off"));
+   port_serial.println(F("hlp  -- mensaje de ayuda y espera 'enter' "));
+   port_serial.println(F("oka  -- mensaje de ayuda y sigue corriendo"));
+   
    
     
-   
+// Comandos de control:
+// gan: ganancia del amplificador
+// inp: input mode (CHART, EEG, EMG)
+// sim: señal de salida del signalino (real 1x, onda cuadrada del ads, señal simulada por software, real 12x )
+// frm: formato de salida de datos ()
+// rec: rec0 apaga salida, rec1 la restaura
+// hlp: mensaje de inicio y espera un enter por wiredsignal
+// oka: mensaje de inicio y sigue corriendo
+// blt: bluetooth 1:on/0:off
+
+
 }
 
-void mensaje_inicio_bt(){
-   HC06.println("");
-   HC06.print(F("SIGNALINO v "));
-   HC06.println(build_version);   
-   HC06.print(F("build "));
-   HC06.println(build_fecha);  
-   HC06.print(F("board "));
-   HC06.println(build_board);
-   HC06.println(F("(c) ILSB Technologies"));
-  
-   // si hay 8 canales, es q esta vivo...
-   HC06.print(F("canales activos: "));
-   HC06.println(gMaxChan);
-   HC06.print(F("speed com: "));
-   HC06.println(gWired_speed);
-   HC06.println(F("Comandos: (separados por punto y coma)"));
-   HC06.println(F("hlp  -- ayuda "));
-   HC06.println(F("rec  -- chorro datos on/off")); 
-   HC06.println(F("sim  -- señal simulada on/off"));    
-   HC06.println(F("simN -- N1, señal normal. N2, test. N3, simulada")); 
-   HC06.println(F("ganN -- ganancia del ads1299 N=1..8 --> 1,2,4,4,6,8,12,24x"));
-   HC06.println(F("frmN -- formatos de salida: N=0,va cambiando. Ahora hay 8. Por defecto, 6"));
-   HC06.println(F("inpN -- parametros de adquisición: N1:ref2x1 N2:bipx24 N3:refx24"));
-   HC06.println(F("bltN -- bluetooth 1=on 2=off"));
-   
-    
-   
+void mensaje_inicio(void){
+  _mensaje_inicio(WiredSerial);
+  _mensaje_inicio(HC06);  
 }

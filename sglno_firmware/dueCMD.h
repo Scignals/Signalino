@@ -83,7 +83,8 @@ y el Serial es el programming port
 
 
 
-// tenemos un modulo HC06 en serial3, y por tanto en pines pins 15 (RX) and 14 (TX)
+// tenemos un modulo Bluetooth HC06 en serial3, y por tanto en pines pins 15 (RX) and 14 (TX)
+// deberia cambiarse por un SMD que iria a los mismos pines
 // como serial usamos (xq lo prefiero) el programing port (Serial), parece mas estable
 
 

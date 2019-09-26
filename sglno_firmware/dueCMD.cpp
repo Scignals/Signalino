@@ -70,16 +70,12 @@ void due_inicia_hw() {
       gMaxChan = 0;
   }
   // parpadeo del led 13 q avisa si hemos leido los canales adecuados
-  // esto segun esta no funciona en teensy, por lo del pin 13 que lleva el reloj SPI
-  // creo q habria q usar la rutina parpadea, es lo q falta aqui
   for (int i = 0; i < gMaxChan; i++) {
-    digitalWrite(kPIN_LED, HIGH); // el reloj sea el interno
-    delay(400 / (1 + gMaxChan));
-    digitalWrite(kPIN_LED, LOW); // el reloj sea el interno
-    delay(400 / (1 + gMaxChan));
+    parpadea(200 / (1 + gMaxChan);
   }
-  // y por fin nos preparamos para leer
+  // y por fin activamos la interrupcion
   attachInterrupt(digitalPinToInterrupt(IPIN_DRDY), ads9_lee_datos, FALLING);
+
 #if defined(BOARD_DUE)
   Serial.println("Due transmiting");
 #elif defined(BOARD_TS3x2)

@@ -13,9 +13,13 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 // MA  02110-1301, USA.
 //
+// This software has been inspired by the work of many people:
+// Chris Rorden (original ADS1298 driver), see http://www.mccauslandcenter.sc.edu/crnl/open-source-eegecgemg 
+// Adam Feuer (Author of HackEEGShield), see https://github.com/adamfeuer 
+// JA Barios, ILSB technologies, Spain.
+// And, of course, the Arduino team
 //
-//  Copyright © 2016 JA Barios, ILSB technologies, Spain.
-//  This file is part of project: SIGNALINO, a ADS1299-based bioamplifier
+// This file is part of project: SIGNALINO, a ADS1299-based bioamplifier
 //
 #include "dueCMD.h"
 #include "firmware_mbs.h"

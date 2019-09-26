@@ -39,6 +39,7 @@ This software has been inspired by the work of many people:
 
 Chris Rorden (original ADS1298 driver), see http://www.mccauslandcenter.sc.edu/crnl/open-source-eegecgemg
 Adam Feuer (Author of HackEEGShield), see https://github.com/adamfeuer
+The people of openBCI project
 And, of course, the Arduino team
 
 

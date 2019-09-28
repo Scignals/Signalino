@@ -1,30 +1,19 @@
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 3
-// of the License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-// MA  02110-1301, USA.
-//
-// This software has been inspired by the work of many people:
-// Chris Rorden (original ADS1298 driver), see http://www.mccauslandcenter.sc.edu/crnl/open-source-eegecgemg 
-// Adam Feuer (Author of HackEEGShield), see https://github.com/adamfeuer 
-// JA Barios, ILSB technologies, Spain.
-// And, of course, the Arduino team
-//
+
 // This file is part of project: SIGNALINO, a ADS1299-based bioamplifier
 //
 
 /* adsCMD.cpp
- *  
+ *  Lectura, ganancias, muestreo, canales activos... del ADS1299
  */
+
+ // cosas para hacer: 
+ // en mi setup, creo q los canales se ponen a srb2 cuando cambias la ganancia
+ // no es logico
+ // gSenalObtenida deberia ser un enum
+ // aqui no deberia haber mas que un adscmd.h y el resto de includes ahi
+ // firmware_mbs.h contiene definiciones duplicadas, deberia desaparecer, creo
+ // RDATAC -- read data continuous 
+
 #include "Arduino.h"   // use: Wprogram.h for Arduino versions prior to 1.0
 #include "adsCMD.h"
 #include "ads1298.h"
@@ -36,10 +25,7 @@
 
 //	int     gSenal_obtenida=TABLA_SENO;
 int gSenal_obtenida = SENAL_REAL;
-
-boolean gtestSignal = false;
 boolean gtestHEX = false;
-boolean gtestCONTINUO = true;
 boolean gserialVerbose = true;
 boolean gBluetooth = true;
 volatile int gHayLectura = 0;
@@ -53,46 +39,49 @@ volatile int numSerialBytes = 0;
 long contador_muestras = 0;
 
 // globales
-int gMaxChan = 0; //maximum number of channels supported by ads1299 = 8
-int gIDval = 0; //Device ID : lower 5 bits of  ID Control Register
-int gNumActiveChan = 0;
-boolean isRDATAC = false;
-boolean gActiveChan[9]; // reports whether channels 1..9 are active
+int gMaxChan 		= 0; //maximum number of channels supported by ads1299 = 8
+int gIDval 			= 0; //Device ID : lower 5 bits of  ID Control Register
+int gNumActiveChan 	= 0;
+boolean gisReadingDataNow 	= false;
+boolean gActiveChan[MAX_CANALES_HARDWARE]; // reports whether channels 1..9 are active
 
 void ads9_send_command(int cmd) {
+	using namespace ADS1298;
 	SPI.beginTransaction(SPISettings(14000000, MSBFIRST, SPI_MODE1));
-	digitalWrite(IPIN_CS, LOW);
-	SPI.transfer(cmd);
-	delayMicroseconds(1);
-	digitalWrite(IPIN_CS, HIGH);
+		digitalWrite(IPIN_CS, LOW);
+		SPI.transfer(cmd);
+		delayMicroseconds(1);
+		digitalWrite(IPIN_CS, HIGH);
 	SPI.endTransaction();
 
 }
 
 void ads9_wreg(int reg, int val) {
 	//see pages 40,43 of datasheet -
+	using namespace ADS1298;
 	SPI.beginTransaction(SPISettings(14000000, MSBFIRST, SPI_MODE1));
-	digitalWrite(IPIN_CS, LOW);
-	SPI.transfer(ADS1298::WREG | reg);
-	SPI.transfer(0);	// number of registers to be read/written – 1
-	SPI.transfer(val);
-	delayMicroseconds(1);
-	digitalWrite(IPIN_CS, HIGH);
+		digitalWrite(IPIN_CS, LOW);
+		SPI.transfer(WREG | reg);
+		SPI.transfer(0);	// number of registers to be read/written – 1
+		SPI.transfer(val);
+		delayMicroseconds(1);
+		digitalWrite(IPIN_CS, HIGH);
 	SPI.endTransaction();
 
 }
 
 int ads9_rreg(int reg) {
+	using namespace ADS1298;
 	SPI.beginTransaction(SPISettings(14000000, MSBFIRST, SPI_MODE1));
-	int out = 0;
-	digitalWrite(IPIN_CS, LOW);
-	SPI.transfer(ADS1298::RREG | reg);
-	delayMicroseconds(5);
-	SPI.transfer(0);	// number of registers to be read/written – 1
-	delayMicroseconds(5);
-	out = SPI.transfer(0);
-	delayMicroseconds(1);
-	digitalWrite(IPIN_CS, HIGH);
+		int out = 0;
+		digitalWrite(IPIN_CS, LOW);
+		SPI.transfer(RREG | reg);
+		delayMicroseconds(5);
+		SPI.transfer(0);	// number of registers to be read/written – 1
+		delayMicroseconds(5);
+		out = SPI.transfer(0);
+		delayMicroseconds(1);
+		digitalWrite(IPIN_CS, HIGH);
 	SPI.endTransaction();
 	return (out);
 }
@@ -159,7 +148,7 @@ void ads9_misetup_ADS1299(int opciones) {
 	}
 	//start streaming data
 	ads9_detectActiveChannels();
-	isRDATAC = true;
+	gisReadingDataNow = true;
 	ads9_send_command(RDATAC);
 	ads9_send_command(START);
 }
@@ -198,7 +187,7 @@ void ads9_setGanancia(int valor) {
 		}
 	}
 	ads9_detectActiveChannels();
-	isRDATAC = true;
+	gisReadingDataNow = true;
 	ads9_send_command(RDATAC);
 	ads9_send_command(START);
 }
@@ -210,7 +199,7 @@ void ads9_set_fm(int p_samplefm) {
 	delay(10);
 	ads9_wreg(GPIO, char(0));
 	ads9_wreg(CONFIG1, p_samplefm);
-	isRDATAC = true;
+	gisReadingDataNow = true;
 	ads9_send_command(RDATAC);
 	ads9_send_command(START);
 }

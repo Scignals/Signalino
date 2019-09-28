@@ -32,7 +32,6 @@
 #include "dueCMD.h"
 
 extern int gSenal_obtenida;
-extern boolean gtestSignal;
 extern boolean gtestHEX;
 extern boolean gtestCONTINUO;
 extern boolean gserialVerbose;
@@ -52,11 +51,13 @@ extern volatile int gHayLectura;
 extern volatile int numSerialBytes;
 extern volatile unsigned char serialBytes[];
 
+
+#define MAX_CANALES_HARDWARE 32
 extern int gMaxChan;
 extern int gIDval; //Device ID : lower 5 bits of  ID Control Register 
 extern int gNumActiveChan;
 extern boolean gActiveChan[]; // reports whether channels 1..9 are active
-extern boolean isRDATAC;
+extern boolean gisReadingDataNow;
 
 //function prototypes
 void ads9_wreg(int reg, int val); //write register

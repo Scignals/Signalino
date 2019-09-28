@@ -23,25 +23,29 @@
 //
 #include "signalino.h"
 
+// hay tres modos: pararse, señal cuadrada, señal real
 
-void inicia_signalino(int p_gtestCONTINUO,int p_gtestSignal){
+
+
+
+void inicia_signalino(SIGNALINO_maquina_estados p_estado){
   crea_tabla_seno();
   inicia_serial_pc();
   due_inicia_hw();
- 
-  if(!p_gtestCONTINUO){
-      mensaje_inicio();
-      while(1); //nos quedamos "colgados" para terminar con un mensaje en pantalla
-  }
-  
-  if( p_gtestSignal )
-      ads9_misetup_ADS1299(MODE_SENAL_TEST);
-  else
-      ads9_misetup_ADS1299(MODE_SENAL_REAL_24x);
-  
+  switch(p_estado) {
+    case QUIETO_PARADO: 
+        mensaje_inicio();
+        while(1); //nos quedamos "colgados" para terminar con un mensaje en pantalla
+        break;
+    case SENAL_CUADRADA_ADS: 
+        ads9_misetup_ADS1299(MODE_SENAL_TEST);
+        break;
+    case SENAL_REAL_ADS:
+        ads9_misetup_ADS1299(MODE_SENAL_REAL_24x);
+        break;
+    }
+
 }
-
-
 // protocolo openEEG firmware P2, es util para openvibe pero creo que no funciona aun
 // solo registra 6 canales
 // 1-numeros 2-hex 3-openeeg-hex 4-openeeg-bytes
@@ -49,8 +53,8 @@ void inicia_signalino(int p_gtestCONTINUO,int p_gtestSignal){
 // el modo de salida por defecto, 
 // está en 2 porque así lee el monitor del IDE de arduino
 
-void imprimeSerial_signalino(int p_modo_salida){
-    switch(p_modo_salida){
+void imprimeSerial_signalino(int p_formato_salida){
+    switch(p_formato_salida){
               case 1: imprime_linea(MODO_HEX);break;
               case 2: imprime_linea(MODO_DEC);break;
               case 3: imprime_openEEG_p2(1);break;

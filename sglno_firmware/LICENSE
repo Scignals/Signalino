@@ -21,31 +21,3 @@
 //
 // This file is part of project: SIGNALINO, a ADS1299-based bioamplifier
 //
-/* firmware_signalino.h */
-#ifndef SIGNALINO_H
-#define SIGNALINO_H
-
-#include "Arduino.h"
-#include "ads1298.h"
-#include "adsCMD.h"
-#include "util.h"
-
-#include "firmware_mbs.h"
-#include "sig_simuladas.h"
-#include "version.h"
-#include "serieCMD.h"
-
-enum SIGNALINO_maquina_estados {
-    QUIETO_PARADO,
-    SENAL_CUADRADA_ADS,
-    SENAL_REAL_ADS
-};
-
-
-void inicia_signalino(SIGNALINO_maquina_estados p_estado);
-void imprimeSerial_signalino(int p_modo_salida);
-
-
-
-#endif
-

@@ -40,35 +40,24 @@
 
 #define BOARD_DUE
 //#define BOARD_TS3x2
-
-
-
 #define INTERVALO_LEESERIAL 1*16
 
-
-
-//gtestSignal=false;
-int modo_salida=1; //6
-
-
+SIGNALINO_maquina_estados sg_estado=SENAL_REAL_ADS;
 unsigned long tick=0;
 
-
 void setup(){
- inicia_signalino(gtestCONTINUO,gtestSignal);
-  
+ gFormatoSerial=1; 
+ inicia_signalino(sg_estado);
 }
 
 
 void loop()
 {
   // la lectura de datos se hace por interrupciones
-  if(gHayLectura && gtestCONTINUO && isRDATAC ){
+  if(gHayLectura && gisReadingDataNow ){
          gHayLectura=0;
          tick++;    
-         if(tick%1==0)imprimeSerial_signalino(modo_salida);
+         if(tick%1==0)imprimeSerial_signalino(gFormatoSerial);
          if(tick%(INTERVALO_LEESERIAL)==0)leeSerial_signalino();
   }
-  
-//If you know x to be non-negative, and b to be a power of two, you can use x & (b - 1)     
 }

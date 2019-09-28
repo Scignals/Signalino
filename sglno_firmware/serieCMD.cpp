@@ -33,11 +33,12 @@ int gBT_speed=0;
 
 char buffer_comentaserial[MAX_COMENTARIO_SERIAL];
 char *gLetra; // buffer usado en to_hex, inicializado en inicia_serial()
+int gFormatoSerial; 
+
 
 int minComando=1;
 int maxComando=8;
 int ultimo_modo=8;
-//int modo_salida=1;
 
 
 void inicia_serial_pc(){
@@ -184,7 +185,7 @@ void imprime_openEEG_p2(int modo_openeeg_protocolo){
  }
 }
 
-// protocolo openbci V3, el que usabamos antes por defecto, modo 2;
+// protocolo openbci V3, el que usamod por defecto, modo 2;
 void imprime_openBCI_V3(int modo_bci_protocolo){
 // protocolo interesante, descrito en 
 // https://github.com/OpenBCI/OpenBCI-V2hardware-DEPRECATED/wiki/Data-Format-for-OpenBCI-V3 
@@ -219,7 +220,10 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
      txBuf[ind++] = 0;
      txBuf[ind++] = 0;
      
-     //este ultimo es C0 para los acelerometros, pero podia ser otro
+     //este ultimo es C0 para los acelerometros
+     // en su logar podian ir por ejemplo un registro de  booleanos: luz, bluetooh si/no,
+     // pero entonces hay q cambiar el C0 por CX
+
      txBuf[ind]=0xC0; 
 
    ind=0;
@@ -301,36 +305,33 @@ void leeSerial_signalino(){
 
 void procesaComando(String texto){
      String parametro;
+     int p1=0;
      comentaSerial(texto);
-     comentaSerial("#-->ok");
+     comentaSerial("-->ok");
+
 
      // 1 normal  2 test 3 simulada 4 max ganancia
      if(texto.startsWith("sim")){ 
-         parametro=texto.substring(3,4);
-         int p1=parametro.toInt();
+         p1=extrae_parametro(texto);
          switch(p1){
             case 1:
               gSenal_obtenida=SENAL_REAL;
-              gtestSignal=false;
               ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
               break;
             case 2:
               gSenal_obtenida=TABLA_SENO;
-              gtestSignal=false;
               /* no activamos ads9_misetup porque... */
               break;
             case 3:
               gSenal_obtenida=SENAL_REAL;
-              gtestSignal=true;
               ads9_misetup_ADS1299(MODE_SENAL_TEST);
               break;
            case 4:
               gSenal_obtenida=SENAL_REAL;
-              gtestSignal=false;
               ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
               break;
           }       
-         sprintf(buffer_comentaserial,"#Signal mode changed to %d",p1);
+         sprintf(buffer_comentaserial,"Signal mode changed to %d",p1);
          comentaSerial(buffer_comentaserial);
       } else if(texto.startsWith("hlp")){
           mensaje_inicio();          
@@ -338,87 +339,78 @@ void procesaComando(String texto){
           return;
      
       } else if(texto.startsWith("frm")){
-         parametro=texto.substring(3,4);
-         int p1=parametro.toInt();
+         p1=extrae_parametro(texto);
          if(p1==0){
-            if(++modo_salida>maxComando)modo_salida=minComando;
+            if(++gFormatoSerial>maxComando)gFormatoSerial=minComando;
          } else if (p1<=maxComando){
-            modo_salida=p1;
+            gFormatoSerial=p1;
          }    
-         sprintf(buffer_comentaserial,"#Data format changed to %d",p1);
+         sprintf(buffer_comentaserial,"Data format changed to %d",p1);
          comentaSerial(buffer_comentaserial);
    
       } else if(texto.startsWith("rec")){
-        // rec0 apaga el chorro
-         parametro=texto.substring(3,4);
-         int p1=parametro.toInt();
+         p1=extrae_parametro(texto);
          if(p1==0){
-            ultimo_modo=modo_salida;
-            modo_salida=8;            
+            // rec0 calla la salida de numeros por puerto serie
+            ultimo_modo=gFormatoSerial;
+            gFormatoSerial=8;            
          } else {
-            modo_salida=ultimo_modo;
+            gFormatoSerial=ultimo_modo;
          }
-         sprintf(buffer_comentaserial,"#Data format restored to  %d",p1);
+         sprintf(buffer_comentaserial,"Data format restored to  %d",p1);
          comentaSerial(buffer_comentaserial);
          // return;
 
       } else if(texto.startsWith("gan")){ 
-          parametro=texto.substring(3,4);
-          int p1=parametro.toInt();
-          gSenal_obtenida=SENAL_REAL;
-          gtestSignal=true;
-          ads9_setGanancia(p1);
-          sprintf(buffer_comentaserial,"#Gain changed to %d",p1);
-          comentaSerial(buffer_comentaserial);
+         p1=extrae_parametro(texto);
+         gSenal_obtenida=SENAL_REAL;
+         ads9_setGanancia(p1);
+         sprintf(buffer_comentaserial,"Gain changed to %d",p1);
+         comentaSerial(buffer_comentaserial);
 
       } else if(texto.startsWith("inp")){ 
-             parametro=texto.substring(3,4);
-             int p1=parametro.toInt();
+            p1=extrae_parametro(texto);
              switch(p1){
                 case 1:
                 gSenal_obtenida=SENAL_REAL;
                 ads9_misetup_ADS1299(MODE_SENAL_SRB2);
-                comentaSerial("#CHART mode (all channels to SRB2)");
-                // todos a SRB2
+                comentaSerial("CHART mode (all channels to SRB2)");
                 break;
                 case 2:
                 gSenal_obtenida=SENAL_REAL;
                 ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
-                comentaSerial("#EMG mode (bipolar channels, 1x)");
+                comentaSerial("EMG mode (bipolar channels, 1x)");
                 // bipolares 1x
                 break;
                 case 3:
                 gSenal_obtenida=SENAL_REAL;
                 ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
-                comentaSerial("#EEG mode (bipolar channels, 1x)");
+                comentaSerial("EEG mode (bipolar channels, 1x)");
                 //bipolares 12x
                 break;
              }
         } else if(texto.startsWith("blt")){ 
-             parametro=texto.substring(3,4);
-             int p1=parametro.toInt();
-             switch(p1){
+               p1=extrae_parametro(texto);
+               switch(p1){
                 case 0:
                 gBluetooth=false;
-                comentaSerial("#BT off");
+                comentaSerial("BT off");
                 break;
                 case 1:
                 gBluetooth=true;
-                comentaSerial("#BT on");
+                comentaSerial("BT on");
                 break;
              }
       } else if(texto.startsWith("oka")){ 
           mensaje_inicio();
-          
-         // return;
       }       
                
       return;
 
 }
 
-// estas macros no se usan, pero es una idea a estudiar
-
-#define Signalino_write(texto) WiredSerial.write(texto); if(gBluetooth)HC06.write(texto  ); 
-
-#define Signalino_print(texto) WiredSerial.print(texto); if(gBluetooth)HC06.print(texto  ); 
+int extrae_parametro( String texto){
+         String parametro=texto.substring(3,4);
+         int p1=parametro.toInt();
+         return(p1);
+}

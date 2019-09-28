@@ -1,24 +1,4 @@
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 3
-// of the License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-// MA  02110-1301, USA.
-//
-// This software has been inspired by the work of many people:
-// Chris Rorden (original ADS1298 driver), see http://www.mccauslandcenter.sc.edu/crnl/open-source-eegecgemg 
-// Adam Feuer (Author of HackEEGShield), see https://github.com/adamfeuer 
-// JA Barios, ILSB technologies, Spain.
-// And, of course, the Arduino team
-//
+
 // This file is part of project: SIGNALINO, a ADS1299-based bioamplifier
 //
 #ifndef ADS1298_H
@@ -226,7 +206,7 @@ namespace ADS1298 {
 
 
 		ELECTRODE_INPUT = 0x00,
-    	SRB2_INPUT = SRB2n,
+    SRB2_INPUT = SRB2n,
 		SHORTED = MUXn0,
 		RLD_INPUT = MUXn1,
 		MVDD = (MUXn1 | MUXn0),
@@ -242,8 +222,8 @@ namespace ADS1298 {
 		GAIN12 = 0x40,
 		GAIN11 = 0x20,
 		GAIN10 = 0x10,
-    		SR21   = 0x08,
-    		MUX12 = 0x04,
+    SR21   = 0x08,
+    MUX12 = 0x04,
 		MUX11 = 0x02,
 		MUX10 = 0x01,
 
@@ -268,7 +248,7 @@ namespace ADS1298 {
 		GAIN32 = 0x40,
 		GAIN31 = 0x20,
 		GAIN30 = 0x10,
-    		SR23   = 0x08,
+    SR23   = 0x08,
 		MUX32 = 0x04,
 		MUX31 = 0x02,
 		MUX30 = 0x01,
@@ -282,7 +262,7 @@ namespace ADS1298 {
 		GAIN41 = 0x20,
 		GAIN40 = 0x10,
 		SR24   = 0x08,
-    		MUX42 = 0x04,
+    MUX42 = 0x04,
 		MUX41 = 0x02,
 		MUX40 = 0x01,
 
@@ -294,8 +274,8 @@ namespace ADS1298 {
 		GAIN52 = 0x40,
 		GAIN51 = 0x20,
 		GAIN50 = 0x10,
-	  	SR25   = 0x08,
-    		MUX51 = 0x02,
+	  SR25   = 0x08,
+    MUX51 = 0x02,
 		MUX50 = 0x01,
 
 		CH5SET_const = 0x00
@@ -307,7 +287,7 @@ namespace ADS1298 {
 		GAIN61 = 0x20,
 		GAIN60 = 0x10,
 		SR26   = 0x08,
-    		MUX62 = 0x04,
+    MUX62 = 0x04,
 		MUX61 = 0x02,
 		MUX60 = 0x01,
 
@@ -320,7 +300,7 @@ namespace ADS1298 {
 		GAIN71 = 0x20,
 		GAIN70 = 0x10,
 		SR27   = 0x08,
-    		MUX72 = 0x04,
+    MUX72 = 0x04,
 		MUX71 = 0x02,
 		MUX70 = 0x01,
 
@@ -333,7 +313,7 @@ namespace ADS1298 {
 		GAIN81 = 0x20,
 		GAIN80 = 0x10,
 		SR28   = 0x08,
-    		MUX82 = 0x04,
+    MUX82 = 0x04,
 		MUX81 = 0x02,
 		MUX80 = 0x01,
 

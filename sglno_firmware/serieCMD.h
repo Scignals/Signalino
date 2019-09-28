@@ -54,8 +54,7 @@ extern boolean gBluetooth;
 extern unsigned char txBuf[];  //17 en openeeg   32 enopenbci
 extern unsigned long indice_paquete;
 extern int gSenal_obtenida;
-extern boolean gtestSignal;
-extern int modo_salida;
+extern int gFormatoSerial;
 extern int minComando;
 extern int maxComando;
 extern int ultimo_modo;
@@ -71,6 +70,8 @@ void imprime_linea( int modo_hex_dec_nada);
 void imprime_openEEG_p2(int modo);
 void imprime_openBCI_V3(int modo_bci_protocolo);
 void procesaComando(String texto);
+int extrae_parametro(String texto);
+
 
 
 #endif

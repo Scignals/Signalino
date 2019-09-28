@@ -22,7 +22,10 @@ boolean debugeando=false;
 int gUltimotimestamp;
 float fm_calculada;
 
-void serDecode(Buffer bf) { //assuming Arduino is only transfering active channels
+void serDecode(Buffer bf) { 
+  //assuming Arduino is only transfering active channels
+  //assuming que cada paquete termina en 0xC0
+  //assuming que el formato es openbci3
 
   int packetBytes = 33; // modo openbci3
   int cabecero=2;
@@ -125,7 +128,7 @@ void serie_inicia()
   } catch (Exception e){ 
           javax.swing.JOptionPane.showMessageDialog(frame,
             "<html><div align='center'>Scignals v "+version_software+" (c) 2016</div>"+
-           "<p>No devices detected: please check Arduino power and drivers. Offline mode...</p></html>");  
+           "<p>No devices detected: please check Arduino power and drivers. Going to Offline mode...</p></html>");  
           modo_conectado=false;
     //exit();
   }
@@ -140,7 +143,7 @@ void setPortNum()
    if (nPort < 1) {
       javax.swing.JOptionPane.showMessageDialog(frame,
             "<html><div align='center'>Scignals v "+version_software+" (c) 2016</div>"+
-           "<p>No devices detected: please check Arduino power and drivers. Exiting program...</p></html>");  
+           "<p>No serial devices detected: please check Arduino power and drivers. Exiting program...</p></html>");  
       exit();    
       return;
    }

@@ -32,6 +32,14 @@
 
 ///////////////////////////////////////////////
 
+
+/*
+  cosas para hacer: 
+  añadir un objeto serial, que lea directamente del bluetooth. 
+  En pantalla yo veo 6 canales, no 8. y no se por que 
+  el bailecito de los canales es bastante feo. 
+*/
+
 import controlP5.*;
 
 

@@ -27,7 +27,13 @@ const char * build_version = "0.43";
 const char * build_fecha = "sep 28, 2019";
 
 #if defined(BOARD_DUE)
-const char * build_board = "Arduino Due";
+//const char * build_board = "Arduino Due";
+#elif defined(BOARD_TS3x2)
+const char * build_board = "Teensy 3.2";
+#endif
+
+#if defined(ARDUINO_SAM_DUE)
+const char * build_board = BOARD;
 #elif defined(BOARD_TS3x2)
 const char * build_board = "Teensy 3.2";
 #endif
@@ -42,14 +48,15 @@ extern boolean gBluetooth;
 
 void _mensaje_inicio(Stream &port_serial){
    port_serial.println("");
-   port_serial.print(F("SIGNALINO v "));
+   port_serial.print(F("SIGNALINO "));
+   port_serial.print(F("["));
+   port_serial.print(build_board);
+   port_serial.println("]");    
+   port_serial.print(F("(c) ILSB Technologies; v "));
    port_serial.print(build_version);   
-   port_serial.print(F("build "));
+   port_serial.print(F("(build "));
    port_serial.print(build_fecha);  
-   port_serial.print(F("board "));
-   port_serial.println(build_board);
-   port_serial.println(F("(c) ILSB Technologies"));
-  
+   port_serial.println(")");    
    // si hay 8 canales, es q esta vivo...
    port_serial.print(F("canales: "));
    port_serial.print(gMaxChan);

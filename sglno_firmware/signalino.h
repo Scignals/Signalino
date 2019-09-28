@@ -29,6 +29,7 @@
 #include "ads1298.h"
 #include "adsCMD.h"
 #include "util.h"
+#include "boards.h"
 
 #include "firmware_mbs.h"
 #include "sig_simuladas.h"

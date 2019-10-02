@@ -41,8 +41,8 @@ class Chart {
     canales = new ArrayList<Canal>();
     visibles= new int[n_canales];
     for(int i=0;i<n_canales;i++)visibles[i]=1;
-    visibles[3]=0;
-    visibles[6]=0;
+   // visibles[3]=0;
+   // visibles[6]=0;
     
     
     int alto_canal=alto/n_canales;

@@ -82,22 +82,22 @@ FileWriter fw;
 PrintWriter outputfile;
 String timestamp;
 
-//global, usada por varias funciones (creo) 
-int[]  lectura;   // Datos leidos en el puerto serie PImage=img;  
+//global, usada por varias funciones  
+int[]  buffer_lectura;   // Datos leidos en el puerto serie PImage=img;  
 
  
-PImage img1; 
+PImage imagen_fondo; 
     
 void setup() {
 
   size(1000, 600);
   rectMode(CENTER);
-  println("Scignals, signal visor 0.3 (c) 2017 ILSB Technologies ");
+   println("Scignals, signal visor " + version_software +" (c) 2017 ILSB Technologies ");
   
-  img1=loadImage("fondo.gif");
-  image(img1,0,0); //con background, petaba en linux a veces. image parece mas solido. En windows 10, no se ve el gif, aunque no se cuelga
+  imagen_fondo=loadImage("fondo.gif");
+  image(imagen_fondo,0,0); //con background, petaba en linux a veces. image parece mas solido. En windows 10, no se ve el gif, aunque no se cuelga
   
-  lectura=new int[numCanales];
+  buffer_lectura=new int[numCanales];
 
   modo_conectado=false;
   if (!modo_test){

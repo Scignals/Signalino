@@ -52,7 +52,7 @@ void serDecode(Buffer bf) {
                      localAdsByteBuffer[0]=rawData[cabecero+0+(i*3)];
                      localAdsByteBuffer[1]=rawData[cabecero+1+(i*3)];
                      localAdsByteBuffer[2]=rawData[cabecero+2+(i*3)];
-                     lectura[i] = interpret24bitAsInt32(localAdsByteBuffer);
+                     buffer_lectura[i] = interpret24bitAsInt32(localAdsByteBuffer);
            }   
            localAdsByteBuffer[0]=rawData[cabecero+0+(numCanales*3)];
            localAdsByteBuffer[1]=rawData[cabecero+1+(numCanales*3)];
@@ -61,8 +61,8 @@ void serDecode(Buffer bf) {
            fm_calculada=floor(1000000/(timestamp-gUltimotimestamp+1));
            gUltimotimestamp=timestamp;
            //println(fm_calculada);
-           bf.apunta(lectura);
-           if(gGrabando)bf.graba(lectura);
+           bf.apunta(buffer_lectura);
+           if(gGrabando)bf.graba(buffer_lectura);
 
        }
              
@@ -89,13 +89,13 @@ void serRand(Buffer bf) { //numeros aleatorios
   int timestamp=0;
   for(int jj=1;jj<2;jj++){
       for(int i=0;i<numCanales;i++){
-               lectura[i]=1000*(int) random(1,100);
+               buffer_lectura[i]=1000*(int) random(1,100);
       }
       timestamp = millis()*1000;
       gUltimotimestamp=timestamp;
               
-      bf.apunta(lectura);
-      if(gGrabando)bf.graba(lectura);
+      bf.apunta(buffer_lectura);
+      if(gGrabando)bf.graba(buffer_lectura);
   }
   fm_calculada=floor(1000000/(timestamp-gUltimotimestamp+1));
 

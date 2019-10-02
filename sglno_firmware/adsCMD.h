@@ -38,6 +38,9 @@ extern boolean gserialVerbose;
 extern boolean gBluetooth;
 extern volatile int gHayLectura;
 
+
+
+
 #define SENAL_TEST 2 
 #define SENAL_REAL 1 
 
@@ -67,5 +70,6 @@ void ads9_misetup_ADS1299(int opciones); // tambien inicializa
 void ads9_setGanancia(int valor); // eso
 void ads9_detectActiveChannels(); // usa vars del otro lado, no se si es de aqui
 void ads9_lee_datos(void);  // esta va como interrupcion
+void ads9_solo_datos_sin_eeg(void); // esta tambien, pero no usa el ads
 int ads9_getCanales(void);
 

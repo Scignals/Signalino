@@ -26,7 +26,9 @@
 #define DUE_CMD_H
 #include "Arduino.h"
 #include "ads1298.h"
-#include <SPI.h>  // include the SPI library:
+#include <SPI.h>  
+#include <DueTimer.h>
+
 #include "adsCMD.h"
 #include "version.h"
 
@@ -92,6 +94,17 @@ y el Serial es el programming port
 // como serial usamos (xq lo prefiero) el programing port (Serial), parece mas estable
 
 
+enum CHIP_EEG {
+    AMP_ADS1294,
+    AMP_ADS1296,
+    AMP_ADS1298,
+    AMP_ADS1299,
+    AMP_NONE
+};
+
+extern CHIP_EEG gChip_EEG_instalado; 
+
+
 #if defined(BOARD_DUE)
 
 const int PIN_START = 4;
@@ -125,6 +138,3 @@ void parpadea(int intervalo);
 
 
 #endif 
-
-
-

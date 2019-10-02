@@ -28,7 +28,7 @@ void due_inicia_hw() {
   using namespace ADS1298;
 
 
-  //al empezar, reset
+  //al empezar, reset del ADS1299
   // en charmander, el orden de este trozo es critico. Primero reset, y luego set pin mode. Y ni idea de porque. En la anterior, daba igual.
 
   delay(800); //desde Power up, esperar 1 segundo para mover nada
@@ -60,19 +60,38 @@ void due_inicia_hw() {
   switch (gIDval & B00011111 ) { //least significant bits reports channels
     case  B10000: //16
       gMaxChan = 4; //ads1294
+      gChip_EEG_instalado=AMP_ADS1294;
       break;
     case B10001: //17
       gMaxChan = 6; //ads1296
+      gChip_EEG_instalado=AMP_ADS1296;
       break;
     case B10010: //18
       gMaxChan = 8; //ads1298
+      gChip_EEG_instalado=AMP_ADS1298;
       break;
     case B11110: //30
       gMaxChan = 8; //ads1299
+      gChip_EEG_instalado=AMP_ADS1299;
       break;
     default:
-      gMaxChan = 0;
+      // no hemos reconocido el hardware (o no esta...)
+      // asi que implementamos una version simulada
+      gMaxChan = 8;
+      gChip_EEG_instalado=AMP_NONE;
+      gSenal_obtenida=TABLA_SENO;
+      for (int i = 0; i < 3*gMaxChan; i++) {
+          parpadea(100 );
+      }    
+      Serial.println("No hay ADS1299!!!");
+      // y activamos la interrupcion "dummy"
+      // que, de momento al menos, no funciona a nivel hardware
+      // asi que la llamamos como un timer
+      Timer3.attachInterrupt(ads9_solo_datos_sin_eeg).start(4000);
+      return;
   }
+
+  
   // parpadeo del led 13 q avisa si hemos leido los canales adecuados
   for (int i = 0; i < gMaxChan; i++) {
     parpadea(1000 / (1 + gMaxChan));

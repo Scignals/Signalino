@@ -29,6 +29,8 @@ boolean gtestHEX = false;
 boolean gserialVerbose = true;
 boolean gBluetooth = true;
 volatile int gHayLectura = 0;
+CHIP_EEG gChip_EEG_instalado = AMP_ADS1299; //o al menos eso esperamos
+
 
 // donde se apunta la lectura a la vuelta de la interrupcion
 // es superimportante!
@@ -256,4 +258,26 @@ void ads9_lee_datos(void) {
 	SPI.endTransaction();
 	gHayLectura = 1;
 	// se me ocurre q si este fuese gHayLectura++ podria servir como indicador de q no se pudo leer el anterior, tal vez porque va lento (overflow)...
+}
+
+void ads9_solo_datos_sin_eeg(void) {
+// hardware puro, basada en la otra ads9 
+// se utiliza como funcion apuntada en el vector de interrupciones (al inicio, en setup() )
+// NO lee el ads, PERO RELLENA igual serialBytes[]--numSerialBytes
+	int i = 0;
+	numSerialBytes = 1 + (3 * gNumActiveChan); //8-bits header plus 24-bits per ACTIVE channel
+  	digitalWrite(IPIN_CS, LOW);
+  	contador_muestras++;
+  	serialBytes[i++] = 0; //get 1st byte of header
+  	for (int ch = 1; ch <= gMaxChan; ch++) {
+  			// señal seno, creada al inicio
+  			to_3bytes(samples_seno[contador_muestras % TABLE_SIZE] * 100,
+  					serialBytes + i);
+  			i += 3;
+  	}
+  	// cs a 1, hacemos como si leyesemos el ads1299
+  	delayMicroseconds(1);
+    //parpadea(200);
+  	digitalWrite(IPIN_CS, HIGH);
+	gHayLectura = 1;
 }

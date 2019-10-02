@@ -35,7 +35,6 @@
 */
 
 
-#include <SPI.h>  // include the SPI library:
 #include "signalino.h"
 
 #define BOARD_DUE
@@ -43,17 +42,22 @@
 #define INTERVALO_LEESERIAL 1*16
 
 SIGNALINO_maquina_estados sg_estado=SENAL_REAL_ADS;
-unsigned long tick=0;
+unsigned long tick;
+
 
 void setup(){
+ tick=0; 
  gFormatoSerial=1; 
  inicia_signalino(sg_estado);
+
 }
 
 
 void loop()
 {
+  
   // la lectura de datos se hace por interrupciones
+  
   if(gHayLectura && gisReadingDataNow ){
          gHayLectura=0;
          tick++;    

@@ -28,7 +28,7 @@
 #define HC06 Serial3  
 #define WiredSerial Serial   // funciona tb con serialUSB
 
-
+extern const char * build_board;
 extern const char * build_version;
 extern const char * build_fecha;
 extern int gMaxChan;

@@ -23,6 +23,8 @@
 //
 #include "dueCMD.h"
 #include "firmware_mbs.h"
+#include "version.h"
+
 
 void due_inicia_hw() {
   using namespace ADS1298;
@@ -106,11 +108,7 @@ void due_inicia_hw() {
   // y por fin activamos la interrupcion
   attachInterrupt(digitalPinToInterrupt(IPIN_DRDY), ads9_lee_datos, FALLING);
 
-#if defined(BOARD_DUE)
-  Serial.println("Due transmiting");
-#elif defined(BOARD_TS3x2)
-  Serial.println("Teensy transmiting");
-#endif
+  Serial.println((char*)sprintf("%s transmiting",build_board));
 }
 
 void parpadea(int intervalo)

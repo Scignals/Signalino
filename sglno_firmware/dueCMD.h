@@ -27,10 +27,15 @@
 #include "Arduino.h"
 #include "ads1298.h"
 #include <SPI.h>  
-#include <DueTimer.h>
-
 #include "adsCMD.h"
 #include "version.h"
+
+
+#if defined(ARDUINO_SAM_DUE)
+   #include <DueTimer.h>
+#elif defined(TEENSYDUINO)
+  #include <TimerOne.h>
+#endif  
 
 
 
@@ -81,7 +86,8 @@ y el Serial es el programming port
 */
 
 /* 
- * en teensy, los puertos serial 1 a 6 van por otros pines, el Serial3 son los pines 7(RX) y 8(TX), que estan usados
+ * en teensy, los puertos serial 1 a 6 van por otros pines, el Serial3 son los pines 7(RX) y 8(TX), 
+ * que estan usados,
  * mejor pasarlo al serial2 que son 26 y 31, lo que pasa es que estan por detras
  * el Serial es el USB, como el due
  */
@@ -105,7 +111,7 @@ enum CHIP_EEG {
 extern CHIP_EEG gChip_EEG_instalado; 
 
 
-#if defined(BOARD_DUE)
+#if defined(ARDUINO_SAM_DUE)
 
 const int PIN_START = 4;
 const int IPIN_DRDY = 5;
@@ -117,7 +123,7 @@ const int kPIN_LED = 13;//pin con luz led, en Teensy3, is ALSO spi clock!
 const int kPIN_RESET = 8; //Reset en Pin 8
 const int kPIN_CLKSEL = 7; //ClkSel en Pin 7
 
-#elif defined(BOARD_TS3x2)
+#elif defined(TEENSYDUINO)
 
 const int PIN_START = 4;
 const int IPIN_DRDY = 5;

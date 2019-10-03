@@ -37,8 +37,7 @@
 
 #include "signalino.h"
 
-#define BOARD_DUE
-//#define BOARD_TS3x2
+
 #define INTERVALO_LEESERIAL 1*16
 
 SIGNALINO_maquina_estados sg_estado=SENAL_REAL_ADS;

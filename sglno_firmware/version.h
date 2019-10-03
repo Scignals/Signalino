@@ -22,10 +22,8 @@
 #define VERSION_H_
 
 #include "Arduino.h"
-#include "boards.h"
 
-#define BOARD_DUE
-//#define BOARD_TS3x2
+
 
 #define HC06 Serial3  
 #define WiredSerial Serial   // funciona tb con serialUSB

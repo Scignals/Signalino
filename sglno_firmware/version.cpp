@@ -26,15 +26,10 @@
 const char * build_version = "0.43";
 const char * build_fecha = "sep 28, 2019";
 
-#if defined(BOARD_DUE)
-//const char * build_board = "Arduino Due";
-#elif defined(BOARD_TS3x2)
-const char * build_board = "Teensy 3.2";
-#endif
 
 #if defined(ARDUINO_SAM_DUE)
-const char * build_board = BOARD;
-#elif defined(BOARD_TS3x2)
+const char * build_board = "Arduino Due";
+#elif defined(TEENSYDUINO)
 const char * build_board = "Teensy 3.2";
 #endif
 

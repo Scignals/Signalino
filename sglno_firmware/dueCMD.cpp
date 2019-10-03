@@ -87,7 +87,14 @@ void due_inicia_hw() {
       // y activamos la interrupcion "dummy"
       // que, de momento al menos, no funciona a nivel hardware
       // asi que la llamamos como un timer
+
+#if defined(ARDUINO_SAM_DUE)
       Timer3.attachInterrupt(ads9_solo_datos_sin_eeg).start(4000);
+#elif defined(TEENSYDUINO)
+     Timer1.initialize(4000);
+     Timer1.attachInterrupt(ads9_solo_datos_sin_eeg); 
+#endif
+
       return;
   }
 

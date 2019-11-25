@@ -17,49 +17,49 @@
 //  Copyright © 2016 JA Barios
 //  This file is part of project: SCIGNALS, a chart recorder.
 //
-int v1=0;
-boolean debugeando=false;
-int gUltimotimestamp;
+int   v1=0;
+int   gUltimoTimeStamp;
 float fm_calculada;
+boolean debugeando=false;
 
 void serDecode(Buffer bf) { 
   //assuming Arduino is only transfering active channels
-  //assuming que cada paquete termina en 0xC0
-  //assuming que el formato es openbci3
+  //assuming que cada paquete termina en 0xC0 (discutible)
+  //assuming que el formato es openbci3 (6)
 
-  int packetBytes = 33; // modo openbci3
-  int cabecero=2;
-  byte[] rawData = new byte[10*packetBytes*200];
-  
+  int bytes_por_paquete = 33; // modo openbci3
+  int longitud_cabecero=2; // dos bytes: A0 y el timestamp? 
+  byte[] rawData = new byte[10*bytes_por_paquete*200];
   byte[] localAdsByteBuffer = {0,0,0};
-
-  int newlen = port.available();
+  int bytes_available = port.available();
   
-  // println("almacenado en newlen hay ... "+newlen);
-  if (newlen < packetBytes) return;
-  if (newlen > 50*packetBytes*2){
+  if (bytes_available < bytes_por_paquete) return;
+  if (bytes_available > 50*bytes_por_paquete*2){
+                 println("buffer overrun...");
                  port.clear();
                  return;
-   }
+  }
 
-      while(port.available()>=packetBytes){
+  while(port.available()>=bytes_por_paquete){
            int nn=port.readBytesUntil(0xC0, rawData);
 
            //si no coincide la longitud, debe ser un error de lectura
-           if(nn!=packetBytes) continue;
+           if(nn!=bytes_por_paquete) 
+              continue;
  
            for (int i = 0; i < numCanales; i++){
-                     localAdsByteBuffer[0]=rawData[cabecero+0+(i*3)];
-                     localAdsByteBuffer[1]=rawData[cabecero+1+(i*3)];
-                     localAdsByteBuffer[2]=rawData[cabecero+2+(i*3)];
+                     localAdsByteBuffer[0]=rawData[longitud_cabecero+0+(i*3)];
+                     localAdsByteBuffer[1]=rawData[longitud_cabecero+1+(i*3)];
+                     localAdsByteBuffer[2]=rawData[longitud_cabecero+2+(i*3)];
                      buffer_lectura[i] = interpret24bitAsInt32(localAdsByteBuffer);
            }   
-           localAdsByteBuffer[0]=rawData[cabecero+0+(numCanales*3)];
-           localAdsByteBuffer[1]=rawData[cabecero+1+(numCanales*3)];
-           localAdsByteBuffer[2]=rawData[cabecero+2+(numCanales*3)];
+
+           localAdsByteBuffer[0]=rawData[longitud_cabecero+0+(numCanales*3)];
+           localAdsByteBuffer[1]=rawData[longitud_cabecero+1+(numCanales*3)];
+           localAdsByteBuffer[2]=rawData[longitud_cabecero+2+(numCanales*3)];
            int timestamp = interpret24bitAsInt32(localAdsByteBuffer);
-           fm_calculada=floor(1000000/(timestamp-gUltimotimestamp+1));
-           gUltimotimestamp=timestamp;
+           fm_calculada=floor(1000000/(timestamp-gUltimoTimeStamp+1));
+           gUltimoTimeStamp=timestamp;
            //println(fm_calculada);
            bf.apunta(buffer_lectura);
            if(gGrabando)bf.graba(buffer_lectura);
@@ -92,18 +92,18 @@ void serRand(Buffer bf) { //numeros aleatorios
                buffer_lectura[i]=1000*(int) random(1,100);
       }
       timestamp = millis()*1000;
-      gUltimotimestamp=timestamp;
+      gUltimoTimeStamp=timestamp;
               
       bf.apunta(buffer_lectura);
       if(gGrabando)bf.graba(buffer_lectura);
   }
-  fm_calculada=floor(1000000/(timestamp-gUltimotimestamp+1));
+  fm_calculada=floor(1000000/(timestamp-gUltimoTimeStamp+1));
 
 } //void serRand
 
-void serEco() { //numeros aleatorios
-    int newlen = port.available();
-    if(newlen<1)return;
+void serEco() { //copia en la consola lo que entra por el puerto
+    int bytes_available = port.available();
+    if(bytes_available<1)return;
       String texto=port.readString();
       print(texto);
 } //void serEco
@@ -149,7 +149,8 @@ void setPortNum()
    }
    int index = 0;
    for (int i=0; i<nPort; i++) {
-     // esta linea parece una fineza, apareceria resaltado si se llamara cu.us. El problema es q en windows se llama com1 , y en mi linux se llama acm1, y ...
+     // esta linea parece una fineza, apareceria resaltado si se llamara cu.us. 
+     // El problema es q en windows se llama com1 , y en mi linux se llama acm1, y ...
      // pero la mantengo, por si algun dia se me ocurre algo mejor
      if (match(portStr[i], "cu.us") != null) index = i; //Arduino/Teensy names like /dev/cu.usbmodem*" and our BlueTooth is  /dev/cu.us922k0000bt 
      portStr[i] =  i+ " "+portStr[i] ;

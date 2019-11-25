@@ -23,6 +23,8 @@
 //
 #include "dueCMD.h"
 #include "firmware_mbs.h"
+#include "version.h"
+
 
 void due_inicia_hw() {
   using namespace ADS1298;
@@ -105,11 +107,7 @@ void due_inicia_hw() {
      Timer1.attachInterrupt(ads9_lee_datos); 
 
 
-#if defined(ARDUINO_SAM_DUE)
-  Serial.println("Due transmiting");
-#elif defined(TEENSYDUINO)
-  Serial.println("Teensy transmiting");
-#endif
+ Serial.println((char*)sprintf("%s transmiting",build_board));
 }
 
 void parpadea(int intervalo)

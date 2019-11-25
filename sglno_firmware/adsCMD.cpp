@@ -1,11 +1,9 @@
 
 // This file is part of project: SIGNALINO, a ADS1299-based bioamplifier
 //
-
 /* adsCMD.cpp
  *  Lectura, ganancias, muestreo, canales activos... del ADS1299
  */
-
  // cosas para hacer: 
  // en mi setup, creo q los canales se ponen a srb2 cuando cambias la ganancia
  // no es logico
@@ -110,7 +108,7 @@ void ads9_misetup_ADS1299(int opciones) {
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
-					char(ELECTRODE_INPUT | GAIN_1X & ~SRB2_INPUT)); //report this channel with x12 gain
+					char(ELECTRODE_INPUT | GAIN_1X )); 
 		}
 		break;
 	case MODE_SENAL_REAL_12x:
@@ -119,24 +117,27 @@ void ads9_misetup_ADS1299(int opciones) {
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
-					char(ELECTRODE_INPUT | GAIN_12X & ~SRB2_INPUT)); //report this channel with x12 gain
+					char(ELECTRODE_INPUT | GAIN_12X )); 
 		}
 		break;
 
 	case MODE_SENAL_SRB1:
-		// set mode SRB1, util en EEG, inutil ahora xq la placa no tiene la srb1 disponible
-		// gaancia a 1
+		// set mode SRB1, util en EEG, 
+		// senal entraria por entradas P y SRB1 es referencia
+		// bipolar: srb1  y srb2 desactivados
+		// gaancia a 12
 		ads9_wreg(GPIO, char(0));
 		ads9_wreg(PACE, char(0x20)); //set SRB1. Es un electrodo q internamente se une a todas las entradas negativas
 		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
-					char(ELECTRODE_INPUT | GAIN_12X & ~SRB2_INPUT)); //report this channel with x12 gain
+					char(ELECTRODE_INPUT | GAIN_12X & ~SRB2_INPUT)); //SRB1 y ganancia 12
 		}
 		break;
 	case MODE_SENAL_SRB2:
 		// set mode SRB2, util en chart
+		// senal entraria por entradas N 
 		// ganancia a 1
 		ads9_wreg(GPIO, char(0));
 		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
@@ -145,6 +146,10 @@ void ads9_misetup_ADS1299(int opciones) {
 			ads9_wreg(char(CHnSET + i),
 					char(ELECTRODE_INPUT | GAIN_1X | SRB2_INPUT)); //SRB2 y ganancia 1
 		}
+		break;
+	case MODE_IMPEDANCIAS:
+		// se pone a medir impedancias
+		// aun no implementado
 		break;
 
 	}

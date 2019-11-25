@@ -27,7 +27,6 @@
 void due_inicia_hw() {
   using namespace ADS1298;
 
-
   //al empezar, reset del ADS1299
   // en charmander, el orden de este trozo es critico. Primero reset, y luego set pin mode. Y ni idea de porque. En la anterior, daba igual.
 
@@ -36,8 +35,6 @@ void due_inicia_hw() {
   delay(100);
   digitalWrite(kPIN_RESET, HIGH);
   delay(260); //deberia bastar, tiempo en datasheet es 240 ms
-
-
 
   pinMode(IPIN_CS, OUTPUT);
   pinMode(PIN_START, OUTPUT);
@@ -49,12 +46,11 @@ void due_inicia_hw() {
 
   digitalWrite(PIN_START, LOW);
   digitalWrite(IPIN_CS, HIGH);
-  digitalWrite(kPIN_CLKSEL, HIGH); // el reloj sea el interno
+  digitalWrite(kPIN_CLKSEL, HIGH); // usa el reloj  interno
 
   SPI.begin(); //ojo, es imprescindible o se para el prog
   ads9_send_command(SDATAC); // dejamos el modo READ para emitir comandos
   delay(10);
-
   // Determine model number and number of channels available
   gIDval = ads9_rreg(ID); //lower 5 bits of register 0 reveal chip type
   switch (gIDval & B00011111 ) { //least significant bits reports channels
@@ -105,17 +101,20 @@ void due_inicia_hw() {
   }
   // y por fin activamos la interrupcion
   attachInterrupt(digitalPinToInterrupt(IPIN_DRDY), ads9_lee_datos, FALLING);
+       Timer1.initialize(4000);
+     Timer1.attachInterrupt(ads9_lee_datos); 
 
-#if defined(BOARD_DUE)
+
+#if defined(ARDUINO_SAM_DUE)
   Serial.println("Due transmiting");
-#elif defined(BOARD_TS3x2)
+#elif defined(TEENSYDUINO)
   Serial.println("Teensy transmiting");
 #endif
 }
 
 void parpadea(int intervalo)
 {
-#if defined(BOARD_TS3x2)
+#if defined(TEENSYDUINO)
   // SCK pin goes to 14 in teensy, play with led, and then back
   //https://forum.pjrc.com/threads/25727-an-FYI-on-remapping-the-Teensy-3-LED-and-using-SPI
   // be careful, not sure if more complex things are needed here
@@ -126,7 +125,7 @@ void parpadea(int intervalo)
   delay(intervalo / 2);                // wait for a second
   digitalWrite(ledPin, LOW);    // set the LED off
   delay(intervalo / 2);                // wait for a second
-#if defined(BOARD_TS3x2)
+#if defined(TEENSYDUINO)
   SPI.setSCK(13);
 #endif
 

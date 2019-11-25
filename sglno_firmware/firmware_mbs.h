@@ -47,6 +47,7 @@
 #define MODE_SENAL_SRB1 4
 #define MODE_SENAL_SRB2 5
 #define MODE_SENAL_BIP 6
+#define MODE_IMPEDANCIAS 7
 
  
 

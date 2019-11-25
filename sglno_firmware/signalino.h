@@ -38,7 +38,15 @@
 enum SIGNALINO_maquina_estados {
     QUIETO_PARADO,
     SENAL_CUADRADA_ADS,
-    SENAL_REAL_ADS
+    SENAL_REAL_ADS,
+    MIDIENDO_IMPEDANCIAS
+
+};
+
+
+enum SIGNALINO_serial_interprete {
+    INTERPRETE_SIGNALINO,
+    INTERPRETE_OPENBCI   // aun no implementado
 };
 
 

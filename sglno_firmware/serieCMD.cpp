@@ -320,7 +320,7 @@ void procesaComando(String texto){
               break;
             case 2:
               gSenal_obtenida=TABLA_SENO;
-              /* no activamos ads9_misetup porque... */
+              /* no activamos ads9_misetup porque... (vamos, que ni idea) */
               break;
             case 3:
               gSenal_obtenida=SENAL_REAL;
@@ -413,4 +413,12 @@ int extrae_parametro( String texto){
          String parametro=texto.substring(3,4);
          int p1=parametro.toInt();
          return(p1);
+}
+
+
+
+void procesaComando_estilo_openBCI(String texto){
+      // no implementado, tal vez algun dia...
+      return;
+
 }

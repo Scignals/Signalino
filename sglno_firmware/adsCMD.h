@@ -63,13 +63,12 @@ extern boolean gActiveChan[]; // reports whether channels 1..9 are active
 extern boolean gisReadingDataNow;
 
 //function prototypes
-void ads9_wreg(int reg, int val); //write register
-void ads9_send_command(int cmd); //send command
-int ads9_rreg(int reg); //read register
-void ads9_misetup_ADS1299(int opciones); // tambien inicializa
-void ads9_setGanancia(int valor); // eso
-void ads9_detectActiveChannels(); // usa vars del otro lado, no se si es de aqui
-void ads9_lee_datos(void);  // esta va como interrupcion
-void ads9_solo_datos_sin_eeg(void); // esta tambien, pero no usa el ads
-int ads9_getCanales(void);
+void    ads9_wreg(int reg, int val); //write register
+void    ads9_send_command(int cmd); //send command
+int     ads9_rreg(int reg); //read register
+void    ads9_misetup_ADS1299(int opciones); // tambien inicializa
+void    ads9_setGanancia(int valor); // eso
+void    ads9_detectActiveChannels(); // usa vars del otro lado, no se si es de aqui
+void    ads9_lee_datos(void);  // esta va como interrupcion
+void    ads9_solo_datos_sin_eeg(void); // esta tambien, TIMER, pero no usa el ads
 

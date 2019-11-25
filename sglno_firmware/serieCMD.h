@@ -70,6 +70,7 @@ void imprime_linea( int modo_hex_dec_nada);
 void imprime_openEEG_p2(int modo);
 void imprime_openBCI_V3(int modo_bci_protocolo);
 void procesaComando(String texto);
+void procesaComando_estilo_openBCI(String texto); // no implementado
 int extrae_parametro(String texto);
 
 

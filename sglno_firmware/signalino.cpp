@@ -43,6 +43,10 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
     case SENAL_REAL_ADS:
         ads9_misetup_ADS1299(MODE_SENAL_REAL_24x);
         break;
+    case MIDIENDO_IMPEDANCIAS:  //no existe aun...
+        ads9_misetup_ADS1299(MODE_IMPEDANCIAS);
+        break;
+        
     }
 
 }

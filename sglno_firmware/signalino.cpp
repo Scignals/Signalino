@@ -31,7 +31,7 @@
 void inicia_signalino(SIGNALINO_maquina_estados p_estado){
   crea_tabla_seno();
   inicia_serial_pc();
-  due_inicia_hw();
+  teensy_inicia_hw();
   switch(p_estado) {
     case QUIETO_PARADO: 
         mensaje_inicio();

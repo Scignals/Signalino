@@ -44,6 +44,8 @@
 //#define BOARD_TS3x2
 #define INTERVALO_LEESERIAL 1*16
 
+#define TEENSYDUINO
+
 SIGNALINO_maquina_estados sg_estado=SENAL_REAL_ADS;
 SIGNALINO_serial_interprete sg_interprete=INTERPRETE_SIGNALINO;
 
@@ -51,6 +53,28 @@ unsigned long tick;
 
 
 void setup(){
+
+#define cs 10   //10
+#define start1 6
+#define reset1 2
+#define pwdn 3
+#define drdy 4
+
+#define cs_low digitalWrite(cs, LOW)
+#define cs_high digitalWrite(cs, HIGH)
+
+#define start_off digitalWrite(start1, LOW)
+#define start_on digitalWrite(start1, HIGH)
+
+
+#define reset_off digitalWrite(reset1, LOW)
+#define reset_on digitalWrite(reset1, HIGH)
+
+#define pwdn_off digitalWrite(pwdn, LOW)
+#define pwdn_on digitalWrite(pwdn, HIGH)
+
+
+  
  tick=0; 
  gFormatoSerial=1; 
  inicia_signalino(sg_estado);

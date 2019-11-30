@@ -26,7 +26,7 @@
 #include "version.h"
 
 
-void due_inicia_hw() {
+void teensy_inicia_hw() {
   using namespace ADS1298;
 
   //al empezar, reset del ADS1299
@@ -86,12 +86,12 @@ void due_inicia_hw() {
       // que, de momento al menos, no funciona a nivel hardware
       // asi que la llamamos como un timer
 
-      #if defined(ARDUINO_SAM_DUE)
-            Timer3.attachInterrupt(ads9_solo_datos_sin_eeg).start(4000);
-      #elif defined(TEENSYDUINO)
-          Timer1.initialize(4000);
-          Timer1.attachInterrupt(ads9_solo_datos_sin_eeg); 
-      #endif
+#if defined(ARDUINO_SAM_DUE)
+      Timer3.attachInterrupt(ads9_solo_datos_sin_eeg).start(4000);
+#elif defined(TEENSYDUINO)
+     Timer1.initialize(4000);
+     Timer1.attachInterrupt(ads9_solo_datos_sin_eeg); 
+#endif
 
       return;
   }
@@ -110,21 +110,3 @@ void due_inicia_hw() {
  Serial.println((char*)sprintf("%s transmiting",build_board));
 }
 
-void parpadea(int intervalo)
-{
-#if defined(TEENSYDUINO)
-  // SCK pin goes to 14 in teensy, play with led, and then back
-  //https://forum.pjrc.com/threads/25727-an-FYI-on-remapping-the-Teensy-3-LED-and-using-SPI
-  // be careful, not sure if more complex things are needed here
-  SPI.setSCK(14);
-#endif
-  const int ledPin = 13;
-  digitalWrite(ledPin, HIGH);   // set the LED on
-  delay(intervalo / 2);                // wait for a second
-  digitalWrite(ledPin, LOW);    // set the LED off
-  delay(intervalo / 2);                // wait for a second
-#if defined(TEENSYDUINO)
-  SPI.setSCK(13);
-#endif
-
-}

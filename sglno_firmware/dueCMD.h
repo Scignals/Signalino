@@ -148,6 +148,7 @@ const int kPIN_CLKSEL = 7; //ClkSel en Pin 7
 
 
 void due_inicia_hw();
+void teensy_inicia_hw();
 void parpadea(int intervalo);
 
 

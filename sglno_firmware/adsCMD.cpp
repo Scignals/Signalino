@@ -47,7 +47,7 @@ boolean gActiveChan[MAX_CANALES_HARDWARE]; // reports whether channels 1..9 are 
 
 void ads9_send_command(int cmd) {
 	using namespace ADS1298;
-	SPI.beginTransaction(SPISettings(14000000, MSBFIRST, SPI_MODE1));
+	SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
 		digitalWrite(IPIN_CS, LOW);
 		SPI.transfer(cmd);
 		delayMicroseconds(1);
@@ -59,7 +59,7 @@ void ads9_send_command(int cmd) {
 void ads9_wreg(int reg, int val) {
 	//see pages 40,43 of datasheet -
 	using namespace ADS1298;
-	SPI.beginTransaction(SPISettings(14000000, MSBFIRST, SPI_MODE1));
+	SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
 		digitalWrite(IPIN_CS, LOW);
 		SPI.transfer(WREG | reg);
 		SPI.transfer(0);	// number of registers to be read/written – 1
@@ -72,7 +72,7 @@ void ads9_wreg(int reg, int val) {
 
 int ads9_rreg(int reg) {
 	using namespace ADS1298;
-	SPI.beginTransaction(SPISettings(14000000, MSBFIRST, SPI_MODE1));
+	SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
 		int out = 0;
 		digitalWrite(IPIN_CS, LOW);
 		SPI.transfer(RREG | reg);
@@ -232,7 +232,7 @@ void ads9_lee_datos(void) {
 	numSerialBytes = 1 + (3 * gNumActiveChan); //8-bits header plus 24-bits per ACTIVE channel
 
 // cs a 0, empezamos a leer el ads1299    
-	SPI.beginTransaction(SPISettings(14000000, MSBFIRST, SPI_MODE1));
+	SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
   	digitalWrite(IPIN_CS, LOW);
   	contador_muestras++;
   	serialBytes[i++] = SPI.transfer(0); //get 1st byte of header

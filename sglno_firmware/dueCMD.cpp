@@ -103,8 +103,8 @@ void due_inicia_hw() {
   }
   // y por fin activamos la interrupcion
   attachInterrupt(digitalPinToInterrupt(IPIN_DRDY), ads9_lee_datos, FALLING);
-       Timer1.initialize(4000);
-     Timer1.attachInterrupt(ads9_lee_datos); 
+  //     Timer1.initialize(4000);
+  //   Timer1.attachInterrupt(ads9_lee_datos); 
 
 
  Serial.println((char*)sprintf("%s transmiting",build_board));

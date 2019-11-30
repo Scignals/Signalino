@@ -125,15 +125,23 @@ const int kPIN_CLKSEL = 7; //ClkSel en Pin 7
 
 #elif defined(TEENSYDUINO)
 
-const int PIN_START = 4;
-const int IPIN_DRDY = 5;
+const int PIN_START = 6;
+const int IPIN_DRDY = 4;
 const int IPIN_CS = 10;//10
 //const int PIN_DOUT = 11;//SPI out
 //const int PIN_DIN = 12;//SPI in
 //const int PIN_SCLK = 13;//SPI clock
 const int kPIN_LED = 13;//pin con luz led, en Teensy3, is ALSO spi clock!
-const int kPIN_RESET = 8; //Reset en Pin 8
+const int kPIN_RESET = 2; //Reset en Pin 8
 const int kPIN_CLKSEL = 7; //ClkSel en Pin 7
+
+// sacado de vteensy
+#define cs 10   //10
+#define start1 6
+#define reset1 2
+#define pwdn 3
+#define drdy 4
+
 
 #endif
 

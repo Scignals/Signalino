@@ -37,15 +37,11 @@
 * ---------------------------------------------
 */
 
-
+// #define ARDUINO_SAM_DUE
+#define TEENSYDUINO
 #include "signalino.h"
 
-#define BOARD_DUE
-//#define BOARD_TS3x2
 #define INTERVALO_LEESERIAL 1*16
-
-#define ARDUINO_SAM_DUE
-//#define TEENSYDUINO
 
 SIGNALINO_maquina_estados sg_estado=SENAL_REAL_ADS;
 SIGNALINO_serial_interprete sg_interprete=INTERPRETE_SIGNALINO;
@@ -53,38 +49,87 @@ SIGNALINO_serial_interprete sg_interprete=INTERPRETE_SIGNALINO;
 unsigned long tick;
 
 
-void setup(){
-
 #define cs 10   //10
 #define start1 6
 #define reset1 2
 #define pwdn 3
 #define drdy 4
-
 #define cs_low digitalWrite(cs, LOW)
 #define cs_high digitalWrite(cs, HIGH)
-
 #define start_off digitalWrite(start1, LOW)
 #define start_on digitalWrite(start1, HIGH)
-
-
 #define reset_off digitalWrite(reset1, LOW)
 #define reset_on digitalWrite(reset1, HIGH)
-
 #define pwdn_off digitalWrite(pwdn, LOW)
 #define pwdn_on digitalWrite(pwdn, HIGH)
 
 
-  
+char data[3];
+char i;
+char j;
+byte data2[27];
+signed long out[9];
+
+
+
+
+void setup(){
+
+
+
  tick=0; 
  gFormatoSerial=1; 
+ 
+ while(teensy_cuenta_ch()<8);
+ teensy_configini();
+ 
  inicia_signalino(sg_estado);
 
 }
 
-
+ 
 void loop()
 {
+  int i;
+  int cont=0;
+// teensy_inicia_hw();
+
+//return;
+while(0){
+		if(digitalRead(drdy) == LOW)
+		{
+
+			cs_low;
+			SPI.transfer(0x12);
+			for (i=0;i<27;i++)
+			{
+				data2[i]= SPI.transfer(0x00);
+			}
+			cs_high;
+
+			for (i=0;i<9;i++)
+			{
+				j=i*3;
+				out[i]=0x00;
+
+				out[i]=data2[(j)];
+
+				out[i]=(out[i]<<8) | data2[(j+1)];
+				out[i]=(out[i]<<8) | data2[(j+1)];
+			}
+
+			for (i=1;i<8;i++)
+			{
+
+				Serial.print(out[i]);
+				Serial.print(" ");
+
+			}
+
+			Serial.println(out[8]);
+
+		}
+	}
   
   // la lectura de datos se hace por interrupciones
   
@@ -94,4 +139,10 @@ void loop()
          if(tick%1==0)imprimeSerial_signalino(gFormatoSerial);
          if(tick%(INTERVALO_LEESERIAL)==0)leeSerial_signalino();
   }
+//  if((++cont)%80==0)Serial.println('.');
+//  else Serial.print(cont);
+  
+
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////

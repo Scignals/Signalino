@@ -16,21 +16,21 @@
 // This software has been inspired by the work of many people:
 // Chris Rorden (original ADS1298 driver), see http://www.mccauslandcenter.sc.edu/crnl/open-source-eegecgemg 
 // Adam Feuer (Author of HackEEGShield), see https://github.com/adamfeuer 
-// JA Barios, ILSB technologies, Spain.
+// JA Barios, Marco ILSB technologies, Spain.
 // And, of course, the Arduino team
 //
 // This file is part of project: SIGNALINO, a ADS1299-based bioamplifier
 //
 #include "version.h"
 
-const char * build_version = "0.43";
-const char * build_fecha = "sep 28, 2019";
+const char * build_version = "0.50";
+const char * build_fecha = "dic 4, 2019";
 
 
 #if defined(ARDUINO_SAM_DUE)
 const char * build_board = "Arduino Due";
 #elif defined(TEENSYDUINO)
-const char * build_board = "Teensy 3.X";
+const char * build_board = "Teensy 3.6";
 #endif
 
 

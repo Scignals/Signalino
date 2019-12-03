@@ -54,27 +54,6 @@ unsigned long tick;
 
 
 void setup(){
-
-#define cs 10   //10
-#define start1 6
-#define reset1 2
-#define pwdn 3
-#define drdy 4
-
-#define cs_low digitalWrite(cs, LOW)
-#define cs_high digitalWrite(cs, HIGH)
-
-#define start_off digitalWrite(start1, LOW)
-#define start_on digitalWrite(start1, HIGH)
-
-
-#define reset_off digitalWrite(reset1, LOW)
-#define reset_on digitalWrite(reset1, HIGH)
-
-#define pwdn_off digitalWrite(pwdn, LOW)
-#define pwdn_on digitalWrite(pwdn, HIGH)
-
-
   
  tick=0; 
  gFormatoSerial=1; 

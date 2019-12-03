@@ -26,13 +26,11 @@
 #include "version.h"
 
 
+#if defined(TEENSYDUINO)
+
 byte cmd_read[23];
 byte data1;
-
-
 byte cuenta_canales_EEG(void);
-
-
 
 byte teensy_cuenta_ch() {
 
@@ -59,52 +57,125 @@ byte teensy_cuenta_ch() {
 }
 
 
-byte teensy_inicia_hw() {
+void teensy_configini(void)
+{
+  int i;
 
-  using namespace ADS1298;
-  byte canales;
+  byte a=24;
+  redreg(a,0);
 
-  delay(800);
-  Serial.begin(115200);
-
-
-  pinMode(cs, OUTPUT);
-  pinMode(start1, OUTPUT);
-  pinMode(reset1, OUTPUT);
-  pinMode(pwdn, OUTPUT);
-  pinMode(drdy, INPUT);
-
-
-  reset_off;delay(10);reset_on;delay(100);
-  pwdn_on;cs_high;start_on;
-
-  SPI.begin();
-  canales = identifica_chip_EEG();
-
-
-  
-  teensy_configini();
-
-  return canales;
-//  ads9_send_command(SDATAC); // dejamos el modo READ para emitir comandos
-  delay(10);
-  // Determine model number and number of channels available
-//  gIDval = ads9_rreg(ID); //lower 5 bits of register 0 reveal chip type
-
-  Serial.println(sprintf("el idval es ... %d",gIDval));
-
-  for (int i = 0; i < gMaxChan; i++) {
-    parpadea(1000 / (1 + gMaxChan));
+  // aqui hay unos numeros magicos que simplemente no se de donde salen
+  cmd_read[0x01]=0xD6;
+  cmd_read[0x02]=0xD5;
+  cmd_read[0x03]=0xE8;
+  for (i=5;i<=12;i++)
+  {
+    cmd_read[i]=0x45;
   }
-
+  writereg(23, 1);
   attachInterrupt(digitalPinToInterrupt(drdy), ads9_lee_datos, FALLING);
-
 
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////
+void redreg(byte cant, byte numb)
+{
+  byte cmd1=numb;
+  numb=(0x20 + cmd1);
+  cant=cant-1;
+
+  SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
+    delay(1);cs_low;delay(1);
+    SPI.transfer(0x11);
+    SPI.transfer(numb);
+    SPI.transfer(cant);
+    for(int n=0;n<(cant+1);n++)
+    {
+      cmd_read[n]=SPI.transfer(0x00);
+    }
+    cs_high;
+  SPI.endTransaction();
+  return;
+}
 
 
+void writereg(byte cant, byte numb)
+{
+  byte n=numb;
+  numb=(0x40 | numb);
+  cant=cant-1;
+  cs_low;
+  delay(1);
+  SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
+    SPI.transfer(0x11);
+    delayMicroseconds(2);
+    SPI.transfer(numb);
+    SPI.transfer(cant);
+    for(n;n<=cant;n++)
+    {
+      SPI.transfer(cmd_read[n]);
+    }
+    cs_high;
+  SPI.endTransaction();
+  return;
+}
 
+byte cuenta_canales_EEG()
+{
+  Serial.print("Counting device channels...");
+  byte revid;
+  byte ch;
+  byte dev_id;
+  byte num_ch;
+  cs_low;
+  delayMicroseconds(1000);
+  SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
+    SPI.transfer(0x11);
+    delayMicroseconds(2);
+    SPI.transfer(0x20);
+    SPI.transfer(0x00);
+    data1=SPI.transfer(0x00);
+  SPI.endTransaction();
+  cs_high;
+
+  ch=((data1>>4) & 1);
+  revid=((data1>>5) & 3); 
+  dev_id=((data1>>2) & 3);
+  num_ch=(data1 & 3);
+  num_ch=(num_ch*2)+4;
+  if(ch==1)
+  {
+    if(dev_id==3)
+    {
+      Serial.println(num_ch);
+      Serial.print("Device ID: ");
+      Serial.println("ADS1299-X");
+      gMaxChan = (int) num_ch; //ads1299
+      gChip_EEG_instalado=AMP_ADS1299;
+
+//      Serial.print("Numero de canales: ");
+    }
+    else
+    {
+      Serial.println();
+      Serial.print("Device ID: ");
+      Serial.println("unknown"); 
+      Serial.print("Datos obtenidos: ");
+      Serial.println(data1,BIN);
+    }
+
+  }
+  else
+  {
+    Serial.println();
+    Serial.println("Error de conexión con el dispositivo. ");
+    Serial.print("Datos obtenidos: ");
+    Serial.println(data1,BIN);
+  }
+  return num_ch;
+}
+
+#endif
 
 void due_inicia_hw() {
   using namespace ADS1298;
@@ -207,124 +278,4 @@ void parpadea(int intervalo)
   SPI.setSCK(13);
 #endif
 
-}
-
-
-void teensy_configini(void)
-{
-  int i;
-
-  byte a=24;
-  redreg(a,0);
-
-  // aqui hay unos numeros magicos que simplemente no se de donde salen
-  cmd_read[0x01]=0xD6;
-  cmd_read[0x02]=0xD5;
-  cmd_read[0x03]=0xE8;
-  for (i=5;i<=12;i++)
-  {
-    cmd_read[i]=0x45;
-  }
-  writereg(23, 1);
-  attachInterrupt(digitalPinToInterrupt(drdy), ads9_lee_datos, FALLING);
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////
-void redreg(byte cant, byte numb)
-{
-  byte cmd1=numb;
-  numb=(0x20 + cmd1);
-  cant=cant-1;
-
-  SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
-    delay(1);cs_low;delay(1);
-    SPI.transfer(0x11);
-    SPI.transfer(numb);
-    SPI.transfer(cant);
-    for(int n=0;n<(cant+1);n++)
-    {
-      cmd_read[n]=SPI.transfer(0x00);
-    }
-    cs_high;
-  SPI.endTransaction();
-  return;
-}
-
-
-void writereg(byte cant, byte numb)
-{
-  byte n=numb;
-  numb=(0x40 | numb);
-  cant=cant-1;
-  cs_low;
-  delay(1);
-  SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
-    SPI.transfer(0x11);
-    delayMicroseconds(2);
-    SPI.transfer(numb);
-    SPI.transfer(cant);
-    for(n;n<=cant;n++)
-    {
-      SPI.transfer(cmd_read[n]);
-    }
-    cs_high;
-  SPI.endTransaction();
-  return;
-}
-
-
-byte cuenta_canales_EEG()
-{
-  Serial.print("Counting device channels...");
-  byte revid;
-  byte ch;
-  byte dev_id;
-  byte num_ch;
-  cs_low;
-  delayMicroseconds(1000);
-  SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
-    SPI.transfer(0x11);
-    delayMicroseconds(2);
-    SPI.transfer(0x20);
-    SPI.transfer(0x00);
-    data1=SPI.transfer(0x00);
-  SPI.endTransaction();
-  cs_high;
-
-  ch=((data1>>4) & 1);
-  revid=((data1>>5) & 3); 
-  dev_id=((data1>>2) & 3);
-  num_ch=(data1 & 3);
-  num_ch=(num_ch*2)+4;
-  if(ch==1)
-  {
-    if(dev_id==3)
-    {
-      Serial.println(num_ch);
-      Serial.print("Device ID: ");
-      Serial.println("ADS1299-X");
-      gMaxChan = (int) num_ch; //ads1299
-      gChip_EEG_instalado=AMP_ADS1299;
-
-//      Serial.print("Numero de canales: ");
-    }
-    else
-    {
-      Serial.println();
-      Serial.print("Device ID: ");
-      Serial.println("unknown"); 
-      Serial.print("Datos obtenidos: ");
-      Serial.println(data1,BIN);
-    }
-
-  }
-  else
-  {
-    Serial.println();
-    Serial.println("Error de conexión con el dispositivo. ");
-    Serial.print("Datos obtenidos: ");
-    Serial.println(data1,BIN);
-  }
-  return num_ch;
 }

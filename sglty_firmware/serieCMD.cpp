@@ -44,7 +44,6 @@ int ultimo_modo=8;
 void inicia_serial_pc(){
   gLetra=new char[80];  
   WiredSerial.begin(SERIAL_SPEED);
-  while(!WiredSerial); 
   while (WiredSerial.read() >= 0) {} ;
   delay(200);  // Catch Due reset problem
   gWired_speed=SERIAL_SPEED;
@@ -199,6 +198,9 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
    dos_int dosnum;
    byte timestamp[3];
 
+   //for debug
+   // gBluetooth=true;
+   // HC06.println("estoy vivo en imprimeserial BT!");
 
    ind=2;
    txBuf[0]=0xA0;
@@ -231,13 +233,19 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
     // protocolo open_bci V3, pero con mumeros ascii   
      for(int m=0;m<2;m++){
         WiredSerial.print(txBuf[ind]);
+        if(gBluetooth)HC06.print(txBuf[ind]);
         WiredSerial.print(SEPARADOR_SERIAL );
+        if(gBluetooth)HC06.print(SEPARADOR_SERIAL );
         ind++;
      }
      for(int m=0;m<10;m++){
         long vv = to_Int32(txBuf+ind);
         WiredSerial.print(vv );
-        if(m<9)WiredSerial.print(SEPARADOR_SERIAL );
+        if(gBluetooth)HC06.print(vv );
+        if(m<9){
+           WiredSerial.print(SEPARADOR_SERIAL );
+           if(gBluetooth)HC06.print(SEPARADOR_SERIAL );
+        }
         ind+=3;
      }
 
@@ -319,12 +327,12 @@ void procesaComando(String texto){
               ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
               break;
             case 2:
-              gSenal_obtenida=TABLA_SENO;
-              /* no activamos ads9_misetup porque... (vamos, que ni idea) */
-              break;
-            case 3:
               gSenal_obtenida=SENAL_REAL;
               ads9_misetup_ADS1299(MODE_SENAL_TEST);
+              break;
+            case 3:
+              gSenal_obtenida=TABLA_SENO;
+              /* no activamos ads9_misetup porque... (vamos, que ni idea) */
               break;
            case 4:
               gSenal_obtenida=SENAL_REAL;

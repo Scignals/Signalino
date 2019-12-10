@@ -37,10 +37,6 @@ byte teensy_cuenta_ch() {
   using namespace ADS1298;
   byte canales;
 
-  delay(800); // es critico, si lo quitas no arranca
-  Serial.begin(115200);
-
-
   pinMode(cs, OUTPUT);
   pinMode(start1, OUTPUT);
   pinMode(reset1, OUTPUT);
@@ -50,8 +46,12 @@ byte teensy_cuenta_ch() {
 
   reset_off;delay(10);reset_on;delay(100);
   pwdn_on;cs_high;start_on;
+ 
+ 
   SPI.begin();
 
+  WiredSerial.begin(115200);
+  HC06.begin(115200);
   canales = cuenta_canales_EEG();
   return canales;
 }
@@ -122,7 +122,8 @@ void writereg(byte cant, byte numb)
 
 byte cuenta_canales_EEG()
 {
-  Serial.print("Counting device channels...");
+
+//  Serial.print("Counting device channels...");
   byte revid;
   byte ch;
   byte dev_id;
@@ -138,6 +139,7 @@ byte cuenta_canales_EEG()
   SPI.endTransaction();
   cs_high;
 
+
   ch=((data1>>4) & 1);
   revid=((data1>>5) & 3); 
   dev_id=((data1>>2) & 3);
@@ -152,8 +154,7 @@ byte cuenta_canales_EEG()
       Serial.println("ADS1299-X");
       gMaxChan = (int) num_ch; //ads1299
       gChip_EEG_instalado=AMP_ADS1299;
-
-//      Serial.print("Numero de canales: ");
+      Serial.print("Numero de canales: ");
     }
     else
     {

@@ -37,8 +37,8 @@
 * ---------------------------------------------
 */
 
-#define ARDUINO_SAM_DUE
-//#define TEENSYDUINO
+//define ARDUINO_SAM_DUE
+#define TEENSYDUINO
 
 #include "signalino.h"
 
@@ -57,27 +57,32 @@ char j;
 byte data2[27];
 signed long out[9];
 
-
+boolean gSerialPrinting = true;
+ 
 
 
 void setup(){
 
  tick=0; 
  gFormatoSerial=1; 
+ gBluetooth = true;
+ gSerialPrinting = true;
 
- #if defined(TEENSYDUINO)
+ delay(900);
+
+
+#if defined(TEENSYDUINO)
    while(teensy_cuenta_ch()<8);
    teensy_configini();
  #endif
-
  inicia_signalino(sg_estado);
 
 }
 
- 
 void loop()
 {
-  
+
+
   // la lectura de datos se hace por interrupciones
   
   if(gHayLectura && gisReadingDataNow ){

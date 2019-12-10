@@ -105,10 +105,7 @@ void imprime_linea( int modo_hex){
 void imprime_openEEG_p2(int modo_openeeg_protocolo){
 // modo 1; numeros. Modo 2: bytes . Modo 3; hexadecimal
    int ind;
-   int indj=0;
    static int count = -1;
-   unsigned long ul;
-   dos_int dosnum;
 
    ind=0;
    txBuf[ind++]=0xA5;
@@ -192,10 +189,6 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
 // modo 1; numeros. Modo 2: bytes . Modo 3; hexadecimal
   
    int ind;
-   int indj=0;
-   static int count = -1;
-   unsigned long ul;
-   dos_int dosnum;
    byte timestamp[3];
 
    //for debug

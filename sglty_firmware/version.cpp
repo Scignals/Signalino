@@ -23,8 +23,8 @@
 //
 #include "version.h"
 
-const char * build_version = "0.50";
-const char * build_fecha = "dic 4, 2019";
+const char * build_version = "0.51";
+const char * build_fecha = "dic 10, 2019";
 
 
 #if defined(ARDUINO_SAM_DUE)
@@ -47,7 +47,7 @@ void _mensaje_inicio(Stream &port_serial){
    port_serial.print(F("["));
    port_serial.print(build_board);
    port_serial.println("]");    
-   port_serial.print(F("(c) ILSB Technologies; v "));
+   port_serial.print(F("(c) Scignals; v "));
    port_serial.print(build_version);   
    port_serial.print(F("(build "));
    port_serial.print(build_fecha);  
@@ -58,7 +58,7 @@ void _mensaje_inicio(Stream &port_serial){
    port_serial.print(F("; bps: "));
    port_serial.print(gWired_speed);
    port_serial.print(F("; format: "));
-   port_serial.print(gWired_speed);
+   port_serial.println(gFormatoSerial);
    
    port_serial.println(F("Comandos: (separados por punto y coma)"));
    port_serial.println(F("recN -- chorro datos 0:off 1:on")); 

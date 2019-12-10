@@ -133,7 +133,7 @@ void ads9_misetup_ADS1299(int opciones) {
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
-					char(ELECTRODE_INPUT | GAIN_12X & ~SRB2_INPUT)); //SRB1 y ganancia 12
+					char((ELECTRODE_INPUT | GAIN_12X) & ~SRB2_INPUT)); //SRB1 y ganancia 12
 		}
 		break;
 	case MODE_SENAL_SRB2:

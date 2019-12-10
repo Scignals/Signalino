@@ -24,15 +24,21 @@
 #include "Arduino.h"
 
 
-
+#if defined(TEENSYDUINO)
 #define HC06 Serial3  
 #define WiredSerial Serial   // funciona tb con serialUSB ¿en due?
+#elif defined(ARDUINO_SAM_DUE)
+#define HC06 Serial3  
+#define WiredSerial Serial   // funciona tb con serialUSB ¿en due?
+#endif
 
 extern const char * build_board;
 extern const char * build_version;
 extern const char * build_fecha;
 extern int gMaxChan;
 extern int gWired_speed;
+extern int gFormatoSerial;
+
 
 void mensaje_inicio(void);
 

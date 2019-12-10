@@ -48,15 +48,6 @@ SIGNALINO_maquina_estados sg_estado=SENAL_REAL_ADS;
 SIGNALINO_serial_interprete sg_interprete=INTERPRETE_SIGNALINO;
 
 unsigned long tick;
-
-
-
-char data[3];
-char i;
-char j;
-byte data2[27];
-signed long out[9];
-
 boolean gSerialPrinting = true;
  
 

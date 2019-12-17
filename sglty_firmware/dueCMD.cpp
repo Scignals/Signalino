@@ -49,8 +49,10 @@ byte teensy_cuenta_ch() {
  
  
   SPI.begin();
+  delay(800);
 
   WiredSerial.begin(115200);
+  delay(100);
   HC06.begin(115200);
   canales = cuenta_canales_EEG();
   return canales;
@@ -124,6 +126,7 @@ byte cuenta_canales_EEG()
 {
 
 //  Serial.print("Counting device channels...");
+  byte revid;
   byte ch;
   byte dev_id;
   byte num_ch;
@@ -140,7 +143,7 @@ byte cuenta_canales_EEG()
 
 
   ch=((data1>>4) & 1);
-  //revid=((data1>>5) & 3); 
+  revid=((data1>>5) & 3); 
   dev_id=((data1>>2) & 3);
   num_ch=(data1 & 3);
   num_ch=(num_ch*2)+4;

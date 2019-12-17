@@ -37,8 +37,8 @@
 * ---------------------------------------------
 */
 
-//define ARDUINO_SAM_DUE
-#define TEENSYDUINO
+#define ARDUINO_SAM_DUE
+//#define TEENSYDUINO
 
 #include "signalino.h"
 
@@ -64,7 +64,7 @@ void setup(){
 
 #if defined(TEENSYDUINO)
    while(teensy_cuenta_ch()<8);
-   teensy_configini();
+   teensy_configini();  
  #endif
  inicia_signalino(sg_estado);
 
@@ -73,7 +73,7 @@ void setup(){
 void loop()
 {
 
-
+ 
   // la lectura de datos se hace por interrupciones
   
   if(gHayLectura && gisReadingDataNow ){

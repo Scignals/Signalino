@@ -24,10 +24,14 @@
 // Reprogram BlueTooth module to operate at higher speeds
 // Warning: it is possible to reset Bluetooth module to operate at a speed faster than you can re-connect to it in the future. 
 // Tested with Teensy2,Teensy3,ArduinoLeonardo,ArduinoDue -older Arduinos do not have hardware serial and can not support fast serial port speeds
-// JBH only tested with Due
+// JBH only tested with Due and Teensy
 // After uploading sketch to Arduino select Tools/SerialMonitor to start reprogramming module and observe progress
 
-char*  pin =         "6666";                    // Pairing Code for Module, 4 digits only.. (0000-9999). I like 6666
+char*  pin =         "1234";                    // Pairing Code for Module, 4 digits only.. (0000-9999). I like 6666
+
+//define only one of these
+#define TEENSYDUINO
+//#define ARDUINO_SAM_DUE
 
 // if original, 3- If modified, 7
 //original BPS - typically 3rd index = 9600 bps, modified BPS - typically 7rd index = 115200 bps
@@ -38,15 +42,23 @@ long bps_modulo= 7; // if original, 3- If modified, 7
 //----Typically no need to edit lines below---------------
 
 //For Signalino-Due:  HC06 is in serial3
+//For Signalino-Teensy:  HC06 is in serial3
+
 #define bt Serial3 //Bluetooth module attached to Serial3 
 
-#if defined(__SAM3X8E__) //if Arduino Due
+#if defined(ARDUINO_SAM_DUE) //if Arduino Due
   #define WiredSerial Serial //Due Programming port
   const long bps = 115200;//desired bps
   // in the name i prefer do not include the pin, students are not predictable...
-  char* name =    "sigino_115kbt";//"us922k0000bt"; //any name you want -Teensy/Arduino names start "usbmodem", so  "us" can help detect if Teensy is attached, you could also add pin number (0000)
+  char* name =    "snoD_1234";//"us922k0000bt"; //any name you want -Teensy/Arduino names start "usbmodem", so  "us" can help detect if Teensy is attached, you could also add pin number (0000)
   int led =         13;  // Pin of Blinking LED, pin 13 for Arduino/Teensy3, Pin 11 for Teensy2
-  
+#elif defined(TEENSYDUINO)
+  #define WiredSerial Serial
+  const long bps =  115200;//desired bps
+  char* name =    "snoT_1234";//"us922k0000bt"; //any name you want -Teensy/Arduino names start "usbmodem", so  "us" can help detect if Teensy is attached, you could also add pin number (0000)
+  int led =         13;  // Pin of Blinking LED, pin 13 for Arduino/Teensy3, Pin 11 for Teensy2
+
+/*
 #elif defined(__MK20DX128__) //if Teensy 3.0...
   #define WiredSerial Serial
   const long bps =  460800;//desired bps
@@ -60,6 +72,9 @@ long bps_modulo= 7; // if original, 3- If modified, 7
   char* name =    "us115k0000bt";//"us922k0000bt"; //any name you want -Teensy/Arduino names start "usbmodem", so  "us" can help detect if Teensy is attached, you could also add pin number (0000)
   int led =         11;   // Pin of Blinking LED, pin 13 for Arduino/Teensy3, Pin 11 for Teensy2
   //For Teensy2:  Connect BtRx to Tx (pin8) and BtTx to Rx (pin 7)
+
+*/
+
 #else //assume AVR devices like a Leonardo 
   #define WiredSerial Serial
   const long bps = 19200; //desired BPS

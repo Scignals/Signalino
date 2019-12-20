@@ -75,14 +75,14 @@ int ads9_rreg(int reg) {
 	using namespace ADS1298;
 	SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
 		int out = 0;
-    cs_low;
+    	cs_low;
 		SPI.transfer(RREG | reg);
 		delayMicroseconds(5);
 		SPI.transfer(0);	// number of registers to be read/written – 1
 		delayMicroseconds(5);
 		out = SPI.transfer(0);
 		delayMicroseconds(1);
-    cs_high;
+    	cs_high;
 	SPI.endTransaction();
 	return (out);
 }
@@ -234,33 +234,33 @@ void ads9_lee_datos(void) {
 
 // cs a 0, empezamos a leer el ads1299    
 	SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
-    cs_low;
-  	contador_muestras++;
-  	serialBytes[i++] = SPI.transfer(0); //get 1st byte of header
-  	SPI.transfer(0); //skip 2nd byte of header
-  	SPI.transfer(0); //skip 3rd byte of header
-  	for (int ch = 1; ch <= gMaxChan; ch++) {
-  		switch (gSenal_obtenida) {
-  		case SENAL_REAL:
-  			serialBytes[i++] = SPI.transfer(0);
-  			serialBytes[i++] = SPI.transfer(0);
-  			serialBytes[i++] = SPI.transfer(0);
-  			break;
-  		case TABLA_SENO:
-  			// señal seno, creada al inicio
-  			SPI.transfer(0);
-  			SPI.transfer(0);
-  			SPI.transfer(0);
-  			to_3bytes(samples_seno[contador_muestras % TABLE_SIZE] * 100,
-  					serialBytes + i);
-  			i += 3;
-  			break;
-  		}
-  	}
-  
-  	// cs a 1, terminamos de leer el ads1299
-  	delayMicroseconds(1);
-    cs_high;
+		cs_low;
+		contador_muestras++;
+		serialBytes[i++] = SPI.transfer(0); //get 1st byte of header
+		SPI.transfer(0); //skip 2nd byte of header
+		SPI.transfer(0); //skip 3rd byte of header
+		for (int ch = 1; ch <= gMaxChan; ch++) {
+			switch (gSenal_obtenida) {
+			case SENAL_REAL:
+				serialBytes[i++] = SPI.transfer(0);
+				serialBytes[i++] = SPI.transfer(0);
+				serialBytes[i++] = SPI.transfer(0);
+				break;
+			case TABLA_SENO:
+				// señal seno, creada al inicio
+				SPI.transfer(0);
+				SPI.transfer(0);
+				SPI.transfer(0);
+				to_3bytes(samples_seno[contador_muestras % TABLE_SIZE] * 100,
+						serialBytes + i);
+				i += 3;
+				break;
+			}
+		}
+	
+		// cs a 1, terminamos de leer el ads1299
+		delayMicroseconds(1);
+		cs_high;
 	SPI.endTransaction();
 	gHayLectura = 1;
 	// se me ocurre q si este fuese gHayLectura++ podria servir como indicador de q no se pudo leer el anterior, tal vez porque va lento (overflow)...

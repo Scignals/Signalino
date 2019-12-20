@@ -33,7 +33,12 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
   inicia_serial_pc();
   #if defined(ARDUINO_SAM_DUE)
     due_inicia_hw();
+  #elif defined(TEENSYDUINO)
+    while(teensy_cuenta_ch()<8);
+    teensy_configini();  
   #endif
+
+
   switch(p_estado) {
     case QUIETO_PARADO: 
         mensaje_inicio();
@@ -61,6 +66,7 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
 
 void imprimeSerial_signalino(int p_formato_salida){
     switch(p_formato_salida){
+
               case 1: imprime_linea(MODO_HEX);break;
               case 2: imprime_linea(MODO_DEC);break;
               case 3: imprime_openEEG_p2(1);break;

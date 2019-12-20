@@ -21,6 +21,9 @@
 //
 // This file is part of project: SIGNALINO, a ADS1299-based bioamplifier
 //
+
+// Rutinas dependientes de board (teensy, arduino Due)
+
 #include "dueCMD.h"
 #include "firmware_mbs.h"
 #include "version.h"
@@ -44,13 +47,15 @@ byte teensy_cuenta_ch() {
   pinMode(drdy, INPUT);
 
 
-  reset_off;delay(10);reset_on;delay(100);
-  pwdn_on;cs_high;start_on;
- 
+  delay(800); //desde Power up, esperar 1 segundo para mover nada
+
+  //al empezar, reset del ADS1299
+  reset_off;delay(100);reset_on;delay(260);
+  pwdn_on;
+  start_on;
+  cs_high;
  
   SPI.begin();
-  delay(800);
-
   WiredSerial.begin(115200);
   delay(100);
   HC06.begin(115200);
@@ -85,7 +90,6 @@ void redreg(byte cant, byte numb)
   byte cmd1=numb;
   numb=(0x20 + cmd1);
   cant=cant-1;
-
   SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
     delay(1);cs_low;delay(1);
     SPI.transfer(0x11);
@@ -100,20 +104,17 @@ void redreg(byte cant, byte numb)
   return;
 }
 
-
 void writereg(byte cant, byte numb)
 {
   byte n=numb;
   numb=(0x40 | numb);
   cant=cant-1;
-  cs_low;
-  delay(1);
   SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
+    delay(1);cs_low;delay(1);
     SPI.transfer(0x11);
-    delayMicroseconds(2);
     SPI.transfer(numb);
     SPI.transfer(cant);
-    for(n;n<=cant;n++)
+    for(int n=0;n<(cant+1);n++)
     {
       SPI.transfer(cmd_read[n]);
     }
@@ -124,24 +125,22 @@ void writereg(byte cant, byte numb)
 
 byte cuenta_canales_EEG()
 {
-
 //  Serial.print("Counting device channels...");
   byte revid;
   byte ch;
   byte dev_id;
   byte num_ch;
-  cs_low;
-  delayMicroseconds(1000);
   SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
+    cs_low;
+    delayMicroseconds(1000);
     SPI.transfer(0x11);
     delayMicroseconds(2);
     SPI.transfer(0x20);
     SPI.transfer(0x00);
     data1=SPI.transfer(0x00);
+    cs_high;
   SPI.endTransaction();
-  cs_high;
-
-
+  
   ch=((data1>>4) & 1);
   revid=((data1>>5) & 3); 
   dev_id=((data1>>2) & 3);
@@ -241,7 +240,7 @@ void due_inicia_hw() {
       // asi que la llamamos como un timer
 
       #if defined(ARDUINO_SAM_DUE)
-            Timer3.attachInterrupt(ads9_solo_datos_sin_eeg).start(4000);
+          Timer3.attachInterrupt(ads9_solo_datos_sin_eeg).start(4000);
       #elif defined(TEENSYDUINO)
           Timer1.initialize(4000);
           Timer1.attachInterrupt(ads9_solo_datos_sin_eeg); 

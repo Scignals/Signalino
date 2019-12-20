@@ -23,8 +23,8 @@
 //
 #include "version.h"
 
-const char * build_version = "0.51";
-const char * build_fecha = "dic 10, 2019";
+const char * build_version = "0.52";
+const char * build_fecha = "dic 20, 2019";
 
 
 #if defined(ARDUINO_SAM_DUE)

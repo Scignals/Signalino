@@ -135,7 +135,7 @@ const int IPIN_CS = 10;//10
 //const int PIN_DIN = 12;//SPI in
 //const int PIN_SCLK = 13;//SPI clock
 const int kPIN_LED = 13;//pin con luz led, en Teensy3, is ALSO spi clock!
-const int kPIN_RESET = 2; //Reset en Pin 8
+const int kPIN_RESET = 2; //Reset en Pin 2
 const int kPIN_CLKSEL = 7; //ClkSel en Pin 7
 
 // sacado de vteensy
@@ -155,6 +155,8 @@ const int kPIN_CLKSEL = 7; //ClkSel en Pin 7
 #define pwdn_off digitalWrite(pwdn, LOW)
 #define pwdn_on digitalWrite(pwdn, HIGH)
 
+#else
+#error "Hay que definir TEENSYDUINO o ARDUINO_SAM_DUE"
 #endif
 
 

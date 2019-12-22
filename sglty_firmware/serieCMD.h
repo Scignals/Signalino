@@ -44,6 +44,26 @@
 #define MAX_COMENTARIO_SERIAL 80
 
 
+
+enum SIGNALINO_formatos_salida {
+              OUT_HEX=0, OUT_DEC,
+              OUT_OPENeeg_1, OUT_OPENeeg_2, OUT_OPENeeg_3,
+              OUT_OPENbci_1, OUT_OPENbci_2, OUT_OPENbci_3,
+              OUT_EMPTY, 
+              SNO_FRM_SALIDA_SIZE 
+                // un bonito truco
+                // el ultimo es solo para calcular long de los formatos en los mensajes            
+};
+
+const SIGNALINO_formatos_salida formatos_salida[]={
+            OUT_HEX, OUT_DEC,
+              OUT_OPENeeg_1, OUT_OPENeeg_2, OUT_OPENeeg_3,
+              OUT_OPENbci_1, OUT_OPENbci_2, OUT_OPENbci_3,
+              OUT_EMPTY 
+         };
+
+
+
 extern int gWired_speed;
 extern int gBT_speed;
 extern char *gLetra; // buffer usado en to_hex, inicializado en inicia_serial()
@@ -55,6 +75,7 @@ extern unsigned char txBuf[];  //17 en openeeg   32 enopenbci
 extern unsigned long indice_paquete;
 extern int gSenal_obtenida;
 extern int gFormatoSerial;
+extern SIGNALINO_formatos_salida gFormatoSerial_code;
 extern int minComando;
 extern int maxComando;
 extern int ultimo_modo;

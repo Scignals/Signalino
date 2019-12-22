@@ -10,6 +10,7 @@ namespace ADS1298 {
 
 // modificado para que funcione, al menos algunas cosas, eso creo, en ads1299
 // MISC1 aqui se llama PACE (srb1 es MISC1 bit 5)
+// y no lo modifico, asi que en el codigo NO EXISTE MISC1 
 // el bit 4 de cada canal es SRB2
 // empiezo a poner tabuladores, pero me aburro... (aunque quedan mejor)
 // to creo q se repiten mucho las declaraciones, una por canal, y que es mas logico el enfoque 
@@ -188,14 +189,14 @@ namespace ADS1298 {
 
 /*		
  *  validos para ads1298
-    GAIN_1X = GAINn0,
+    	GAIN_1X = GAINn0,
 		GAIN_2X = GAINn1,
 		GAIN_3X = (GAINn1 | GAINn0),
 		GAIN_4X = GAINn2,
 		GAIN_6X = 0x00,
 		GAIN_8X = (GAINn2 | GAINn0),
 		GAIN_12X = (GAINn2 | GAINn1),
-    GAIN_24X = (GAINn2 | GAINn1),
+    	GAIN_24X = (GAINn2 | GAINn1),
 */
 
 		GAIN_1X  = 0x00,
@@ -208,7 +209,7 @@ namespace ADS1298 {
 
 
 		ELECTRODE_INPUT = 0x00,
-    SRB2_INPUT      = SRB2n,
+    	SRB2_INPUT      = SRB2n,
 		SHORTED         = MUXn0,
 		RLD_INPUT       = MUXn1,
 		MVDD            = (MUXn1 | MUXn0),

@@ -87,12 +87,13 @@ int ads9_rreg(int reg) {
 	return (out);
 }
 
-void ads9_misetup_ADS1299(int opciones) {
+void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
+	// configura los parametros de ganancia y electrodos de referencia
 	using namespace ADS1298;
 	ads9_send_command(SDATAC); // dejamos el modo READ para emitir comandos
 	delay(10);
 
-	switch (opciones) {
+	switch (estado_ads1299) {
 	case MODE_SENAL_TEST:
 		ads9_wreg(GPIO, char(0));
 		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
@@ -103,6 +104,17 @@ void ads9_misetup_ADS1299(int opciones) {
 			ads9_wreg(char(CHnSET + i), char(TEST_SIGNAL | GAIN_1X));
 		}
 		break;
+	case MODE_SENAL_TEST_24x:
+		ads9_wreg(GPIO, char(0));
+		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
+		ads9_wreg(CONFIG2, INT_TEST_8HZ);  // generate internal test signals
+		ads9_wreg(CONFIG3, char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
+		delay(150);
+		for (int i = 1; i <= gMaxChan; i++) {
+			ads9_wreg(char(CHnSET + i), char(TEST_SIGNAL | GAIN_24X));
+		}
+		break;
+
 	case MODE_SENAL_REAL_1x:
 		ads9_wreg(GPIO, char(0));
 		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
@@ -121,7 +133,15 @@ void ads9_misetup_ADS1299(int opciones) {
 					char(ELECTRODE_INPUT | GAIN_12X )); 
 		}
 		break;
-
+	case MODE_SENAL_REAL_24x:
+		ads9_wreg(GPIO, char(0));
+		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
+		delay(150);
+		for (int i = 1; i <= gMaxChan; i++) {
+			ads9_wreg(char(CHnSET + i),
+					char(ELECTRODE_INPUT | GAIN_24X )); 
+		}
+		break;
 	case MODE_SENAL_SRB1:
 		// set mode SRB1, util en EEG, 
 		// senal entraria por entradas P y SRB1 es referencia
@@ -133,7 +153,22 @@ void ads9_misetup_ADS1299(int opciones) {
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
-					char((ELECTRODE_INPUT | GAIN_12X) & ~SRB2_INPUT)); //SRB1 y ganancia 12
+					char((ELECTRODE_INPUT ) & ~SRB2_INPUT)); //SRB1 
+		}
+		break;
+	case MODE_SENAL_BIP:
+		// set mode SRB1, util en EEG, 
+		// senal entraria por entradas P y SRB1 es referencia
+		// bipolar: srb1  y srb2 desactivados
+		// gaancia a 12
+		ads9_wreg(GPIO, char(0));
+		ads9_wreg(PACE, char(0x00)); //unset SRB1. 
+		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
+		delay(150);
+		for (int i = 1; i <= gMaxChan; i++) {
+			ads9_wreg(char(CHnSET + i),
+					char((ELECTRODE_INPUT) & ~SRB2_INPUT)); 
+					//desactivados SRB1 y SRB2 y ganancia 1
 		}
 		break;
 	case MODE_SENAL_SRB2:
@@ -141,11 +176,13 @@ void ads9_misetup_ADS1299(int opciones) {
 		// senal entraria por entradas N 
 		// ganancia a 1
 		ads9_wreg(GPIO, char(0));
+		ads9_wreg(PACE, char(0x00)); //unset SRB1. 
 		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
-					char(ELECTRODE_INPUT | GAIN_1X | SRB2_INPUT)); //SRB2 y ganancia 1
+//					char(ELECTRODE_INPUT | GAIN_1X | SRB2_INPUT)); //SRB2 y ganancia 1
+					char(ELECTRODE_INPUT | SRB2_INPUT)); //SRB2 y ganancia 1
 		}
 		break;
 	case MODE_IMPEDANCIAS:
@@ -162,12 +199,13 @@ void ads9_misetup_ADS1299(int opciones) {
 }
 
 void ads9_setGanancia(int valor) {
+	// 1..7 1-2-4-6-8-12-24
 	using namespace ADS1298;
 	ads9_send_command(SDATAC); // dejamos el modo READ para emitir comandos
 	delay(10);
 	ads9_wreg(GPIO, char(0));
-	ads9_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
-	ads9_wreg(CONFIG3, char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
+//	ads9_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
+//	ads9_wreg(CONFIG3, char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
 	delay(150);
 	for (int i = 1; i <= gMaxChan; i++) {
 		switch (valor) {

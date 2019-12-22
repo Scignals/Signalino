@@ -49,18 +49,12 @@ SIGNALINO_serial_interprete sg_interprete=INTERPRETE_SIGNALINO;
 
 unsigned long tick;
 boolean gSerialPrinting = true;
- 
+
 
 
 void setup(){
-
  tick=0; 
- gFormatoSerial=1; 
- gBluetooth = true;
- gSerialPrinting = true;
-
  inicia_signalino(sg_estado);
-
 }
 
 void loop()

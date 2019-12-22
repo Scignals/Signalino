@@ -40,7 +40,7 @@
 #define FIRMWARE_MBS_01
 
 
-
+/*
 #define MODE_SENAL_TEST 2 
 #define MODE_SENAL_REAL_1x 1 
 #define MODE_SENAL_REAL_24x 3
@@ -48,8 +48,9 @@
 #define MODE_SENAL_SRB2 5
 #define MODE_SENAL_BIP 6
 #define MODE_IMPEDANCIAS 7
-
+*/
  
+
 
 #define SENAL_REAL 1 
 #define SENAL_TEST 2 
@@ -57,6 +58,13 @@
 #define TABLA_LINEAL 4
 #define TABLA_RAMPA 5
 
+
+// enum tipos_senales   { SENAL_REAL, SENAL_TEST, TABLA_SENO, TABLA_LINEAL, TABLA_RAMPA};
+ enum MODOS_ADS1299     { MODE_SENAL_REAL_1x, MODE_SENAL_TEST, MODE_SENAL_TEST_24x, 
+ MODE_SENAL_REAL_12x, MODE_SENAL_REAL_24x, MODE_SENAL_SRB1, MODE_SENAL_SRB2, MODE_SENAL_BIP,
+  MODE_IMPEDANCIAS};
+
+ 
 #define isDUE  //Detect Arduino Due
 // tenemos un modulo HC06 en serial3, y por tanto en pines pins 15 (RX) and 14 (TX)
 // y prefiero el programing port (Serial), parece mas estable

@@ -81,6 +81,9 @@ void teensy_configini(void)
   }
   writereg(23, 1);
   attachInterrupt(digitalPinToInterrupt(drdy), ads9_lee_datos, FALLING);
+  delay(100);
+  ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
+
 
 }
 

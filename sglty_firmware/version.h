@@ -22,6 +22,7 @@
 #define VERSION_H_
 
 #include "Arduino.h"
+#include "serieCMD.h"
 
 
 #if defined(TEENSYDUINO)
@@ -38,6 +39,7 @@ extern const char * build_fecha;
 extern int gMaxChan;
 extern int gWired_speed;
 extern int gFormatoSerial;
+
 
 
 void mensaje_inicio(void);

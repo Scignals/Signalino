@@ -215,7 +215,7 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
      txBuf[ind++] = 0;
      txBuf[ind++] = 0;
      
-     //este ultimo es C0 para los acelerometros
+     // este ultimo es C0 para los acelerometros
      // en su logar podian ir por ejemplo un registro de  booleanos: luz, bluetooh si/no,
      // pero entonces hay q cambiar el C0 por CX
 
@@ -329,7 +329,7 @@ void procesaComando(String texto){
               break;
            case 4:
               gSenal_obtenida=SENAL_REAL;
-              ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
+              ads9_misetup_ADS1299(MODE_SENAL_REAL_24x);
               break;
           }       
          sprintf(buffer_comentaserial,"Signal mode changed to %d",p1);
@@ -340,12 +340,20 @@ void procesaComando(String texto){
           return;
      
       } else if(texto.startsWith("frm")){
+         const SIGNALINO_formatos_salida formatos[]={
+            OUT_HEX, OUT_DEC,
+              OUT_OPENeeg_1, OUT_OPENeeg_2, OUT_OPENeeg_3,
+              OUT_OPENbci_1, OUT_OPENbci_2, OUT_OPENbci_3,
+              OUT_EMPTY 
+         };
+         
          p1=extrae_parametro(texto);
          if(p1==0){
             if(++gFormatoSerial>maxComando)gFormatoSerial=minComando;
          } else if (p1<=maxComando){
             gFormatoSerial=p1;
-         }    
+         }   
+       //  gFormatoSerial_code=formatos[gFormatoSerial]; 
          sprintf(buffer_comentaserial,"Data format changed to %d",p1);
          comentaSerial(buffer_comentaserial);
    
@@ -374,21 +382,32 @@ void procesaComando(String texto){
              switch(p1){
                 case 1:
                 gSenal_obtenida=SENAL_REAL;
-                ads9_misetup_ADS1299(MODE_SENAL_SRB2);
-                comentaSerial("CHART mode (all channels to SRB2)");
+                ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
+                ads9_misetup_ADS1299(MODE_SENAL_SRB1);
+                comentaSerial("CHART mode (all channels to SRB1, 12x)");
                 break;
                 case 2:
                 gSenal_obtenida=SENAL_REAL;
                 ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
+                ads9_misetup_ADS1299(MODE_SENAL_BIP);
                 comentaSerial("EMG mode (bipolar channels, 1x)");
                 // bipolares 1x
                 break;
-                case 3:
+                case 3: //eeg, serian 8 monopolares 
                 gSenal_obtenida=SENAL_REAL;
-                ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
-                comentaSerial("EEG mode (bipolar channels, 1x)");
+                ads9_misetup_ADS1299(MODE_SENAL_REAL_24x);
+                ads9_misetup_ADS1299(MODE_SENAL_SRB2);                
+                comentaSerial("EEG mode (todos a erb2 channels, 24x)");
                 //bipolares 12x
                 break;
+                case 4:  //psg, serian 6 monopolares y 2 bipolares
+                gSenal_obtenida=SENAL_REAL;
+                ads9_misetup_ADS1299(MODE_SENAL_REAL_24x);
+                ads9_misetup_ADS1299(MODE_SENAL_BIP);
+                comentaSerial("PSG mode (6 srb2 2 bipolar channels, 24x, no implementado)");
+                //bipolares 12x
+                break;
+
              }
         } else if(texto.startsWith("blt")){ 
                p1=extrae_parametro(texto);

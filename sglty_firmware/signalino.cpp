@@ -23,12 +23,34 @@
 //
 #include "signalino.h"
 
-// hay tres modos: pararse, señal cuadrada, señal real
+// hay tres estados: QUIETO_PARADO, señal cuadrada, señal real
+// y modo impedancias, aun no implementado
 
+/*
+SIGNALINO_formatos_salida SIGNALINO_formatos_salida_int[1+SNO_FRM_SALIDA_SIZE] {
+              SNO_FRM_SALIDA_SIZE,   OUT_HEX, OUT_DEC,
+              OUT_OPENeeg_1, OUT_OPENeeg_2, OUT_OPENeeg_3,
+              OUT_OPENbci_1, OUT_OPENbci_2, OUT_OPENbci_3,
+              OUT_EMPTY 
+};
+
+
+
+const char* SIGNALINO_formatos_salida_msg[SNO_FRM_SALIDA_SIZE] = {
+              "OUT_HEX", "OUT_DEC",
+              "OUT_OPENeeg_1","OUT_OPENeeg_2","OUT_OPENeeg_3",
+              "OUT_OPENbci_1","OUT_OPENbci_2","OUT_OPENbci_3",
+              "OUT_EMPTY"              
+};
+
+*/
 
 
 
 void inicia_signalino(SIGNALINO_maquina_estados p_estado){
+    
+//extern SIGNALINO_formatos_salida  gFormatoSerial_code;
+
   crea_tabla_seno();
   inicia_serial_pc();
   #if defined(ARDUINO_SAM_DUE)
@@ -37,6 +59,11 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
     while(teensy_cuenta_ch()<8);
     teensy_configini();  
   #endif
+
+ gFormatoSerial     = 1; 
+ gBluetooth         = true;
+ gSerialPrinting    = true;
+// gFormatoSerial_code = OUT_DEC;
 
 
   switch(p_estado) {
@@ -48,7 +75,7 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
         ads9_misetup_ADS1299(MODE_SENAL_TEST);
         break;
     case SENAL_REAL_ADS:
-        ads9_misetup_ADS1299(MODE_SENAL_REAL_24x);
+        ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
         break;
     case MIDIENDO_IMPEDANCIAS:  //no existe aun...
         ads9_misetup_ADS1299(MODE_IMPEDANCIAS);
@@ -65,17 +92,22 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
 // está en 2 porque así lee el monitor del IDE de arduino
 
 void imprimeSerial_signalino(int p_formato_salida){
-    switch(p_formato_salida){
-
-              case 1: imprime_linea(MODO_HEX);break;
-              case 2: imprime_linea(MODO_DEC);break;
-              case 3: imprime_openEEG_p2(1);break;
-              case 4: imprime_openEEG_p2(2);break;
-              case 9: imprime_openEEG_p2(3);break;
-              case 5: imprime_openBCI_V3(1);break;
-              case 6: imprime_openBCI_V3(2);break;
-              case 7: imprime_openBCI_V3(3);break;
-              case 8: imprime_linea(MODO_NADA);break;
+    const SIGNALINO_formatos_salida formatos[]={
+            OUT_HEX, OUT_DEC,
+              OUT_OPENeeg_1, OUT_OPENeeg_2, OUT_OPENeeg_3,
+              OUT_OPENbci_1, OUT_OPENbci_2, OUT_OPENbci_3,
+              OUT_EMPTY 
+         };
+    switch(formatos[p_formato_salida]){
+              case OUT_HEX:       imprime_linea(MODO_HEX);break;
+              case OUT_DEC:       imprime_linea(MODO_DEC);break;
+              case OUT_EMPTY:     imprime_linea(MODO_NADA);break;
+              case OUT_OPENeeg_1: imprime_openEEG_p2(1);break;
+              case OUT_OPENeeg_2: imprime_openEEG_p2(2);break;
+              case OUT_OPENeeg_3: imprime_openEEG_p2(3);break;
+              case OUT_OPENbci_2: imprime_openBCI_V3(2);break; //default
+              case OUT_OPENbci_1: imprime_openBCI_V3(1);break;
+              case OUT_OPENbci_3: imprime_openBCI_V3(3);break; 
     }
   
 }

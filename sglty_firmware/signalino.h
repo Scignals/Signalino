@@ -43,17 +43,13 @@ enum SIGNALINO_maquina_estados {
 
 };
 
-
 enum SIGNALINO_serial_interprete {
     INTERPRETE_SIGNALINO,
     INTERPRETE_OPENBCI   // aun no implementado
 };
 
-
 void inicia_signalino(SIGNALINO_maquina_estados p_estado);
 void imprimeSerial_signalino(int p_modo_salida);
-
-
 
 #endif
 

@@ -25,8 +25,6 @@
 
 const char * build_version = "0.52";
 const char * build_fecha = "dic 20, 2019";
-
-
 #if defined(ARDUINO_SAM_DUE)
 const char * build_board = "Arduino Due";
 #elif defined(TEENSYDUINO)
@@ -35,9 +33,6 @@ const char * build_board = "Teensy 3.6";
 
 
 extern boolean gBluetooth;
-
-
-
 
 
 

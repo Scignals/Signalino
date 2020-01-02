@@ -45,21 +45,21 @@
 
 
 
-enum SIGNALINO_formatos_salida {
-              OUT_HEX=0, OUT_DEC,
-              OUT_OPENeeg_1, OUT_OPENeeg_2, OUT_OPENeeg_3,
-              OUT_OPENbci_1, OUT_OPENbci_2, OUT_OPENbci_3,
-              OUT_EMPTY, 
+typedef enum  {
+              RHEX=0, RDEC,  
+              OPENeeg_1, OPENeeg_2, OPENeeg_3,
+              OPENbci_1, OPENbci_2, OPENbci_3,
+              ROFF, 
               SNO_FRM_SALIDA_SIZE 
-                // un bonito truco
+                // un bonito truco (?)
                 // el ultimo es solo para calcular long de los formatos en los mensajes            
-};
+} SIGNALINO_formatos_salida;
 
 const SIGNALINO_formatos_salida formatos_salida[]={
-            OUT_HEX, OUT_DEC,
-              OUT_OPENeeg_1, OUT_OPENeeg_2, OUT_OPENeeg_3,
-              OUT_OPENbci_1, OUT_OPENbci_2, OUT_OPENbci_3,
-              OUT_EMPTY 
+            RHEX, RDEC,
+              OPENeeg_1, OPENeeg_2, OPENeeg_3,
+              OPENbci_1, OPENbci_2, OPENbci_3,
+              ROFF 
          };
 
 

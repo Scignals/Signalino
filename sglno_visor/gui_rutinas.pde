@@ -261,15 +261,17 @@ public void Entrada(int value){
   println("cambiando Periférico de entrada a "+value);
   switch(value){
      case 0:
-      sendComando("inp1",port); 
+      sendComando("inp1",port);  //chart
        break;
      case 1:
-      sendComando("inp2",port); 
+      sendComando("inp2",port); // emg
        break;
      case 2:
-      sendComando("inp3",port); 
-       break;  
-
+      sendComando("inp3",port); // eeg
+      break;
+     case 3:
+      sendComando("inp4",port); // psg
+      break;  
   }
  
 }
@@ -334,6 +336,14 @@ if(key=='-') {
  if(key==' ') {
      gui_running=!gui_running;
  
+ }
+ if(key=='<') {
+     float value=gui.getController("Tiempo").getValue();
+     gui.getController("Tiempo").setValue(value-2);
+ } 
+if(key=='>') {
+     float value=gui.getController("Tiempo").getValue();
+     gui.getController("Tiempo").setValue(value+2);
  }
  
  if(key==27) {

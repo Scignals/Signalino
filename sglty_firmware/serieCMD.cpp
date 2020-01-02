@@ -22,6 +22,7 @@
 // This file is part of project: SIGNALINO, a ADS1299-based bioamplifier
 //
 #include "serieCMD.h"
+#include "command_parser.h"
 
 #define MAX_LEN_PACKET 33        //32+1, openbci V3
 unsigned char txBuf[MAX_LEN_PACKET];  //17 en openeeg   32 en openbci V3, 8 canales+3acelerometros
@@ -303,18 +304,24 @@ void leeSerial_signalino(){
 // blt: bluetooth 1:on/0:off
 
 
-
 void procesaComando(String texto){
-     String parametro;
-     int p1=0;
      comentaSerial(texto);
      comentaSerial("-->ok");
+     comandos_parser  parcom;
 
 
-     // 1 normal  2 test 3 simulada 4 max ganancia
-     if(texto.startsWith("sim")){ 
-         p1=extrae_parametro(texto);
-         switch(p1){
+     comandos_parser::cmd_control p1=parcom.extraeComando(texto);
+     comandos_parser::codigos_cmd p2=parcom.traduceComando(p1);
+
+     switch(p2){
+      case comandos_parser::codigos_cmd::HLP:
+           mensaje_inicio();          
+           while(WiredSerial.available()==0 && HC06.available()==0 );
+           return;
+          break;
+      case comandos_parser::codigos_cmd::SIM:
+         switch(p1.param){
+           // 1 normal  2 test 3 simulada 4 max ganancia
             case 1:
               gSenal_obtenida=SENAL_REAL;
               ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
@@ -332,54 +339,46 @@ void procesaComando(String texto){
               ads9_misetup_ADS1299(MODE_SENAL_REAL_24x);
               break;
           }       
-         sprintf(buffer_comentaserial,"Signal mode changed to %d",p1);
+         sprintf(buffer_comentaserial,"Signal mode changed to %d",p1.param);
          comentaSerial(buffer_comentaserial);
-      } else if(texto.startsWith("hlp")){
-          mensaje_inicio();          
-          while(WiredSerial.available()==0 && HC06.available()==0 );
-          return;
+         break;
      
-      } else if(texto.startsWith("frm")){
-         const SIGNALINO_formatos_salida formatos[]={
-            OUT_HEX, OUT_DEC,
-              OUT_OPENeeg_1, OUT_OPENeeg_2, OUT_OPENeeg_3,
-              OUT_OPENbci_1, OUT_OPENbci_2, OUT_OPENbci_3,
-              OUT_EMPTY 
-         };
-         
-         p1=extrae_parametro(texto);
-         if(p1==0){
-            if(++gFormatoSerial>maxComando)gFormatoSerial=minComando;
-         } else if (p1<=maxComando){
-            gFormatoSerial=p1;
-         }   
-       //  gFormatoSerial_code=formatos[gFormatoSerial]; 
-         sprintf(buffer_comentaserial,"Data format changed to %d",p1);
-         comentaSerial(buffer_comentaserial);
-   
-      } else if(texto.startsWith("rec")){
-         p1=extrae_parametro(texto);
-         if(p1==0){
+      case comandos_parser::codigos_cmd::FRM:
+        switch(p1.param){
+            case 0:
+               if(++gFormatoSerial>maxComando)gFormatoSerial=minComando;
+               else { if (p1.param<=maxComando)gFormatoSerial=p1.param;}
+               break;
+            default:  
+               if (p1.param<=maxComando) gFormatoSerial=p1.param;
+         }           
+         break;
+
+      case comandos_parser::codigos_cmd::REC:
+        switch(p1.param){
+           case 0:
             // rec0 calla la salida de numeros por puerto serie
             ultimo_modo=gFormatoSerial;
-            gFormatoSerial=8;            
-         } else {
+            gFormatoSerial=8;          
+            break;  
+           case 1:
             gFormatoSerial=ultimo_modo;
          }
-         sprintf(buffer_comentaserial,"Data format restored to  %d",p1);
+         sprintf(buffer_comentaserial,"Data format restored to  %d",p1.param);
          comentaSerial(buffer_comentaserial);
+         break;
          // return;
 
-      } else if(texto.startsWith("gan")){ 
-         p1=extrae_parametro(texto);
+      case comandos_parser::codigos_cmd::GAN:
          gSenal_obtenida=SENAL_REAL;
-         ads9_setGanancia(p1);
-         sprintf(buffer_comentaserial,"Gain changed to %d",p1);
+         ads9_setGanancia(p1.param);
+         sprintf(buffer_comentaserial,"Gain changed to %d",p1.param);
          comentaSerial(buffer_comentaserial);
+         break;
 
-      } else if(texto.startsWith("inp")){ 
-            p1=extrae_parametro(texto);
-             switch(p1){
+      case comandos_parser::codigos_cmd::INP:
+         comentaSerial(buffer_comentaserial);
+            switch(p1.param){
                 case 1:
                 gSenal_obtenida=SENAL_REAL;
                 ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
@@ -407,34 +406,34 @@ void procesaComando(String texto){
                 comentaSerial("PSG mode (6 srb2 2 bipolar channels, 24x, no implementado)");
                 //bipolares 12x
                 break;
-
+                default:
+                  comentaSerial("Solo hay modos 1-2-3-4");
              }
-        } else if(texto.startsWith("blt")){ 
-               p1=extrae_parametro(texto);
-               switch(p1){
+             break;
+      case comandos_parser::codigos_cmd::BLT:
+              switch(p1.param){
                 case 0:
-                gBluetooth=false;
-                comentaSerial("BT off");
-                break;
+                  gBluetooth=false;
+                  comentaSerial("BT off");
+                  break;
                 case 1:
-                gBluetooth=true;
-                comentaSerial("BT on");
-                break;
+                  gBluetooth=true;
+                  comentaSerial("BT on");
+                  break;
              }
-      } else if(texto.startsWith("oka")){ 
+             break;
+      case comandos_parser::codigos_cmd::OKA:
           mensaje_inicio();
+          break;
+      default:
+          comentaSerial("Comando desconocido");
+          break;
+          
       }       
                
       return;
 
 }
-
-int extrae_parametro( String texto){
-         String parametro=texto.substring(3,4);
-         int p1=parametro.toInt();
-         return(p1);
-}
-
 
 
 void procesaComando_estilo_openBCI(String texto){

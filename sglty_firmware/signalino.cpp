@@ -26,24 +26,11 @@
 // hay tres estados: QUIETO_PARADO, señal cuadrada, señal real
 // y modo impedancias, aun no implementado
 
-/*
-SIGNALINO_formatos_salida SIGNALINO_formatos_salida_int[1+SNO_FRM_SALIDA_SIZE] {
-              SNO_FRM_SALIDA_SIZE,   OUT_HEX, OUT_DEC,
-              OUT_OPENeeg_1, OUT_OPENeeg_2, OUT_OPENeeg_3,
-              OUT_OPENbci_1, OUT_OPENbci_2, OUT_OPENbci_3,
-              OUT_EMPTY 
-};
 
-
-
-const char* SIGNALINO_formatos_salida_msg[SNO_FRM_SALIDA_SIZE] = {
-              "OUT_HEX", "OUT_DEC",
-              "OUT_OPENeeg_1","OUT_OPENeeg_2","OUT_OPENeeg_3",
-              "OUT_OPENbci_1","OUT_OPENbci_2","OUT_OPENbci_3",
-              "OUT_EMPTY"              
-};
-
-*/
+const SIGNALINO_formatos_salida formatos[]={
+            RHEX, RDEC, OPENeeg_1, OPENeeg_2, OPENeeg_3,
+              OPENbci_1, OPENbci_2, OPENbci_3,
+               ROFF };
 
 
 
@@ -92,22 +79,16 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
 // está en 2 porque así lee el monitor del IDE de arduino
 
 void imprimeSerial_signalino(int p_formato_salida){
-    const SIGNALINO_formatos_salida formatos[]={
-            OUT_HEX, OUT_DEC,
-              OUT_OPENeeg_1, OUT_OPENeeg_2, OUT_OPENeeg_3,
-              OUT_OPENbci_1, OUT_OPENbci_2, OUT_OPENbci_3,
-              OUT_EMPTY 
-         };
     switch(formatos[p_formato_salida]){
-              case OUT_HEX:       imprime_linea(MODO_HEX);break;
-              case OUT_DEC:       imprime_linea(MODO_DEC);break;
-              case OUT_EMPTY:     imprime_linea(MODO_NADA);break;
-              case OUT_OPENeeg_1: imprime_openEEG_p2(1);break;
-              case OUT_OPENeeg_2: imprime_openEEG_p2(2);break;
-              case OUT_OPENeeg_3: imprime_openEEG_p2(3);break;
-              case OUT_OPENbci_2: imprime_openBCI_V3(2);break; //default
-              case OUT_OPENbci_1: imprime_openBCI_V3(1);break;
-              case OUT_OPENbci_3: imprime_openBCI_V3(3);break; 
+              case RHEX:       imprime_linea(MODO_HEX);break;
+              case RDEC:       imprime_linea(MODO_DEC);break;
+              case ROFF:     imprime_linea(MODO_NADA);break;
+              case OPENeeg_1: imprime_openEEG_p2(1);break;
+              case OPENeeg_2: imprime_openEEG_p2(2);break;
+              case OPENeeg_3: imprime_openEEG_p2(3);break;
+              case OPENbci_2: imprime_openBCI_V3(2);break; //default
+              case OPENbci_1: imprime_openBCI_V3(1);break;
+              case OPENbci_3: imprime_openBCI_V3(3);break; 
     }
   
 }

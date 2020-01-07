@@ -43,18 +43,25 @@
 #include "signalino.h"
 
 #define INTERVALO_LEESERIAL 1*16
+#define INTERVALO_LEELUZ 1*16
+
 
 SIGNALINO_maquina_estados sg_estado=SENAL_REAL_ADS;
 SIGNALINO_serial_interprete sg_interprete=INTERPRETE_SIGNALINO;
 
 unsigned long tick;
 boolean gSerialPrinting = true;
+boolean gLUX_ON = false;
+
+
+luxometro gLUX;
 
 
 
 void setup(){
  tick=0; 
  inicia_signalino(sg_estado);
+ gLUX.iniciar();
 }
 
 void loop()
@@ -67,6 +74,9 @@ void loop()
          tick++;    
          if(tick%1==0)imprimeSerial_signalino(gFormatoSerial);
          if(tick%(INTERVALO_LEESERIAL)==0)leeSerial_signalino();
+         if(gLUX_ON && tick%(INTERVALO_LEELUZ)==0)
+           Serial.println((int)gLUX.get_luz_calibrada());
+         
   }
 
 }

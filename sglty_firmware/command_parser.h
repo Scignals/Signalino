@@ -21,9 +21,11 @@ class comandos_parser {
 // hlp: mensaje de inicio y espera un enter por wiredsignal
 // oka: mensaje de inicio y sigue corriendo
 // blt: bluetooth 1:on/0:off
+// lux: lux 1:on/0:off
 
- typedef enum {ERR,GAN,INP,SIM,FRM,REC,HLP,OKA,BLT} codigos_cmd ; // empezamos en 1 para q 0 sea el ERR
- const static int numero_comandos=8;
+
+ typedef enum {ERR,GAN,INP,SIM,FRM,REC,HLP,OKA,BLT,LUX} codigos_cmd ; // empezamos en 1 para q 0 sea el ERR
+ const static int numero_comandos=9;
 
  typedef struct {
 	char cmd[4];
@@ -32,7 +34,7 @@ class comandos_parser {
 
   tabla_comandos tabla_cmd [numero_comandos]={{"GAN",GAN},{"INP",INP},{"SIM",SIM},
 	{"FRM",FRM},{"REC",REC},{"HLP",HLP},
-	{"OKA",OKA},{"BLT",BLT}};
+	{"OKA",OKA},{"BLT",BLT},{"LUX",LUX}};
 public:
  cmd_control extraeComando(String);
  codigos_cmd traduceComando(cmd_control);

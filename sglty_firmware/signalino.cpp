@@ -80,9 +80,9 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
 
 void imprimeSerial_signalino(int p_formato_salida){
     switch(formatos[p_formato_salida]){
-              case RHEX:       imprime_linea(MODO_HEX);break;
-              case RDEC:       imprime_linea(MODO_DEC);break;
-              case ROFF:     imprime_linea(MODO_NADA);break;
+              case RHEX:  imprime_linea(MODO_HEX);break;
+              case RDEC:  imprime_linea(MODO_DEC);break;
+              case ROFF:  imprime_linea(MODO_NADA);break;
               case OPENeeg_1: imprime_openEEG_p2(1);break;
               case OPENeeg_2: imprime_openEEG_p2(2);break;
               case OPENeeg_3: imprime_openEEG_p2(3);break;

@@ -66,11 +66,11 @@ const SIGNALINO_formatos_salida formatos_salida[]={
 
 extern int gWired_speed;
 extern int gBT_speed;
-extern char *gLetra; // buffer usado en to_hex, inicializado en inicia_serial()
 extern boolean gserialVerbose;
 extern volatile int numSerialBytes;
 extern volatile  unsigned char serialBytes[];
 extern boolean gBluetooth;
+extern boolean gLUX_ON;
 extern unsigned char txBuf[];  //17 en openeeg   32 enopenbci
 extern unsigned long indice_paquete;
 extern int gSenal_obtenida;

@@ -23,8 +23,8 @@
 //
 #include "version.h"
 
-const char * build_version = "0.52";
-const char * build_fecha = "dic 20, 2019";
+const char * build_version = "0.6";
+const char * build_fecha = "enero 7, 2020";
 #if defined(ARDUINO_SAM_DUE)
 const char * build_board = "Arduino Due";
 #elif defined(TEENSYDUINO)
@@ -56,12 +56,13 @@ void _mensaje_inicio(Stream &port_serial){
    port_serial.println(gFormatoSerial);
    
    port_serial.println(F("Comandos: (separados por punto y coma)"));
-   port_serial.println(F("recN -- chorro datos 0:off 1:on")); 
+   port_serial.println(F("recN -- chorro datos EEG 0:off 1:on")); 
    port_serial.println(F("simN -- N1:1X N2:cuadrada(ADS) N3:seno(arduino) N4:12x")); 
    port_serial.println(F("ganN -- ganancia del ads1299 N=1..8 --> 1,2,4,4,6,8,12,24x"));
    port_serial.println(F("frmN -- data format: N=0..8(6)"));
    port_serial.println(F("inpN -- input parameters: N1:ref2x1 N2:bipx24 N3:refx24"));
    port_serial.println(F("bltN -- bluetooth 1=on 0=off"));
+   port_serial.println(F("luxN -- luxometro (dec format) 1=on 0=off"));
    port_serial.println(F("hlp  -- mensaje de ayuda y espera 'enter' "));
    port_serial.println(F("oka  -- mensaje de ayuda y sigue corriendo"));
    
@@ -76,6 +77,8 @@ void _mensaje_inicio(Stream &port_serial){
 // hlp: mensaje de inicio y espera un enter por wiredsignal
 // oka: mensaje de inicio y sigue corriendo
 // blt: bluetooth 1:on/0:off
+// lux: lux 1:on/0:off, recomendado: rec0;lux1 
+
 
 
 }

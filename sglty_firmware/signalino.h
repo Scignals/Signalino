@@ -34,6 +34,8 @@
 #include "sig_simuladas.h"
 #include "version.h"
 #include "serieCMD.h"
+#include "luxometro.h"
+
 
 enum SIGNALINO_maquina_estados {
     QUIETO_PARADO,

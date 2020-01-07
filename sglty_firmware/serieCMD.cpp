@@ -33,7 +33,6 @@ int gWired_speed=0;
 int gBT_speed=0;
 
 char buffer_comentaserial[MAX_COMENTARIO_SERIAL];
-char *gLetra; // buffer usado en to_hex, inicializado en inicia_serial()
 int gFormatoSerial; 
 
 
@@ -43,7 +42,6 @@ int ultimo_modo=8;
 
 
 void inicia_serial_pc(){
-  gLetra=new char[80];  
   WiredSerial.begin(SERIAL_SPEED);
   while (WiredSerial.read() >= 0) {} ;
   delay(200);  // Catch Due reset problem
@@ -298,7 +296,7 @@ void leeSerial_signalino(){
 // inp: input mode (CHART, EEG, EMG)
 // sim: señal de salida del signalino (real 1x, onda cuadrada del ads, señal simulada por software, real 12x )
 // frm: formato de salida de datos ()
-// rec: rec0 apaga salida, rec1 la restaura
+// rec: rec0 apaga salida EEG, rec1 la restaura
 // hlp: mensaje de inicio y espera un enter por wiredsignal
 // oka: mensaje de inicio y sigue corriendo
 // blt: bluetooth 1:on/0:off
@@ -371,6 +369,7 @@ void procesaComando(String texto){
 
       case comandos_parser::codigos_cmd::GAN:
          gSenal_obtenida=SENAL_REAL;
+        	// 1..7 1-2-4-6-8-12-24
          ads9_setGanancia(p1.param);
          sprintf(buffer_comentaserial,"Gain changed to %d",p1.param);
          comentaSerial(buffer_comentaserial);
@@ -422,6 +421,18 @@ void procesaComando(String texto){
                   break;
              }
              break;
+      case comandos_parser::codigos_cmd::LUX:
+              switch(p1.param){
+                case 0:
+                  gLUX_ON=false;
+                  comentaSerial("LUX off");
+                  break;
+                case 1:
+                  gLUX_ON=true;
+                  comentaSerial("LUX on");
+                  break;
+             }
+             break;
       case comandos_parser::codigos_cmd::OKA:
           mensaje_inicio();
           break;
@@ -441,3 +452,4 @@ void procesaComando_estilo_openBCI(String texto){
       return;
 
 }
+

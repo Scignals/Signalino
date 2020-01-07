@@ -54,14 +54,15 @@ boolean gSerialPrinting = true;
 boolean gLUX_ON = false;
 
 
-luxometro gLUX;
+luxometro *gLUX;
 
 
 
 void setup(){
  tick=0; 
  inicia_signalino(sg_estado);
- gLUX.iniciar();
+ gLUX=new luxometro();
+ gLUX->iniciar();
 }
 
 void loop()
@@ -75,7 +76,7 @@ void loop()
          if(tick%1==0)imprimeSerial_signalino(gFormatoSerial);
          if(tick%(INTERVALO_LEESERIAL)==0)leeSerial_signalino();
          if(gLUX_ON && tick%(INTERVALO_LEELUZ)==0)
-           Serial.println((int)gLUX.get_luz_calibrada());
+           Serial.println((int)gLUX->get_luz_calibrada());
          
   }
 

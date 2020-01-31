@@ -191,13 +191,13 @@ public void Senal(int value){
   println("cambiando modo senal a "+value);
   switch(value){
      case 1:
-       sendComando("sim1;",port); 
+       sendComando("oka;sim1;",port); 
        break;
      case 2:
-       sendComando("sim2;",port);
+       sendComando("oka;sim5;",port);
        break;
      case 3:
-       sendComando("sim3;",port);
+       sendComando("oka;sim3;",port);
        break;  
 
   }

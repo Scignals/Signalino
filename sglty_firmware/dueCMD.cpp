@@ -48,10 +48,10 @@ byte teensy_cuenta_ch() {
 
 
   delay(800); //desde Power up, esperar 1 segundo para mover nada
-
   //al empezar, reset del ADS1299
+  // rutina cambiada porque no tenia mucha logica
+  pwdn_off;delay(10); pwdn_on;delay(300);
   reset_off;delay(100);reset_on;delay(260);
-  pwdn_on;
   start_on;
   cs_high;
  

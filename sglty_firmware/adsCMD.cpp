@@ -65,7 +65,9 @@ void ads9_wreg(int reg, int val) {
 		SPI.transfer(WREG | reg);
 		SPI.transfer(0);	// number of registers to be read/written – 1
 		SPI.transfer(val);
-		delayMicroseconds(1);
+		//en datasheet dice q modificar config1 es como hacer un reset
+		//luego habra que esperar 18 clocks al menos
+		delayMicroseconds(1); 
     cs_high;
 	SPI.endTransaction();
 
@@ -92,6 +94,9 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 	using namespace ADS1298;
 	ads9_send_command(SDATAC); // dejamos el modo READ para emitir comandos
 	delay(10);
+	ads9_wreg(GPIO, char(0));
+	ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
+	ads9_wreg(CONFIG2, 0x00);  // no generate internal test signals
 
 	switch (estado_ads1299) {
 	case MODE_SENAL_TEST:
@@ -118,6 +123,7 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 	case MODE_SENAL_REAL_1x:
 		ads9_wreg(GPIO, char(0));
 		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
+		ads9_wreg(CONFIG2, 0x00);  // no generate internal test signals
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
@@ -127,6 +133,7 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 	case MODE_SENAL_REAL_12x:
 		ads9_wreg(GPIO, char(0));
 		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
+		ads9_wreg(CONFIG2, 0x00);  // no generate internal test signals
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
@@ -136,6 +143,7 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 	case MODE_SENAL_REAL_24x:
 		ads9_wreg(GPIO, char(0));
 		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
+		ads9_wreg(CONFIG2, 0x00);  // no generate internal test signals
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
@@ -172,7 +180,7 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 		}
 		break;
 	case MODE_SENAL_SRB2:
-		// set mode SRB2, util en chart
+		// set mode SRB2, util en chart para coexistir referenciales y bipolares
 		// senal entraria por entradas N 
 		// ganancia a 1
 		ads9_wreg(GPIO, char(0));

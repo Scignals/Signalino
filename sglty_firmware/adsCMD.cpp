@@ -21,6 +21,7 @@
 #include "firmware_mbs.h"
 
 // variables modificables  durante debugging
+// hay que revisar atentamente https://github.com/starcat-io/hackeeg-driver-arduino/blob/master/hackeeg_driver/adsCommand.cpp
 
 //	int     gSenal_obtenida=TABLA_SENO;
 int gSenal_obtenida = SENAL_REAL;
@@ -63,9 +64,13 @@ void ads9_wreg(int reg, int val) {
 	SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
     cs_low;
 		SPI.transfer(WREG | reg);
+		delayMicroseconds(2);
 		SPI.transfer(0);	// number of registers to be read/written – 1
+		delayMicroseconds(2);
 		SPI.transfer(val);
-		delayMicroseconds(1);
+		//en datasheet dice q modificar config1 es como hacer un reset
+		//luego habra que esperar 18 clocks al menos
+		delayMicroseconds(1); 
     cs_high;
 	SPI.endTransaction();
 
@@ -91,42 +96,40 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 	// configura los parametros de ganancia y electrodos de referencia
 	using namespace ADS1298;
 	ads9_send_command(SDATAC); // dejamos el modo READ para emitir comandos
-	delay(10);
+	delay(1000); // dicen que hay que esperar un poquiro aqui
+	ads9_wreg(GPIO, char(0));
+	ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
+	ads9_wreg(CONFIG2, 0xC0);  // no generate internal test signals
+	delay(1); // dicen que hay que esperar un poquiro aqui
 
 	switch (estado_ads1299) {
 	case MODE_SENAL_TEST:
-		ads9_wreg(GPIO, char(0));
-		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
 		ads9_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
 		ads9_wreg(CONFIG3, char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
-			ads9_wreg(char(CHnSET + i), char(TEST_SIGNAL | GAIN_1X));
+			ads9_wreg(char(CHnSET + i), 
+				char(TEST_SIGNAL | GAIN_1X));
 		}
 		break;
 	case MODE_SENAL_TEST_24x:
-		ads9_wreg(GPIO, char(0));
-		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
 		ads9_wreg(CONFIG2, INT_TEST_8HZ);  // generate internal test signals
 		ads9_wreg(CONFIG3, char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
-			ads9_wreg(char(CHnSET + i), char(TEST_SIGNAL | GAIN_24X));
+			ads9_wreg(char(CHnSET + i), 
+				char(TEST_SIGNAL | GAIN_24X));
 		}
 		break;
 
 	case MODE_SENAL_REAL_1x:
-		ads9_wreg(GPIO, char(0));
-		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
-					char(ELECTRODE_INPUT | GAIN_1X )); 
+				char(ELECTRODE_INPUT | GAIN_1X )); 
 		}
 		break;
 	case MODE_SENAL_REAL_12x:
-		ads9_wreg(GPIO, char(0));
-		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
@@ -134,22 +137,17 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 		}
 		break;
 	case MODE_SENAL_REAL_24x:
-		ads9_wreg(GPIO, char(0));
-		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
 					char(ELECTRODE_INPUT | GAIN_24X )); 
 		}
 		break;
+	// senal entraria por entradas P si SRB1 es referencia
+	// senal entraria por entradas N si SRB2 es referencia
 	case MODE_SENAL_SRB1:
-		// set mode SRB1, util en EEG, 
-		// senal entraria por entradas P y SRB1 es referencia
-		// bipolar: srb1  y srb2 desactivados
-		// gaancia a 12
-		ads9_wreg(GPIO, char(0));
+		// referencial: set mode SRB1, util en EEG, 
 		ads9_wreg(PACE, char(0x20)); //set SRB1. Es un electrodo q internamente se une a todas las entradas negativas
-		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
@@ -157,13 +155,8 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 		}
 		break;
 	case MODE_SENAL_BIP:
-		// set mode SRB1, util en EEG, 
-		// senal entraria por entradas P y SRB1 es referencia
 		// bipolar: srb1  y srb2 desactivados
-		// gaancia a 12
-		ads9_wreg(GPIO, char(0));
 		ads9_wreg(PACE, char(0x00)); //unset SRB1. 
-		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
@@ -172,16 +165,12 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 		}
 		break;
 	case MODE_SENAL_SRB2:
-		// set mode SRB2, util en chart
+		// set mode SRB2, util en chart para coexistir referenciales y bipolares
 		// senal entraria por entradas N 
-		// ganancia a 1
-		ads9_wreg(GPIO, char(0));
 		ads9_wreg(PACE, char(0x00)); //unset SRB1. 
-		ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
-//					char(ELECTRODE_INPUT | GAIN_1X | SRB2_INPUT)); //SRB2 y ganancia 1
 					char(ELECTRODE_INPUT | SRB2_INPUT)); //SRB2 y ganancia 1
 		}
 		break;
@@ -189,7 +178,6 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 		// se pone a medir impedancias
 		// aun no implementado
 		break;
-
 	}
 	//start streaming data
 	ads9_detectActiveChannels();
@@ -251,7 +239,7 @@ void ads9_set_fm(int p_samplefm) {
 }
 
 void ads9_detectActiveChannels() {
-	//actualiza gActiveChan y gNumActiveChan
+	//actualiza gActiveChan y gNumActiveChan y numSerialBytes
 	using namespace ADS1298;
 	gNumActiveChan = 0;
 	for (int i = 1; i <= gMaxChan; i++) {
@@ -261,6 +249,8 @@ void ads9_detectActiveChannels() {
 		if ((chSet & 7) != SHORTED)
 			gNumActiveChan++;
 	}
+	numSerialBytes = 1 + (3 * gNumActiveChan); //8-bits header plus 24-bits per ACTIVE channel
+
 }
 
 void ads9_lee_datos(void) {
@@ -268,10 +258,9 @@ void ads9_lee_datos(void) {
 // se utiliza como funcion apuntada en el vector de interrupciones (al inicio, en setup() )
 // lee el ads y lo pone en serialBytes[]--numSerialBytes
 	int i = 0;
-	numSerialBytes = 1 + (3 * gNumActiveChan); //8-bits header plus 24-bits per ACTIVE channel
 
-// cs a 0, empezamos a leer el ads1299    
 	SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
+                // cs a 0, empezamos a leer el ads1299    
 		cs_low;
 		contador_muestras++;
 		serialBytes[i++] = SPI.transfer(0); //get 1st byte of header
@@ -309,7 +298,6 @@ void ads9_solo_datos_sin_eeg(void) {
 // se utiliza como funcion apuntada en el vector de interrupciones (al inicio, en setup() )
 // NO lee el ads, PERO RELLENA igual serialBytes[]--numSerialBytes
 	int i = 0;
-	numSerialBytes = 1 + (3 * gNumActiveChan); //8-bits header plus 24-bits per ACTIVE channel
     cs_low;
   	contador_muestras++;
   	serialBytes[i++] = 0; //get 1st byte of header

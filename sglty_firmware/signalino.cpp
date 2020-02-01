@@ -23,7 +23,7 @@
 //
 #include "signalino.h"
 
-// hay tres estados: QUIETO_PARADO, señal cuadrada, señal real
+// hay cuatro estados: QUIETO_PARADO, señal cuadrada, señal real
 // y modo impedancias, aun no implementado
 
 
@@ -47,7 +47,7 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
     teensy_configini();  
   #endif
 
- gFormatoSerial     = 1; 
+ gFormatoSerial     = 2; 
  gBluetooth         = true;
  gSerialPrinting    = true;
 // gFormatoSerial_code = OUT_DEC;
@@ -80,9 +80,9 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
 
 void imprimeSerial_signalino(int p_formato_salida){
     switch(formatos[p_formato_salida]){
-              case RHEX:  imprime_linea(MODO_HEX);break;
-              case RDEC:  imprime_linea(MODO_DEC);break;
-              case ROFF:  imprime_linea(MODO_NADA);break;
+              case RHEX:       imprime_linea(MODO_HEX);break;
+              case RDEC:       imprime_linea(MODO_DEC);break;
+              case ROFF:     imprime_linea(MODO_NADA);break;
               case OPENeeg_1: imprime_openEEG_p2(1);break;
               case OPENeeg_2: imprime_openEEG_p2(2);break;
               case OPENeeg_3: imprime_openEEG_p2(3);break;

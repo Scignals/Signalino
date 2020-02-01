@@ -33,6 +33,7 @@ int gWired_speed=0;
 int gBT_speed=0;
 
 char buffer_comentaserial[MAX_COMENTARIO_SERIAL];
+char *gLetra; // buffer usado en to_hex, inicializado en inicia_serial()
 int gFormatoSerial; 
 
 
@@ -42,6 +43,7 @@ int ultimo_modo=8;
 
 
 void inicia_serial_pc(){
+  gLetra=new char[80];  
   WiredSerial.begin(SERIAL_SPEED);
   while (WiredSerial.read() >= 0) {} ;
   delay(200);  // Catch Due reset problem
@@ -336,6 +338,11 @@ void procesaComando(String texto){
               gSenal_obtenida=SENAL_REAL;
               ads9_misetup_ADS1299(MODE_SENAL_REAL_24x);
               break;
+           case 5:
+              gSenal_obtenida=SENAL_REAL;
+              ads9_misetup_ADS1299(MODE_SENAL_TEST_24x);
+              break;   
+              
           }       
          sprintf(buffer_comentaserial,"Signal mode changed to %d",p1.param);
          comentaSerial(buffer_comentaserial);

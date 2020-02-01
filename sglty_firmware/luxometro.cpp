@@ -1,6 +1,7 @@
 #include "luxometro.h"
 
 
+
 void luxometro::iniciar() {
   Wire.begin();
   Wire.beginTransmission(OPT);

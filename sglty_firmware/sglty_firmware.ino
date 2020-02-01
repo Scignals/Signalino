@@ -52,7 +52,7 @@ SIGNALINO_serial_interprete sg_interprete=INTERPRETE_SIGNALINO;
 unsigned long tick;
 boolean gSerialPrinting = true;
 boolean gLUX_ON = false;
-
+long luz=0;
 
 luxometro *gLUX;
 
@@ -73,11 +73,15 @@ void loop()
   if(gHayLectura && gisReadingDataNow ){
          gHayLectura=0;
          tick++;    
+         // copia en serialBytes la ultima lectura de luz
+         // en serialBytes se copia lo q sale del ads (1+nchannei*3): 
+         // metemos la luz, de momento, en canal 1
+         to_3bytes((long)(100*gLUX->get_ultima_luz_calibrada()), &(serialBytes[1]));
+
          if(tick%1==0)imprimeSerial_signalino(gFormatoSerial);
          if(tick%(INTERVALO_LEESERIAL)==0)leeSerial_signalino();
-         if(gLUX_ON && tick%(INTERVALO_LEELUZ)==0)
-           Serial.println((int)gLUX->get_luz_calibrada());
-         
+         if(gLUX_ON && tick%(INTERVALO_LEELUZ)==0)gLUX->get_luz_calibrada();
+             
   }
 
 }

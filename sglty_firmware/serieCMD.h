@@ -31,6 +31,7 @@
 #include "firmware_mbs.h"
 #include "adsCMD.h"
 #include "version.h"
+#include "luxometro.h"
 
 
 
@@ -69,6 +70,9 @@ extern int gBT_speed;
 extern boolean gserialVerbose;
 extern volatile int numSerialBytes;
 extern volatile  unsigned char serialBytes[];
+extern volatile  unsigned char luz_percibida[];
+extern luxometro *gLUX;
+
 extern boolean gBluetooth;
 extern boolean gLUX_ON;
 extern unsigned char txBuf[];  //17 en openeeg   32 enopenbci

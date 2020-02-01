@@ -24,6 +24,7 @@
 #include "serieCMD.h"
 #include "command_parser.h"
 
+
 #define MAX_LEN_PACKET 33        //32+1, openbci V3
 unsigned char txBuf[MAX_LEN_PACKET];  //17 en openeeg   32 en openbci V3, 8 canales+3acelerometros
 unsigned long indice_paquete=0;
@@ -191,6 +192,9 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
   
    int ind;
    byte timestamp[3];
+   byte luz_percibida[3];
+   extern float luz;
+
 
    //for debug
    // gBluetooth=true;
@@ -207,17 +211,21 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
    }
      //los 2 acelerometros, no los tenemos asi que lo dejamos a cero
      //pero metemos un timestamp en el primero
+     //y el luxometro en el segundo
      to_3bytes(micros(),timestamp);
+     to_3bytes((long)gLUX->get_ultima_luz_calibrada(),luz_percibida);
+     
+
                 
      txBuf[ind++] = timestamp[0];
      txBuf[ind++] = timestamp[1];
      txBuf[ind++] = timestamp[2];
-     txBuf[ind++] = 0;
-     txBuf[ind++] = 0;
-     txBuf[ind++] = 0;
+     txBuf[ind++] = luz_percibida[0];
+     txBuf[ind++] = luz_percibida[1];
+     txBuf[ind++] = luz_percibida[2];
      
      // este ultimo es C0 para los acelerometros
-     // en su logar podian ir por ejemplo un registro de  booleanos: luz, bluetooh si/no,
+     // en su lugar podian ir por ejemplo un registro de  booleanos: luz, bluetooh si/no,
      // pero entonces hay q cambiar el C0 por CX
 
      txBuf[ind]=0xC0; 
@@ -459,4 +467,3 @@ void procesaComando_estilo_openBCI(String texto){
       return;
 
 }
-

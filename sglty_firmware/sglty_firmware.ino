@@ -55,14 +55,20 @@ boolean gLUX_ON = false;
 long luz=0;
 
 luxometro *gLUX;
+acelerometro *gACC;
 
 
 
 void setup(){
  tick=0; 
  inicia_signalino(sg_estado);
+ 
  gLUX=new luxometro();
  gLUX->iniciar();
+
+ gACC=new acelerometro();
+ gACC->iniciar();
+
 }
 
 void loop()
@@ -77,7 +83,7 @@ void loop()
          // en serialBytes se copia lo q sale del ads (1+nchannei*3): 
          // metemos la luz, de momento, en canal 1
          to_3bytes((long)(100*gLUX->get_ultima_luz_calibrada()), &(serialBytes[1]));
-
+         gACC->leer();
          if(tick%1==0)imprimeSerial_signalino(gFormatoSerial);
          if(tick%(INTERVALO_LEESERIAL)==0)leeSerial_signalino();
          if(gLUX_ON && tick%(INTERVALO_LEELUZ)==0)gLUX->get_luz_calibrada();

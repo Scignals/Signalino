@@ -35,6 +35,8 @@
 #include "version.h"
 #include "serieCMD.h"
 #include "luxometro.h"
+#include "acelerometro.h"
+
 
 
 enum SIGNALINO_maquina_estados {

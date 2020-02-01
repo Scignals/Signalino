@@ -1,10 +1,11 @@
 #include "luxometro.h"
 
+#define I2C_LUX 0x44
 
 
 void luxometro::iniciar() {
   Wire.begin();
-  Wire.beginTransmission(OPT);
+  Wire.beginTransmission(I2C_LUX);
     Wire.write(0x01);
     Wire.write(0xc6);
     Wire.write(0x01);
@@ -14,10 +15,10 @@ void luxometro::iniciar() {
 }
 
 void luxometro::leer() {
-    Wire.beginTransmission(OPT);
+    Wire.beginTransmission(I2C_LUX);
       Wire.write(0x00);
     Wire.endTransmission(false);
-    Wire.requestFrom(OPT, 2, true);
+    Wire.requestFrom(I2C_LUX, 2, true);
     
     byte a=Wire.read();
     byte b=Wire.read(); 

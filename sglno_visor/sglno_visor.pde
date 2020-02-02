@@ -55,11 +55,12 @@ import javax.swing.JOptionPane;//For user input dialogs
 String version_software="0.4";
 
 int BAUD_RATE = 115200;//57600 115200 230400;//921600;//460800;//921600; //921600 for Teensy2/Teensy3/Leonardo 460800
-int numCanales = 8; //number of channels to report
+int numCanales = 8; //number of channels to report. Alucino, pero si pones 12, salen 12 en pantalla!!
 int anchoPantalla=1000;
 int altoPantalla=600;
 
 boolean modo_conectado = false;
+boolean modo_LSL       = false;
 boolean modo_test      = false;
 boolean gGrabando      = false;
 boolean gui_running    = true;

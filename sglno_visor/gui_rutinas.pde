@@ -38,11 +38,20 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
    
    ;
   gui.addRadioButton("BT")
-   .setPosition(350,1)
+   .setPosition(450,1)
    .setSize(27,10)
    .setValue(0)
    .addItem("BT on",1)
-   .addItem("off",0)
+   .addItem("B off",0)
+   
+   ;
+
+  gui.addRadioButton("ACX")
+   .setPosition(350,1)
+   .setSize(27,10)
+   .setValue(0)
+   .addItem("ACX on",1)
+   .addItem("AC off",0)
    
    ;
 
@@ -208,11 +217,23 @@ public void BT(int value){
   println("pasando bluetooth a "+value);
   switch(value){
      case 1:
-     
        sendComando("blt1;",port); 
        break;
      case 0:
        sendComando("blt0;",port);
+       break;
+  }
+  ADS4ch.reset();
+}
+
+public void ACX(int value){
+  println("modo ACX a "+value);
+  switch(value){
+     case 1:
+       sendComando("lux1;",port); 
+       break;
+     case 0:
+       sendComando("lux0;",port);
        break;
   }
   ADS4ch.reset();

@@ -52,6 +52,9 @@ import java.io.FileWriter;
 import processing.serial.*;
 import javax.swing.JOptionPane;//For user input dialogs
 
+import edu.ucsd.sccn.LSL;
+
+
 String version_software="0.4";
 
 int BAUD_RATE = 115200;//57600 115200 230400;//921600;//460800;//921600; //921600 for Teensy2/Teensy3/Leonardo 460800
@@ -74,7 +77,9 @@ ControlP5 gui;
 // and the chart recorder
 Chart ADS4ch;
 // and the serial port
-Serial port;      
+Serial port;   
+// and the LSL inlet   
+LSL.StreamInlet inlet;
 
 
 //create a file first for recording signal    

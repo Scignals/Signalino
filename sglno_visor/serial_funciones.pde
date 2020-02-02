@@ -84,21 +84,26 @@ int interpret24bitAsInt32(byte[] byteArray) {
   }
 
 void serLSL(Buffer bf) { //numeros aleatorios
-  int timestamp=0;
-  for(int jj=1;jj<2;jj++){
-      for(int i=0;i<numCanales;i++){
-               buffer_lectura[i]=1000*(int) random(1,100);
-      }
-      timestamp = millis()*1000;
-      gUltimoTimeStamp=timestamp;
-              
-      bf.apunta(buffer_lectura);
-      if(gGrabando)bf.graba(buffer_lectura);
-  }
-  fm_calculada=floor(1000000/(timestamp-gUltimoTimeStamp+1));
-
-} //void serRand
-
+    try{  
+        // receive data
+        float[] sample = new float[inlet.info().channel_count()];
+          inlet.pull_sample(sample);
+        for(int i=0;i<numCanales;i++){
+                 buffer_lectura[i]=(int)sample[i];
+        }
+    }catch(Exception ex) {
+      ex.printStackTrace();
+    println("Hint: if you set serialPortNumber=0 the program will allow the user to select from a drop down list of available ports");
+    }
+//    timestamp = millis()*1000;
+//    gUltimoTimeStamp=timestamp;
+    bf.apunta(buffer_lectura);
+    if(gGrabando)bf.graba(buffer_lectura);
+ //   fm_calculada=floor(1000000/(timestamp-gUltimoTimeStamp+1));
+    fm_calculada=250;
+}
+  
+  
 
 void serRand(Buffer bf) { //numeros aleatorios
   int timestamp=0;
@@ -152,26 +157,20 @@ void serie_inicia()
 void LSL_inicia()
 {
   byte[] basura = new byte[1000]; //tiene que ser grande, a veces se cuelga
-  if (serialPortNumber == 0) {
-    setPortNum();
-  } else {
-    print("Will attempt to open port "); println(serialPortNumber); 
-    println(", this should correspond to the device number in this list:");
-    println(Serial.list());
-    println("Hint: if you set serialPortNumber=0 the program will allow the user to select from a drop down list of available ports");
-  }
-  try{
+    try {
       modo_LSL=false;
-//      port = new Serial(this, Serial.list()[serialPortNumber], BAUD_RATE);    
-//      port.readBytesUntil(0xC0,basura);
+      System.out.println("Resolving an EEG stream...");
+      LSL.StreamInfo[] results = LSL.resolve_stream("type","EEG");
+      // open an inlet
+      inlet = new LSL.StreamInlet(results[0]);
       modo_LSL=true;
-  } catch (Exception e){ 
+    } catch(Exception ex) {
+      ex.printStackTrace();
           javax.swing.JOptionPane.showMessageDialog(frame,
             "<html><div align='center'>Scignals v "+version_software+" (c) 2016</div>"+
            "<p>No LSL streams detected: please check communications. Going to Offline mode...</p></html>");  
           modo_LSL=false;
-    //exit();
-  }
+    }
 }
 
 

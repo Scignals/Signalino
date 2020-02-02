@@ -78,15 +78,24 @@ void loop()
   
   if(gHayLectura && gisReadingDataNow ){
          gHayLectura=0;
-         tick++;    
-         // copia en serialBytes la ultima lectura de luz
-         // en serialBytes se copia lo q sale del ads (1+nchannei*3): 
-         // metemos la luz, de momento, en canal 1
-         to_3bytes((long)(100*gLUX->get_ultima_luz_calibrada()), &(serialBytes[1]));
-         gACC->leer();
+         tick++;
+         if(gLUX_ON){    
+            // copia en serialBytes la ultima lectura de luz
+            // en serialBytes se copia lo q sale del ads (1+nchannei*3): 
+            // metemos la luz, de momento, en canal 1
+            to_3bytes((long)(10*gLUX->get_ultima_luz_calibrada()), &(serialBytes[1]));
+            to_3bytes((long)(100*gACC->AcX), &(serialBytes[4]));
+            to_3bytes((long)(100*gACC->AcY), &(serialBytes[7]));
+            to_3bytes((long)(100*gACC->AcZ), &(serialBytes[10]));
+            to_3bytes((long)(10*gACC->GyX), &(serialBytes[13]));
+            to_3bytes((long)(10*gACC->GyY), &(serialBytes[16]));
+            to_3bytes((long)(10*gACC->GyZ), &(serialBytes[19]));
+            to_3bytes((long)(10*gACC->temperature), &(serialBytes[22]));
+            gACC->leer();
+            if(tick%(INTERVALO_LEELUZ)==0)gLUX->get_luz_calibrada();
+          }         
          if(tick%1==0)imprimeSerial_signalino(gFormatoSerial);
          if(tick%(INTERVALO_LEESERIAL)==0)leeSerial_signalino();
-         if(gLUX_ON && tick%(INTERVALO_LEELUZ)==0)gLUX->get_luz_calibrada();
              
   }
 

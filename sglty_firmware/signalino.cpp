@@ -50,7 +50,7 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
  gFormatoSerial     = 2; 
  gBluetooth         = true;
  gSerialPrinting    = true;
- gLUX_ON            = true;
+ gLUX_ON            = false;
 // gFormatoSerial_code = OUT_DEC;
 
 

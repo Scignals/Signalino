@@ -84,23 +84,25 @@ int interpret24bitAsInt32(byte[] byteArray) {
   }
 
 void serLSL(Buffer bf) { //numeros aleatorios
+  int timestamp=0;
     try{  
         // receive data
-        float[] sample = new float[inlet.info().channel_count()];
-          inlet.pull_sample(sample);
-        for(int i=0;i<numCanales;i++){
+        float[] sample = new float[8];
+        // esta linea me ha costado mucho! 
+        while(inlet.pull_sample(sample,0)>0);
+        for(int i=0;i<8;i++){
                  buffer_lectura[i]=(int)sample[i];
         }
     }catch(Exception ex) {
       ex.printStackTrace();
     println("Hint: if you set serialPortNumber=0 the program will allow the user to select from a drop down list of available ports");
     }
-//    timestamp = millis()*1000;
-//    gUltimoTimeStamp=timestamp;
+    timestamp = millis()*1000;
+    gUltimoTimeStamp=timestamp;
     bf.apunta(buffer_lectura);
     if(gGrabando)bf.graba(buffer_lectura);
- //   fm_calculada=floor(1000000/(timestamp-gUltimoTimeStamp+1));
-    fm_calculada=250;
+    fm_calculada=floor(1000000/(timestamp-gUltimoTimeStamp+1));
+  //  fm_calculada=250;
 }
   
   
@@ -142,9 +144,13 @@ void serie_inicia()
   }
   try{
       modo_conectado=false;
-      port = new Serial(this, Serial.list()[serialPortNumber], BAUD_RATE);    
-      port.readBytesUntil(0xC0,basura);
-      modo_conectado=true;
+      if(serialPortNumber==-4){
+        LSL_inicia();
+      } else {  
+        port = new Serial(this, Serial.list()[serialPortNumber], BAUD_RATE);    
+        port.readBytesUntil(0xC0,basura);
+        modo_conectado=true;
+      };  
   } catch (Exception e){ 
           javax.swing.JOptionPane.showMessageDialog(frame,
             "<html><div align='center'>Scignals v "+version_software+" (c) 2016</div>"+
@@ -156,7 +162,6 @@ void serie_inicia()
 
 void LSL_inicia()
 {
-  byte[] basura = new byte[1000]; //tiene que ser grande, a veces se cuelga
     try {
       modo_LSL=false;
       System.out.println("Resolving an EEG stream...");
@@ -196,19 +201,14 @@ void setPortNum()
      portStr[i] =  i+ " "+portStr[i] ;
    }
    
-  String[] array2 = new String[]{portStr.length+" SIMULATED noisy Signal"};
-  String[] array3 = new String[]{portStr.length+" LSLstream"};
-  String[] array = new String[portStr.length + array2.length];
-  System.arraycopy(portStr, 0, array, 0, portStr.length);
+  String[] array2 = new String[]{(portStr.length)+" SIMULATED noisy Signal"};
+  String[] array3 = new String[]{(1+portStr.length)+" LSLstream"};
+  String[] array = new String[portStr.length+2];
+  System.arraycopy(portStr, 0, array, 0, portStr.length);  
   System.arraycopy(array2, 0, array, portStr.length, array2.length);
+  System.arraycopy(array3, 0, array, portStr.length+1, array3.length);
   nPort=nPort+1;
-  // no veo como hacer que aparezca al final del array, ahora se pone en el ultimo lugar pisando al noisy
-//  array = new String[portStr.length + array3.length];
-//  System.arraycopy(portStr, 0, array, 0, portStr.length);
-//  System.arraycopy(array3, 0, array, portStr.length, array3.length);
-//  nPort=nPort+1;
 
-  
    String respStr = (String) JOptionPane.showInputDialog(null,
       "<html><div align='center'>Scignals v "+version_software+" (c) 2016</div>"+
       "<p>This program is free software, distributed under GNU General Public License (v3) in the hope that it will be useful, but WITHOUT ANY WARRANTY</p>"+
@@ -217,7 +217,10 @@ void setPortNum()
       array, array[index]);
       println(respStr);
       try{
-         if(respStr!=null) serialPortNumber = Integer.parseInt(respStr.substring(0, 1));
+         if(respStr!=null) {
+           serialPortNumber = Integer.parseInt(respStr.substring(0, 1));
+           if( respStr.indexOf("LSL")>0)serialPortNumber=-4; //LSL
+         }
       } catch (Exception e){ 
          // no hacer nada, es por si acaso
       }    

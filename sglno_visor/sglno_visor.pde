@@ -106,6 +106,10 @@ void setup() {
   buffer_lectura=new int[numCanales];
 
   modo_conectado=false;
+  
+  
+//  LSL_inicia();
+  
   if (!modo_test){
      serie_inicia();
      //pone el ads en modo 6 ( bytes openBCI ). antes manda un "oka" xq si no el arduino no responde (antes del bug, igual ahora funciona sin oka
@@ -130,8 +134,10 @@ void setup() {
 
 void draw() {
 //     background(150);
-     if(modo_conectado)serDecode(ADS4ch.bf);
-     else serRand(ADS4ch.bf);
+     if(modo_conectado)  serDecode(ADS4ch.bf);
+     else if(modo_LSL)   serLSL(ADS4ch.bf);
+     else                serRand(ADS4ch.bf);
+     
      if(gui_running)ADS4ch.update();
      
      // esto hay q meterlo como metodo de gui2

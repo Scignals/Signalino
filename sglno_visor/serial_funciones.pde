@@ -21,6 +21,8 @@ int   v1=0;
 int   gUltimoTimeStamp;
 float fm_calculada;
 boolean debugeando=false;
+int num_canales_lsl = 0;
+
 
 void serDecode(Buffer bf) { 
   //assuming Arduino is only transfering active channels
@@ -150,6 +152,7 @@ void serie_inicia()
         port = new Serial(this, Serial.list()[serialPortNumber], BAUD_RATE);    
         port.readBytesUntil(0xC0,basura);
         modo_conectado=true;
+
       };  
   } catch (Exception e){ 
           javax.swing.JOptionPane.showMessageDialog(frame,
@@ -166,11 +169,17 @@ void LSL_inicia()
       modo_LSL=false;
       System.out.println("Resolving an EEG stream...");
       LSL.StreamInfo[] results = LSL.resolve_stream("type","EEG");
+      println("LSL: Resolved LSL EEG stream: " + Arrays.toString(results));
+      
+      
+      
       // open an inlet
       inlet = new LSL.StreamInlet(results[0]);
+      num_canales_lsl = inlet.info().channel_count();
       modo_LSL=true;
+
     } catch(Exception ex) {
-      ex.printStackTrace();
+          println("LSL: Error getting LSL stream info.");
           javax.swing.JOptionPane.showMessageDialog(frame,
             "<html><div align='center'>Scignals v "+version_software+" (c) 2016</div>"+
            "<p>No LSL streams detected: please check communications. Going to Offline mode...</p></html>");  

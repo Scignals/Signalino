@@ -1,8 +1,6 @@
 #pragma once
 #include <Wire.h>
-#include "util.h"
-
-#define OPT 0x44
+#define I2C_LUX 0x44
 
 class luxometro {
 public:

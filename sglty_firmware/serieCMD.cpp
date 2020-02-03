@@ -214,6 +214,7 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
      //y el luxometro en el segundo
      to_3bytes(micros(),timestamp);
      to_3bytes((long)gLUX->get_ultima_luz_calibrada(),luz_percibida);
+     to_3bytes((long)gACC->get_ultima_luz_calibrada(),luz_percibida);
      
 
                 

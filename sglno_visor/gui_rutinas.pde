@@ -116,7 +116,15 @@ void iniciaGui(ControlP5 gui) { //assuming Arduino is only transfering active ch
    .setColorValue(0x00000000)
    .setFont(createFont("Georgia",10))
    ;
-   
+
+  gui.addTextlabel("modoRegistro")
+   .setText("LSL mode")
+   .setPosition(250,580)
+   .setSize(10,10)
+   .setColorValue(0x00000000)
+   .setFont(createFont("Georgia",10))
+   ;
+
 
  gui.addTextfield("NombreArchivo")
    .setPosition(905,520)

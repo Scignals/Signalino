@@ -119,10 +119,17 @@ void setup() {
      sendComando("blt1",port);
   }   
   background(200);
-  
+ 
+          
+          
+
   ADS4ch = new Chart(anchoPantalla/2-50,altoPantalla/2,anchoPantalla-100,altoPantalla-50,numCanales,0.01);
   gui = new ControlP5(this);
   iniciaGui(gui);
+    if(modo_conectado) gui.get(Textlabel.class,"modoRegistro").setValue("Serial mode");
+    else if(modo_LSL) gui.get(Textlabel.class,"modoRegistro").setValue("LSL mode");
+    else gui.get(Textlabel.class,"modoRegistro").setValue("Noisy mode");
+
   sendComando("sim1",port);
   sendComando("frm6",port);
   println("winter is coming...");

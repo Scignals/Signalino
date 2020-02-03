@@ -80,9 +80,11 @@ void loop()
          gHayLectura=0;
          tick++;
          if(gLUX_ON){    
-            // copia en serialBytes la ultima lectura de luz
-            // en serialBytes se copia lo q sale del ads (1+nchannei*3): 
+            // copia en serialBytes la ultima lectura de los perifericos
+            // en serialBytes se copia lo q sale del ads (1+nchannel*3): 
             // metemos la luz, de momento, en canal 1
+            // loa canales, del 2 al 7. Y la temperatura en el 8
+            // lux1 los pone y lux0 saca EEG
             to_3bytes((long)(10*gLUX->get_ultima_luz_calibrada()), &(serialBytes[1]));
             to_3bytes((long)(100*gACC->AcX), &(serialBytes[4]));
             to_3bytes((long)(100*gACC->AcY), &(serialBytes[7]));
@@ -91,7 +93,7 @@ void loop()
             to_3bytes((long)(10*gACC->GyY), &(serialBytes[16]));
             to_3bytes((long)(10*gACC->GyZ), &(serialBytes[19]));
             to_3bytes((long)(10*gACC->temperature), &(serialBytes[22]));
-            gACC->leer();
+            gACC->leer(); //siempre leemos
             if(tick%(INTERVALO_LEELUZ)==0)gLUX->get_luz_calibrada();
           }         
          if(tick%1==0)imprimeSerial_signalino(gFormatoSerial);

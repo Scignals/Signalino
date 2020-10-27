@@ -278,9 +278,9 @@ void parpadea(int intervalo)
 #endif
   const int ledPin = 13;
   digitalWrite(ledPin, HIGH);   // set the LED on
-  delay(intervalo / 2);                // wait for a second
+  delay(intervalo / 2);                // wait for INTERVALO
   digitalWrite(ledPin, LOW);    // set the LED off
-  delay(intervalo / 2);                // wait for a second
+  delay(intervalo / 2);                // wait for INTERVALO
 #if defined(TEENSYDUINO)
   SPI.setSCK(13);
 #endif

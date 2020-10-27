@@ -79,23 +79,31 @@ void loop()
   if(gHayLectura && gisReadingDataNow ){
          gHayLectura=0;
          tick++;
-         if(gLUX_ON){    
-            // copia en serialBytes la ultima lectura de luz
-            // en serialBytes se copia lo q sale del ads (1+nchannei*3): 
+         if(gLUX_ON){
+            const int sbo=1;    // si ponemos 26, y hacemos un formato nuevo, podriamos añadir canales 
+            // copia en serialBytes la ultima lectura de los perifericos
+            // en serialBytes se copia lo q sale del ads (1+nchannel*3): 
             // metemos la luz, de momento, en canal 1
-            to_3bytes((long)(10*gLUX->get_ultima_luz_calibrada()), &(serialBytes[1]));
-            to_3bytes((long)(100*gACC->AcX), &(serialBytes[4]));
+            // loa canales, del 2 al 7. Y la temperatura en el 8
+            // lux1 los pone y lux0 saca EEG
+
+            // deberia ser char *buf_salida=serialBytes y poner ser_buf+(1,4,...)
+            // o char *buf_salida=serialBytes+24 para añadir canales
+            to_3bytes((long)(10*gLUX->get_ultima_luz_calibrada()), &(serialBytes[1])); //sbo+0
+            to_3bytes((long)(100*gACC->AcX), &(serialBytes[4])); // sbo+3...
             to_3bytes((long)(100*gACC->AcY), &(serialBytes[7]));
             to_3bytes((long)(100*gACC->AcZ), &(serialBytes[10]));
             to_3bytes((long)(10*gACC->GyX), &(serialBytes[13]));
             to_3bytes((long)(10*gACC->GyY), &(serialBytes[16]));
             to_3bytes((long)(10*gACC->GyZ), &(serialBytes[19]));
             to_3bytes((long)(10*gACC->temperature), &(serialBytes[22]));
-            gACC->leer();
+            gACC->leer(); //siempre leemos el acelerometro, frecuencia de muestreo como el EEG
             if(tick%(INTERVALO_LEELUZ)==0)gLUX->get_luz_calibrada();
           }         
          if(tick%1==0)imprimeSerial_signalino(gFormatoSerial);
          if(tick%(INTERVALO_LEESERIAL)==0)leeSerial_signalino();
+         // podria ser que se escaparan mensajes entrantes por serial, si no estamos leyendo siempre el serial
+         // quiza el driver deberia esperar un oka y si no llega repetir el mensaje
              
   }
 

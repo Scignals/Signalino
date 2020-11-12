@@ -27,7 +27,7 @@
 #include "dueCMD.h"
 #include "firmware_mbs.h"
 #include "version.h"
-
+#include "sdtarjeta.h"
 
 #if defined(TEENSYDUINO)
 
@@ -88,6 +88,18 @@ void teensy_configini(void)
 
 
 }
+
+void teensy_sdcard_info(void)
+{
+  gCRD=new sdtarjeta();
+  if(!gCRD->info()) return;
+  gCRD=nullptr;
+
+
+}  
+
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 void redreg(byte cant, byte numb)

@@ -164,6 +164,8 @@ const int kPIN_CLKSEL = 7; //ClkSel en Pin 7
 void due_inicia_hw();
 byte teensy_cuenta_ch(void);
 void teensy_configini(void);
+void teensy_sdcard_info(void);
+
 
 
 void parpadea(int intervalo);

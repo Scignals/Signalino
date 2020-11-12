@@ -36,6 +36,8 @@
 #include "serieCMD.h"
 #include "luxometro.h"
 #include "acelerometro.h"
+#include "sdtarjeta.h"
+
 
 
 

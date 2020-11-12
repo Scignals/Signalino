@@ -55,7 +55,7 @@ long bps_modulo= 7; // if original, 3- If modified, 7
 #elif defined(TEENSYDUINO)
   #define WiredSerial Serial
   const long bps =  115200;//desired bps
-  char* name =    "snoT_1234";//"us922k0000bt"; //any name you want -Teensy/Arduino names start "usbmodem", so  "us" can help detect if Teensy is attached, you could also add pin number (0000)
+  char* name =    "snoT_1234_03";//"us922k0000bt"; //any name you want -Teensy/Arduino names start "usbmodem", so  "us" can help detect if Teensy is attached, you could also add pin number (0000)
   int led =         13;  // Pin of Blinking LED, pin 13 for Arduino/Teensy3, Pin 11 for Teensy2
 
 /*

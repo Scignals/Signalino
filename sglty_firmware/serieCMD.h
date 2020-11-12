@@ -32,6 +32,8 @@
 #include "adsCMD.h"
 #include "version.h"
 #include "luxometro.h"
+#include "sdtarjeta.h"
+
 
 
 
@@ -72,9 +74,14 @@ extern volatile int numSerialBytes;
 extern volatile  unsigned char serialBytes[];
 extern volatile  unsigned char luz_percibida[];
 extern luxometro *gLUX;
+extern sdtarjeta *gCRD;
+
 
 extern boolean gBluetooth;
 extern boolean gLUX_ON;
+extern boolean gCRD_ON;
+
+
 extern unsigned char txBuf[];  //17 en openeeg   32 enopenbci
 extern unsigned long indice_paquete;
 extern int gSenal_obtenida;

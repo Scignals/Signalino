@@ -52,11 +52,12 @@ SIGNALINO_serial_interprete sg_interprete=INTERPRETE_SIGNALINO;
 unsigned long tick;
 boolean gSerialPrinting = true;
 boolean gLUX_ON = false;
+boolean gCRD_ON = false;
 long luz=0;
 
 luxometro *gLUX;
 acelerometro *gACC;
-
+sdtarjeta *gCRD;
 
 
 void setup(){
@@ -79,7 +80,8 @@ void loop()
   if(gHayLectura && gisReadingDataNow ){
          gHayLectura=0;
          tick++;
-         if(gLUX_ON){
+         //?? aqui hay que añadir si estamos en modo real!
+         if(gLUX_ON && gSenal_obtenida==SENAL_REAL ){
             const int sbo=1;    // si ponemos 26, y hacemos un formato nuevo, podriamos añadir canales 
             // copia en serialBytes la ultima lectura de los perifericos
             // en serialBytes se copia lo q sale del ads (1+nchannel*3): 
@@ -101,6 +103,8 @@ void loop()
             if(tick%(INTERVALO_LEELUZ)==0)gLUX->get_luz_calibrada();
           }         
          if(tick%1==0)imprimeSerial_signalino(gFormatoSerial);
+        // if(gCRD_ON)imprime_linea2(1,gCRD->archivo);
+         
          if(tick%(INTERVALO_LEESERIAL)==0)leeSerial_signalino();
          // podria ser que se escaparan mensajes entrantes por serial, si no estamos leyendo siempre el serial
          // quiza el driver deberia esperar un oka y si no llega repetir el mensaje

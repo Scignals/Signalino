@@ -44,7 +44,8 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
     due_inicia_hw();
   #elif defined(TEENSYDUINO)
     while(teensy_cuenta_ch()<8);
-    teensy_configini();  
+    teensy_configini();
+    teensy_sdcard_info();  
   #endif
 
  gFormatoSerial     = 2; 

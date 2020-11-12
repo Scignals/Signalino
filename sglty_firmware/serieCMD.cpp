@@ -193,7 +193,7 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
    int ind;
    byte timestamp[3];
    byte luz_percibida[3];
-   extern float luz;
+//   extern float luz;
 
 
    //for debug
@@ -260,6 +260,7 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
     // protocolo open_bci V3, pero con bytes (es el que se usa en el visor_pc)
         WiredSerial.write(txBuf,33);
         if(gBluetooth)HC06.write(txBuf,33);
+        
 //        if(gBluetooth)HC06.println(" y probando...");
         
        
@@ -310,6 +311,7 @@ void leeSerial_signalino(){
 // hlp: mensaje de inicio y espera un enter por wiredsignal
 // oka: mensaje de inicio y sigue corriendo
 // blt: bluetooth 1:on/0:off
+// sdc: grabando/no grabando en la SD card
 
 
 void procesaComando(String texto){
@@ -433,6 +435,24 @@ void procesaComando(String texto){
                 case 1:
                   gBluetooth=true;
                   comentaSerial("BT on");
+                  break;
+             }
+             break;
+      case comandos_parser::codigos_cmd::SDC:
+              switch(p1.param){
+                case 0:
+                  gCRD_ON=false;
+                  if(gCRD){
+                     gCRD->cierra_archivo();
+                     comentaSerial("SD off");
+                  }   
+                  break;
+                case 1:
+                  if(gCRD){
+                     gCRD->abre_archivo("signalino_file.csv");
+                     gCRD_ON=true;
+                     comentaSerial("SD on");
+                  }   
                   break;
              }
              break;

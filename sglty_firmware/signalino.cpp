@@ -48,7 +48,7 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
     teensy_sdcard_info();  
   #endif
 
- gFormatoSerial     = 2; 
+ gFormatoSerial     = 2; // default para usarlo con arduino gui 
  gBluetooth         = true;
  gSerialPrinting    = true;
  gLUX_ON            = false;
@@ -67,6 +67,8 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
         ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
         break;
     case MIDIENDO_IMPEDANCIAS:  //no existe aun...
+    // se activarian los registros, no habria acelerometros, la sd no se usaria
+    // tal vez otro formato de archivo
         ads9_misetup_ADS1299(MODE_IMPEDANCIAS);
         break;
         

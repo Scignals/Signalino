@@ -70,35 +70,39 @@ void setup(){
  gACC=new acelerometro();
  gACC->iniciar();
 
+  // el new lo hacemos en teensy porque el due no tiene SD card
+ if(gCRD) gCRD->iniciar(); 
+  
+
 }
 
 void loop()
 {
 
   // la lectura de datos se hace por interrupciones
-  
+
+File myFile;
+const unsigned char *sbo=&(serialBytes[1]);
+
   if(gHayLectura && gisReadingDataNow ){
          gHayLectura=0;
          tick++;
-         //?? aqui hay que añadir si estamos en modo real!
          if(gLUX_ON && gSenal_obtenida==SENAL_REAL ){
-            const int sbo=1;    // si ponemos 26, y hacemos un formato nuevo, podriamos añadir canales 
+            //const int sbo=1;    // si ponemos 26, y hacemos un formato nuevo, podriamos añadir canales 
             // copia en serialBytes la ultima lectura de los perifericos
             // en serialBytes se copia lo q sale del ads (1+nchannel*3): 
             // metemos la luz, de momento, en canal 1
             // loa canales, del 2 al 7. Y la temperatura en el 8
             // lux1 los pone y lux0 saca EEG
-
-            // deberia ser char *buf_salida=serialBytes y poner ser_buf+(1,4,...)
-            // o char *buf_salida=serialBytes+24 para añadir canales
-            to_3bytes((long)(10*gLUX->get_ultima_luz_calibrada()), &(serialBytes[1])); //sbo+0
-            to_3bytes((long)(100*gACC->AcX), &(serialBytes[4])); // sbo+3...
-            to_3bytes((long)(100*gACC->AcY), &(serialBytes[7]));
-            to_3bytes((long)(100*gACC->AcZ), &(serialBytes[10]));
-            to_3bytes((long)(10*gACC->GyX), &(serialBytes[13]));
-            to_3bytes((long)(10*gACC->GyY), &(serialBytes[16]));
-            to_3bytes((long)(10*gACC->GyZ), &(serialBytes[19]));
-            to_3bytes((long)(10*gACC->temperature), &(serialBytes[22]));
+            // o char *buf_salida=serialBytes+24 permitiria añadir canales
+            to_3bytes((long)(gLUX->get_ultima_luz_calibrada()), sbo); //sbo+0
+            to_3bytes((long)(gACC->AcX), sbo+3); // sbo+3...
+            to_3bytes((long)(gACC->AcY), sbo+6);
+            to_3bytes((long)(gACC->AcZ), sbo+9);
+            to_3bytes((long)(gACC->GyX), sbo+12);
+            to_3bytes((long)(gACC->GyY), sbo+15);
+            to_3bytes((long)(gACC->GyZ), sbo+18);
+            to_3bytes((long)(gACC->temperature), sbo+21);
             gACC->leer(); //siempre leemos el acelerometro, frecuencia de muestreo como el EEG
             if(tick%(INTERVALO_LEELUZ)==0)gLUX->get_luz_calibrada();
           }         
@@ -106,6 +110,24 @@ void loop()
         // if(gCRD_ON)imprime_linea2(1,gCRD->archivo);
          
          if(tick%(INTERVALO_LEESERIAL)==0)leeSerial_signalino();
+
+
+        if(0 && tick%(250)==0){ // en pruebas aun
+          
+           myFile = SD.open("test2.txt", FILE_WRITE);
+  
+            // if the file opened okay, write to it:
+            if (myFile) {
+              Serial.print("Writing to test.txt...");
+              myFile.println("testing 1, 2, 3.");
+            // close the file:
+              myFile.close();
+              Serial.println("done.");
+            } else {
+              // if the file didn't open, print an error:
+              Serial.println("error opening test.txt");
+            }
+        }   
          // podria ser que se escaparan mensajes entrantes por serial, si no estamos leyendo siempre el serial
          // quiza el driver deberia esperar un oka y si no llega repetir el mensaje
              

@@ -351,7 +351,16 @@ void procesaComando(String texto){
            case 5:
               gSenal_obtenida=SENAL_REAL;
               ads9_misetup_ADS1299(MODE_SENAL_TEST_24x);
-              break;   
+              break;
+          case 6:
+            #if defined(ARDUINO_SAM_DUE)
+               due_inicia_hw();
+            #elif defined(TEENSYDUINO)
+               while(teensy_cuenta_ch()<8);
+               teensy_configini();
+            #endif
+               break;
+       
               
           }       
          sprintf(buffer_comentaserial,"Signal mode changed to %d",p1.param);

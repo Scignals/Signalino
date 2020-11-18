@@ -18,6 +18,7 @@ const int chipSelect = BUILTIN_SDCARD;
 
 public:
     int info() ;
+    bool iniciar( );
     bool abre_archivo(const char *) ;
     bool cierra_archivo() ;
     

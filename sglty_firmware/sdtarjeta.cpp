@@ -75,10 +75,26 @@ int sdtarjeta::info() {
 }
 
 
-bool sdtarjeta::abre_archivo( const char *nombre_archivo) {
-    if(!operativa)return false;
+bool sdtarjeta::iniciar( ) {
 
-    nombre_archivo="otrodistinto.txt";
+  Serial.print("Initializing SD card...");
+
+  if (!SD.begin(BUILTIN_SDCARD)) {
+    Serial.println("initialization failed!");
+    return false;
+  }
+  Serial.println("initialization done.");
+  return true;
+}  
+
+
+bool sdtarjeta::abre_archivo( const char *nombre_archivo) {
+
+  
+  
+//    if(!operativa)return false;
+
+    nombre_archivo="unfile.txt";
     archivo= SD.open(nombre_archivo, FILE_WRITE);
     if (!archivo) {
         Serial.print("error opening ");
@@ -90,7 +106,10 @@ bool sdtarjeta::abre_archivo( const char *nombre_archivo) {
         while(1){};
         gCRD_ON=true;
         return true;
-    }    
+    }
+
+    archivo.close();
+
 }
 
 bool sdtarjeta::cierra_archivo( ) {

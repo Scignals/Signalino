@@ -42,6 +42,8 @@ int minComando=1;
 int maxComando=8;
 int ultimo_modo=8;
 
+int canales_extra=0;
+
 
 void inicia_serial_pc(){
   gLetra=new char[80];  
@@ -188,7 +190,7 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
 // protocolo interesante, descrito en 
 // https://github.com/OpenBCI/OpenBCI-V2hardware-DEPRECATED/wiki/Data-Format-for-OpenBCI-V3 
 // el ultimo byte es 0xCX, y según X se reinterpretan los últimos 6 bytes (acelerometro, fecha, o user defined)
-// modo 1; numeros. Modo 2: bytes . Modo 3; hexadecimal
+// modo 1; numeros. Modo 2: bytes . Modo 3; hexadecimal. 
   
    int ind;
    byte timestamp[3];
@@ -199,11 +201,12 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
    //for debug
    // gBluetooth=true;
    // HC06.println("estoy vivo en imprimeserial BT!");
-
+   if(gLUX_BOTH_ON)canales_extra=8;
+   else canales_extra=0;
    ind=2;
    txBuf[0]=0xA0;
    txBuf[1]=indice_paquete++;
-   for (int i = 1; i < numSerialBytes; i+=3)
+   for (int i = 1; i < numSerialBytes+canales_extra; i+=3)
    {
      txBuf[ind++] = serialBytes[i];
      txBuf[ind++] = serialBytes[i+1];
@@ -240,11 +243,11 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
         if(gBluetooth)HC06.print(SEPARADOR_SERIAL );
         ind++;
      }
-     for(int m=0;m<10;m++){
+     for(int m=0;m<10+canales_extra;m++){
         long vv = to_Int32(txBuf+ind);
         WiredSerial.print(vv );
         if(gBluetooth)HC06.print(vv );
-        if(m<9){
+        if(m<9+canales_extra){
            WiredSerial.print(SEPARADOR_SERIAL );
            if(gBluetooth)HC06.print(SEPARADOR_SERIAL );
         }
@@ -258,8 +261,8 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
   } else {
     if(modo_bci_protocolo==2){
     // protocolo open_bci V3, pero con bytes (es el que se usa en el visor_pc)
-        WiredSerial.write(txBuf,33);
-        if(gBluetooth)HC06.write(txBuf,33);
+        WiredSerial.write(txBuf,33+canales_extra*3);
+        if(gBluetooth)HC06.write(txBuf,33+canales_extra*3);
         
 //        if(gBluetooth)HC06.println(" y probando...");
         
@@ -267,7 +270,7 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
     } else {
     // protocolo open_bci V3, pero en hexadecimal
          char letras[5];
-         for(int jj=0;jj<33;jj++){
+         for(int jj=0;jj<33+canales_extra*3;jj++){
           sprintf(letras, "%02X",txBuf[jj]);
           WiredSerial.print(letras);
           if(gBluetooth)HC06.print(letras);
@@ -281,7 +284,10 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
 
 
 
-void leeSerial_signalino(){
+
+
+
+void lee_Comando_Serial_signalino(){
 	if(WiredSerial.available()!=0){
 		String comando;
 		while( (comando = WiredSerial.readStringUntil(';')).length()>0){
@@ -469,12 +475,23 @@ void procesaComando(String texto){
               switch(p1.param){
                 case 0:
                   gLUX_ON=false;
-                  comentaSerial("LUX off");
+                  gLUX_BOTH_ON=false;
+                  canales_extra=0;                  
+                  comentaSerial("EEG on LUX off");
                   break;
                 case 1:
                   gLUX_ON=true;
+                  gLUX_BOTH_ON=false;                  
+                  canales_extra=0;                  
                   comentaSerial("LUX on");
                   break;
+                case 2:
+                  gLUX_ON=true;
+                  gLUX_BOTH_ON=true;                  
+                  canales_extra=8;                  
+                  comentaSerial("LUX AND EEG on");
+                  break;
+
              }
              break;
       case comandos_parser::codigos_cmd::OKA:

@@ -52,6 +52,8 @@ SIGNALINO_serial_interprete sg_interprete=INTERPRETE_SIGNALINO;
 unsigned long tick;
 boolean gSerialPrinting = true;
 boolean gLUX_ON = false;
+boolean gLUX_BOTH_ON = false;
+
 boolean gCRD_ON = false;
 long luz=0;
 
@@ -82,7 +84,9 @@ void loop()
   // la lectura de datos se hace por interrupciones
 
 File myFile;
-const unsigned char *sbo=&(serialBytes[1]);
+volatile unsigned char *sbo;
+if(gLUX_BOTH_ON) sbo=&(serialBytes[25]);
+else sbo=&(serialBytes[1]);
 
   if(gHayLectura && gisReadingDataNow ){
          gHayLectura=0;
@@ -109,7 +113,7 @@ const unsigned char *sbo=&(serialBytes[1]);
          if(tick%1==0)imprimeSerial_signalino(gFormatoSerial);
         // if(gCRD_ON)imprime_linea2(1,gCRD->archivo);
          
-         if(tick%(INTERVALO_LEESERIAL)==0)leeSerial_signalino();
+         if(tick%(INTERVALO_LEESERIAL)==0)lee_Comando_Serial_signalino();
 
 
         if(0 && tick%(250)==0){ // en pruebas aun

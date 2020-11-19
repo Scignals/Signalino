@@ -79,6 +79,7 @@ extern sdtarjeta *gCRD;
 
 extern boolean gBluetooth;
 extern boolean gLUX_ON;
+extern boolean gLUX_BOTH_ON;
 extern boolean gCRD_ON;
 
 
@@ -95,7 +96,7 @@ extern char buffer_comentaserial[];
 
 
 void inicia_serial_pc();
-void leeSerial_signalino();
+void lee_Comando_Serial_signalino();
 void comentaSerial(String texto);
 void imprime_linea2( int modo_hex_dec_nada, Stream &port_serial );
 void imprime_linea( int modo_hex_dec_nada);

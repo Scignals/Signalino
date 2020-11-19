@@ -16,6 +16,14 @@ namespace ADS1298 {
 // to creo q se repiten mucho las declaraciones, una por canal, y que es mas logico el enfoque 
 // del open_bci_deprecated
 
+	enum R1299 {
+		XLOFF = 0x04,
+		XLOFF_SENSP = 0x0F,
+		XLOFF_SENSN = 0x10,
+		XCONFIG4 = 0x17,
+		XMISC1 = 0X15
+	};
+
 
 	enum spi_command {
 		// system commands

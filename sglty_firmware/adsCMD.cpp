@@ -96,7 +96,7 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 	// configura los parametros de ganancia y electrodos de referencia
 	using namespace ADS1298;
 	ads9_send_command(SDATAC); // dejamos el modo READ para emitir comandos
-	delay(1000); // dicen que hay que esperar un poquiro aqui
+	delay(1); // dicen que hay que esperar un poquito aqui, aunque tanto como 1 segundo...
 	ads9_wreg(GPIO, char(0));
 	ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
 	ads9_wreg(CONFIG2, 0xC0);  // no generate internal test signals
@@ -143,8 +143,9 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 					char(ELECTRODE_INPUT | GAIN_24X )); 
 		}
 		break;
-	// senal entraria por entradas P si SRB1 es referencia
+	// senal entraria por entradas P si SRB1 es referencia (srb1 une las entradas negativas)
 	// senal entraria por entradas N si SRB2 es referencia
+	// PACE	= 0x15, //misc1 en ADS1299
 	case MODE_SENAL_SRB1:
 		// referencial: set mode SRB1, util en EEG, 
 		ads9_wreg(PACE, char(0x20)); //set SRB1. Es un electrodo q internamente se une a todas las entradas negativas
@@ -155,8 +156,8 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 		}
 		break;
 	case MODE_SENAL_BIP:
-		// bipolar: srb1  y srb2 desactivados
-		ads9_wreg(PACE, char(0x00)); //unset SRB1. 
+		// TODOS bipolarES: srb1  y srb2 desactivados
+		ads9_wreg(PACE, char(0x00)); //unset SRB1, switches open. 
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
@@ -167,17 +168,43 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 	case MODE_SENAL_SRB2:
 		// set mode SRB2, util en chart para coexistir referenciales y bipolares
 		// senal entraria por entradas N 
-		ads9_wreg(PACE, char(0x00)); //unset SRB1. 
+		ads9_wreg(R1299::XMISC1, char(0x00)); //unset SRB1. 
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
 					char(ELECTRODE_INPUT | SRB2_INPUT)); //SRB2 y ganancia 1
 		}
 		break;
-	case MODE_IMPEDANCIAS:
-		// se pone a medir impedancias
-		// aun no implementado
+	case MODE_SENAL_PSG:
+		// CANALES 1..6 REFERENCIA A SRB2, GANANCIA 24
+		// CANALES 7..8 BIPOLARES, GANANCIA 8
+		
+		ads9_wreg(R1299::XMISC1, char(0x00)); //unset SRB1. 
+		delay(150);
+		for (int i = 1; i <= 6; i++) {
+			ads9_wreg(char(CHnSET + i),
+					char(ELECTRODE_INPUT | SRB2_INPUT  | GAIN_24X)); //SRB2 y ganancia 1
+		}
+		for (int i = 7; i <= gMaxChan; i++) {
+			ads9_wreg(char(CHnSET + i),
+					char(ELECTRODE_INPUT | GAIN_8X & ~SRB2_INPUT)); //SRB2 y ganancia 1
+		}
 		break;
+
+	case MODE_IMPEDANCIAS_ON:
+		// activa el AC lead-off 
+		ads9_wreg(R1299::XLOFF, 0b10100110 ); // Setup register 4; Current and frequency for Lead_off. 
+		ads9_wreg(R1299::XLOFF_SENSP, 0b11111111 ); //Setup register 15; lead off enable . 
+		ads9_wreg(R1299::XLOFF_SENSN, 0b11111111 ); // Setup register 16, lead off detection in negative signal
+		ads9_wreg(R1299::XCONFIG4, 0b00000010 );//Setup register 23; lead off comparator enable
+		break;
+	case MODE_IMPEDANCIAS_OFF:
+		// desactiva el AC lead-off 
+		ads9_wreg(R1299::XLOFF, 0b00000000 ); // Setup register 4; Current and frequency for Lead_off. 
+		ads9_wreg(R1299::XLOFF_SENSP, 0b00000000 ); //Setup register 15; lead off enable . 
+		ads9_wreg(R1299::XLOFF_SENSN, 0b00000000 ); // Setup register 16, lead off detection in negative signal
+		ads9_wreg(R1299::XCONFIG4, 0b00000000 );//Setup register 23; lead off comparator enable
+		break;	
 	}
 	//start streaming data
 	ads9_detectActiveChannels();
@@ -295,6 +322,7 @@ void ads9_lee_datos(void) {
 
 void ads9_solo_datos_sin_eeg(void) {
 // hardware puro, basada en la otra ads9 
+// para usar un arduino sin ads1299 (como un emulador)
 // se utiliza como funcion apuntada en el vector de interrupciones (al inicio, en setup() )
 // NO lee el ads, PERO RELLENA igual serialBytes[]--numSerialBytes
 	int i = 0;

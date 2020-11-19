@@ -52,6 +52,8 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
  gBluetooth         = true;
  gSerialPrinting    = true;
  gLUX_ON            = false;
+ gLUX_BOTH_ON       = false;
+ 
 // gFormatoSerial_code = OUT_DEC;
 
 
@@ -69,7 +71,7 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
     case MIDIENDO_IMPEDANCIAS:  //no existe aun...
     // se activarian los registros, no habria acelerometros, la sd no se usaria
     // tal vez otro formato de archivo
-        ads9_misetup_ADS1299(MODE_IMPEDANCIAS);
+        ads9_misetup_ADS1299(MODE_IMPEDANCIAS_ON);
         break;
         
     }
@@ -84,9 +86,9 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
 
 void imprimeSerial_signalino(int p_formato_salida){
     switch(formatos[p_formato_salida]){
-              case RHEX:       imprime_linea(MODO_HEX);break;
-              case RDEC:       imprime_linea(MODO_DEC);break;
-              case ROFF:     imprime_linea(MODO_NADA);break;
+              case RHEX:      imprime_linea(MODO_HEX);break;
+              case RDEC:      imprime_linea(MODO_DEC);break;
+              case ROFF:      imprime_linea(MODO_NADA);break;
               case OPENeeg_1: imprime_openEEG_p2(1);break;
               case OPENeeg_2: imprime_openEEG_p2(2);break;
               case OPENeeg_3: imprime_openEEG_p2(3);break;

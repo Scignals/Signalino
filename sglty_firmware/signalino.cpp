@@ -35,19 +35,17 @@ const SIGNALINO_formatos_salida formatos[]={
 
 
 void inicia_signalino(SIGNALINO_maquina_estados p_estado){
-    
-//extern SIGNALINO_formatos_salida  gFormatoSerial_code;
-
   crea_tabla_seno();
   inicia_serial_pc();
   #if defined(ARDUINO_SAM_DUE)
     due_inicia_hw();
   #elif defined(TEENSYDUINO)
-    while(teensy_cuenta_ch()<8);
+    while(teensy_inicia_hw()<8);
     teensy_configini();
     teensy_sdcard_info();  
   #endif
-
+  inicia_serial_pc();
+  
  gFormatoSerial     = 2; // default para usarlo con arduino gui 
  gBluetooth         = true;
  gSerialPrinting    = true;
@@ -68,21 +66,18 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
     case SENAL_REAL_ADS:
         ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
         break;
-    case MIDIENDO_IMPEDANCIAS:  //no existe aun...
-    // se activarian los registros, no habria acelerometros, la sd no se usaria
-    // tal vez otro formato de archivo
-        ads9_misetup_ADS1299(MODE_IMPEDANCIAS_ON);
-        break;
-        
     }
 
 }
-// protocolo openEEG firmware P2, es util para openvibe pero creo que no funciona aun
+// Protocolos de salida
+// solo es util openBCI_2 (binario), usado por el driver. Los otros son dec y hex para debug 
+// es un formato parecido pero no igual 
+// el modo de salida por defecto está en 2, 
+// porque así lee el serial monitor del IDE de arduino
+// openEEG firmware P2, podria ser util para openvibe pero creo que no funciona aun
 // solo registra 6 canales
 // 1-numeros 2-hex 3-openeeg-hex 4-openeeg-bytes
 // 5-openbci-numeros 6-openbci-bytes 7-openbci-hex 8-no imprime nada      
-// el modo de salida por defecto, 
-// está en 2 porque así lee el monitor del IDE de arduino
 
 void imprimeSerial_signalino(int p_formato_salida){
     switch(formatos[p_formato_salida]){

@@ -39,7 +39,7 @@
 
 
 
-/*  pines utilizados  del arduino due
+/*  pines utilizados  del arduino due ???
   2  -- 
   3  --
   4  -- START 
@@ -55,22 +55,35 @@
   15 -- HC06
 */
 
-// no se si usamos el 13 pa a
+// Due: tenemos un modulo HC06 en serial3, y por tanto en pines pins 15 (RX) and 14 (TX)
+// y prefiero el programing port (Serial), parece mas estable
+// de hecho, no logro hacer funcionar el SerialUSB
 
-/*  pines utilizados  del teensy 3.2
-  2  -- 
-  3  --
-  4  -- START 
-  5  -- DRDY
-  6  --
-  7  -- clksel
-  8  -- reset
-  10 -- CS
-  11 -- spi out
-  12 -- spi in 
+
+
+/*  pines utilizados  del teensy 3.6
+  2  -- RESET
+  3  -- POWERDOWN
+  4  -- DRDY 
+  5  -- 
+  6  -- START
+  7  -- spi clksel SCLK
+  8  -- 
+  10 -- spi CS      
+  11 -- spi out DOUT 
+  12 -- spi in  DIN
   13 -- spi luz led (preasignado) 
   26 -- HC06
   31 -- HC06
+*/
+
+
+/*   segun marco
+#define cs 10   
+#define start1 6
+#define reset1 2
+#define pwdn 3
+#define drdy 4
 */
 
 /* registramos por srb2 asi que las entradas van por N  */
@@ -90,6 +103,8 @@ y el Serial es el programming port
  * que estan usados,
  * mejor pasarlo al serial2 que son 26 y 31, lo que pasa es que estan por detras
  * el Serial es el USB, como el due
+ * segun el esquema del dropbox hc06 esta en pines 9 y 10 que seria serial2 y usamos en el codigo serial3. 
+ * no entiendo como funciona (serial3 son pines 7 y 8)
  */
 
 
@@ -161,15 +176,15 @@ const int kPIN_CLKSEL = 7; //ClkSel en Pin 7
 
 
 
-void due_inicia_hw();
-byte teensy_cuenta_ch(void);
+void due_inicia_hw(void);
+byte teensy_inicia_hw(void);
 void teensy_configini(void);
 void teensy_sdcard_info(void);
 
 
 
 void parpadea(int intervalo);
-byte identifica_chip_EEG(void);
+byte identifica_chip_EEG(void); // no definida
 void writereg(byte cant, byte numb);
 void redreg(byte cant, byte numb);
 

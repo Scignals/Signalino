@@ -40,18 +40,6 @@
 #define FIRMWARE_MBS_01
 
 
-/*
-#define MODE_SENAL_TEST 2 
-#define MODE_SENAL_REAL_1x 1 
-#define MODE_SENAL_REAL_24x 3
-#define MODE_SENAL_SRB1 4
-#define MODE_SENAL_SRB2 5
-#define MODE_SENAL_BIP 6
-#define MODE_IMPEDANCIAS 7
-*/
- 
-
-
 #define SENAL_REAL 1 
 #define SENAL_TEST 2 
 #define TABLA_SENO 3 

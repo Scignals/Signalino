@@ -89,9 +89,9 @@ void imprime_linea2( int modo_hex, Stream &port_serial ){
                       port_serial.print(SEPARADOR_SERIAL );
                   }
             }      
-    }
-    //añadimos un ; al final 
-    port_serial.println(FINLINEA);    
+   }
+   //añadimos un ; al final 
+   port_serial.println(FINLINEA);    
 }
 
 
@@ -151,8 +151,8 @@ void imprime_openEEG_p2(int modo_openeeg_protocolo){
      WiredSerial.print(txBuf[ind]  );
      if(gBluetooth)HC06.print(txBuf[ind]  );
 //añadimos un ; al final 
-    WiredSerial.println(";");
-    if(gBluetooth)HC06.println(";");
+    WiredSerial.println(FINLINEA);
+    if(gBluetooth)HC06.println(FINLINEA);
 
    } else {
         if(modo_openeeg_protocolo==2) {
@@ -178,14 +178,14 @@ void imprime_openEEG_p2(int modo_openeeg_protocolo){
      WiredSerial.print(txBuf[ind]  );
      if(gBluetooth)HC06.print(txBuf[ind]  );
    //añadimos un ; al final 
-    WiredSerial.println(";");
-    if(gBluetooth)HC06.println(";");
+    WiredSerial.println(FINLINEA);
+    if(gBluetooth)HC06.println(FINLINEA);
 
    }
  }
 }
 
-// protocolo openbci V3, el que usamod por defecto, modo 2;
+// protocolo openbci V3, el que usamos por defecto, modo 2;
 void imprime_openBCI_V3(int modo_bci_protocolo){
 // protocolo interesante, descrito en 
 // https://github.com/OpenBCI/OpenBCI-V2hardware-DEPRECATED/wiki/Data-Format-for-OpenBCI-V3 
@@ -195,43 +195,37 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
    int ind;
    byte timestamp[3];
    byte luz_percibida[3];
-//   extern float luz;
 
-
-   //for debug
-   // gBluetooth=true;
-   // HC06.println("estoy vivo en imprimeserial BT!");
-   if(gLUX_BOTH_ON)canales_extra=8;
+   if(gLUX_BOTH_ON)canales_extra=0;
    else canales_extra=0;
-   ind=2;
+   
    txBuf[0]=0xA0;
    txBuf[1]=indice_paquete++;
+   
+   ind=2;
    for (int i = 1; i < numSerialBytes+canales_extra; i+=3)
    {
      txBuf[ind++] = serialBytes[i];
      txBuf[ind++] = serialBytes[i+1];
      txBuf[ind++] = serialBytes[i+2];
    }
-     //los 2 acelerometros, no los tenemos asi que lo dejamos a cero
-     //pero metemos un timestamp en el primero
-     //y el luxometro en el segundo
-     to_3bytes(micros(),timestamp);
-     to_3bytes((long)gLUX->get_ultima_luz_calibrada(),luz_percibida);
-     
-
-                
-     txBuf[ind++] = timestamp[0];
-     txBuf[ind++] = timestamp[1];
-     txBuf[ind++] = timestamp[2];
-     txBuf[ind++] = luz_percibida[0];
-     txBuf[ind++] = luz_percibida[1];
-     txBuf[ind++] = luz_percibida[2];
-     
-     // este ultimo es C0 para los acelerometros
-     // en su lugar podian ir por ejemplo un registro de  booleanos: luz, bluetooh si/no,
-     // pero entonces hay q cambiar el C0 por CX
-
-     txBuf[ind]=0xC0; 
+   
+   //los 2 acelerometros, no los tenemos asi que lo dejamos a cero
+   //pero metemos un timestamp en el primero
+   //y el luxometro en el segundo
+   to_3bytes(micros(),timestamp);
+   to_3bytes((long)gLUX->get_ultima_luz_calibrada(),luz_percibida);
+   txBuf[ind++] = timestamp[0];
+   txBuf[ind++] = timestamp[1];
+   txBuf[ind++] = timestamp[2];
+   txBuf[ind++] = luz_percibida[0];
+   txBuf[ind++] = luz_percibida[1];
+   txBuf[ind++] = luz_percibida[2];
+   
+   // este ultimo es C0 para los acelerometros
+   // en su lugar podian ir por ejemplo un registro de  booleanos: luz, bluetooh si/no,
+   // pero entonces hay q cambiar el C0 por CX
+   txBuf[ind]=0xC0; 
 
    ind=0;
    if(modo_bci_protocolo==1){ 
@@ -255,8 +249,8 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
      }
 
     //añadimos un ; al final 
-    WiredSerial.println(";");
-    if(gBluetooth)HC06.println(";");
+    WiredSerial.println(FINLINEA);
+    if(gBluetooth)HC06.println(FINLINEA);
 
   } else {
     if(modo_bci_protocolo==2){
@@ -282,11 +276,6 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
   }
 }
 
-
-
-
-
-
 void lee_Comando_Serial_signalino(){
 	if(WiredSerial.available()!=0){
 		String comando;
@@ -296,6 +285,8 @@ void lee_Comando_Serial_signalino(){
 			procesaComando(comando);
 		}
 	}
+
+   //?? cambiar ; por FINLINEA
 	if(HC06.available()!=0){
 		String comando;
 		while( (comando = HC06.readStringUntil(';')).length()>0){
@@ -323,9 +314,8 @@ void lee_Comando_Serial_signalino(){
 void procesaComando(String texto){
      comentaSerial(texto);
      comentaSerial("-->ok");
+
      comandos_parser  parcom;
-
-
      comandos_parser::cmd_control p1=parcom.extraeComando(texto);
      comandos_parser::codigos_cmd p2=parcom.traduceComando(p1);
 
@@ -358,17 +348,15 @@ void procesaComando(String texto){
               gSenal_obtenida=SENAL_REAL;
               ads9_misetup_ADS1299(MODE_SENAL_TEST_24x);
               break;
-          case 6:
+          case 6: // reset
             #if defined(ARDUINO_SAM_DUE)
                due_inicia_hw();
             #elif defined(TEENSYDUINO)
-               while(teensy_cuenta_ch()<8);
+               while(teensy_inicia_hw()<8);
                teensy_configini();
             #endif
                break;
-       
-              
-          }       
+         }       
          sprintf(buffer_comentaserial,"Signal mode changed to %d",p1.param);
          comentaSerial(buffer_comentaserial);
          break;
@@ -410,35 +398,40 @@ void procesaComando(String texto){
       case comandos_parser::codigos_cmd::INP:
          comentaSerial(buffer_comentaserial);
             switch(p1.param){
-                case 1:
+               case 1:
                 gSenal_obtenida=SENAL_REAL;
                 ads9_misetup_ADS1299(MODE_SENAL_REAL_12x);
                 ads9_misetup_ADS1299(MODE_SENAL_SRB1);
-                comentaSerial("CHART mode (all channels to SRB1, 12x)");
+                comentaSerial("All channels to SRB1, 12x)");
                 break;
-                case 2:
+               case 2:
                 gSenal_obtenida=SENAL_REAL;
                 ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
                 ads9_misetup_ADS1299(MODE_SENAL_BIP);
-                comentaSerial("EMG mode (bipolar channels, 1x)");
-                // bipolares 1x
+                ads9_setGanancia(4);
+                
+                comentaSerial("EMG/EKG mode (bipolar channels, 4x)");
                 break;
-                case 3: //eeg, serian 8 monopolares 
+               case 3: //eeg, serian 8 monopolares 
                 gSenal_obtenida=SENAL_REAL;
                 ads9_misetup_ADS1299(MODE_SENAL_REAL_24x);
                 ads9_misetup_ADS1299(MODE_SENAL_SRB2);                
+                ads9_setGanancia(24);
                 comentaSerial("EEG mode (todos a erb2 channels, 24x)");
-                //bipolares 12x
                 break;
-                case 4:  //psg, serian 6 monopolares y 2 bipolares
+               case 4:  //psg, serian 6 monopolares y 2 bipolares
                 gSenal_obtenida=SENAL_REAL;
-                ads9_misetup_ADS1299(MODE_SENAL_REAL_24x);
-                ads9_misetup_ADS1299(MODE_SENAL_BIP);
-                comentaSerial("PSG mode (6 srb2 2 bipolar channels, 24x, no implementado)");
-                //bipolares 12x
+                ads9_misetup_ADS1299(MODE_SENAL_PSG);
+                comentaSerial("PSG mode (6 srb2 2 bipolar channels, 24x)");
                 break;
-                default:
-                  comentaSerial("Solo hay modos 1-2-3-4");
+               case 5:  //psg, serian 6 monopolares y 2 bipolares
+                gSenal_obtenida=SENAL_REAL;
+                ads9_misetup_ADS1299(MODE_SENAL_BIP);
+                ads9_setGanancia(24);
+                comentaSerial("Bipolares x24");
+                break;
+               default:
+                  comentaSerial("Solo hay modos 1-2-3-4-5");
              }
              break;
       case comandos_parser::codigos_cmd::BLT:
@@ -456,18 +449,12 @@ void procesaComando(String texto){
       case comandos_parser::codigos_cmd::SDC:
               switch(p1.param){
                 case 0:
-                  gCRD_ON=false;
-                  if(gCRD){
-                     gCRD->cierra_archivo();
-                     comentaSerial("SD off");
-                  }   
+                  ads9_misetup_ADS1299(MODE_IMPEDANCIAS_OFF); 
+                  gImpedanciasActivas=false;  
                   break;
                 case 1:
-                  if(gCRD){
-                     gCRD->abre_archivo("signalino_file.csv");
-                     gCRD_ON=true;
-                     comentaSerial("SD on");
-                  }   
+                  ads9_misetup_ADS1299(MODE_IMPEDANCIAS_ON);   
+                  gImpedanciasActivas=true;  
                   break;
              }
              break;
@@ -488,12 +475,32 @@ void procesaComando(String texto){
                 case 2:
                   gLUX_ON=true;
                   gLUX_BOTH_ON=true;                  
-                  canales_extra=8;                  
+                  canales_extra=0;                  
                   comentaSerial("LUX AND EEG on");
                   break;
 
              }
              break;
+             
+      case comandos_parser::codigos_cmd::IPD:
+           switch(p1.param){
+                case 0:
+                  gCRD_ON=false;
+                  if(gCRD){
+                     gCRD->cierra_archivo();
+                     comentaSerial("SD off");
+                  }   
+                  break;
+                case 1:
+                  if(gCRD){
+                     gCRD->abre_archivo("signalino_file.csv");
+                     gCRD_ON=true;
+                     comentaSerial("SD on");
+                  }   
+                  break;
+             }
+             break;
+
       case comandos_parser::codigos_cmd::OKA:
           mensaje_inicio();
           break;

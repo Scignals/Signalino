@@ -35,17 +35,16 @@ byte cmd_read[23];
 byte data1;
 byte cuenta_canales_EEG(void);
 
-byte teensy_cuenta_ch() {
+byte teensy_inicia_hw() {
 
   using namespace ADS1298;
-  byte canales;
-
+ 
   pinMode(cs, OUTPUT);
   pinMode(start1, OUTPUT);
   pinMode(reset1, OUTPUT);
   pinMode(pwdn, OUTPUT);
   pinMode(drdy, INPUT);
-
+// falta un misterioso pin 9 para bluetooth
 
   delay(800); //desde Power up, esperar 1 segundo para mover nada
 
@@ -56,13 +55,9 @@ byte teensy_cuenta_ch() {
   pwdn_on;
   start_on;
   cs_high;
- 
   SPI.begin();
-  WiredSerial.begin(115200);
-  delay(100);
-  HC06.begin(115200);
-  canales = cuenta_canales_EEG();
-  return canales;
+
+  return cuenta_canales_EEG();
 }
 
 
@@ -123,7 +118,6 @@ void redreg(byte cant, byte numb)
 
 void writereg(byte cant, byte numb)
 {
-  byte n=numb;
   numb=(0x40 | numb);
   cant=cant-1;
   SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
@@ -273,11 +267,9 @@ void due_inicia_hw() {
   }
   // y por fin activamos la interrupcion
   attachInterrupt(digitalPinToInterrupt(IPIN_DRDY), ads9_lee_datos, FALLING);
-  //     Timer1.initialize(4000);
-  //   Timer1.attachInterrupt(ads9_lee_datos); 
 
 
- Serial.println((char*)sprintf("%s transmiting",build_board));
+  Serial.println((char*)sprintf("%s transmiting",build_board));
 }
 
 void parpadea(int intervalo)

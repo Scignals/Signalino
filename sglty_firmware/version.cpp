@@ -57,10 +57,10 @@ void _mensaje_inicio(Stream &port_serial){
    
    port_serial.println(F("Comandos: (separados por punto y coma)"));
    port_serial.println(F("recN -- chorro datos EEG 0:off 1:on")); 
-   port_serial.println(F("simN -- N1:1X N2:cuadrada(ADS) N3:seno(arduino) N4:12x")); 
-   port_serial.println(F("ganN -- ganancia del ads1299 N=1..8 --> 1,2,4,4,6,8,12,24x"));
+   port_serial.println(F("simN -- N1:1X N2:cuadrada(ADS) N3:seno(arduino) N4:12x N5:test-24x")); 
+   port_serial.println(F("ganN -- ganancia del ads1299 N=1..7 --> 1,2,4,6,8,12,24x"));
    port_serial.println(F("frmN -- data format: N=0..8(6)"));
-   port_serial.println(F("inpN -- input parameters: N1:ref2x1 N2:bipx24 N3:refx24"));
+   port_serial.println(F("inpN -- input parameters: N1:ref2x12 N2:bipx4 N3:refx24 N4:PSG N5:bipolarx24"));
    port_serial.println(F("bltN -- bluetooth 1=on 0=off"));
    port_serial.println(F("luxN -- luxometro (dec format) 1=on 0=off"));
    port_serial.println(F("hlp  -- mensaje de ayuda y espera 'enter' "));

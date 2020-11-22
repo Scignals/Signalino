@@ -15,7 +15,7 @@
 
 #define SERIAL_NUMBER                                            \
 	{                                                        \
-		'S', 'G', 'N', 'O', '_', 'V', '_', '0', '0', '1' \
+		'S', 'G', 'N', 'O', '_', 'T', '_', '0', '0', '1' \
 	}
 #define SERIAL_NUMBER_LEN 10
 

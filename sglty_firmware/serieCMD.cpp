@@ -352,8 +352,8 @@ void procesaComando(String texto){
             #if defined(ARDUINO_SAM_DUE)
                due_inicia_hw();
             #elif defined(TEENSYDUINO)
-               while(teensy_inicia_hw()<8);
-               teensy_configini();
+               teensy_inicia_hw();
+//             teensy_configini();
             #endif
                break;
          }       

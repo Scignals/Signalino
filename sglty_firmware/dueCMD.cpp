@@ -31,12 +31,15 @@
 
 #if defined(TEENSYDUINO)
 
-byte cmd_read[23];
+//byte cmd_read[23];
+
 byte data1;
-byte cuenta_canales_EEG(void);
+byte teensy_cuenta_canales_EEG(void);
 
 byte teensy_inicia_hw() {
+  // inicia teensy, reconoce chip, saca gmaxchan,parpadea, activa interrupcion
 
+  // ** inicia teensy
   using namespace ADS1298;
  
   pinMode(cs, OUTPUT);
@@ -49,7 +52,6 @@ byte teensy_inicia_hw() {
   delay(800); //desde Power up, esperar 1 segundo para mover nada
 
   //al empezar, reset del ADS1299
-  // rutina cambiada porque no tenia mucha logica
   pwdn_off;delay(10); pwdn_on;delay(300);
   reset_off;delay(100);reset_on;delay(260);
   pwdn_on;
@@ -57,32 +59,29 @@ byte teensy_inicia_hw() {
   cs_high;
   SPI.begin();
 
-  return cuenta_canales_EEG();
-}
-
-
-void teensy_configini(void)
-{
-  int i;
-
-  byte a=24;
-  redreg(a,0);
-
-  // aqui hay unos numeros magicos que simplemente no se de donde salen
-  cmd_read[0x01]=0xD6;
-  cmd_read[0x02]=0xD5;
-  cmd_read[0x03]=0xE8;
-  for (i=5;i<=12;i++)
-  {
-    cmd_read[i]=0x45;
+  // cuenta canales a gMaxChan y activa interrupcion
+  if(teensy_cuenta_canales_EEG()>0){
+    // si añado la rutina parpadea, se para el programa. que cosas...
+    attachInterrupt(digitalPinToInterrupt(drdy), ads9_lee_datos, FALLING);
+    delay(100);
+    ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
+  } else {
+      gMaxChan = 8;
+      gChip_EEG_instalado=AMP_NONE;
+      gSenal_obtenida=TABLA_SENO;
+      Serial.println("No hay ADS1299!!!");
+      // y activamos la interrupcion "dummy"
+      // que, de momento al menos, no funciona a nivel hardware
+      // asi que la llamamos como un timer
+          Timer1.initialize(4000);
+          Timer1.attachInterrupt(ads9_solo_datos_sin_eeg); 
   }
-  writereg(23, 1);
-  attachInterrupt(digitalPinToInterrupt(drdy), ads9_lee_datos, FALLING);
-  delay(100);
-  ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
 
+  return gMaxChan;  
 
 }
+
+
 
 void teensy_sdcard_info(void)
 {
@@ -94,53 +93,17 @@ void teensy_sdcard_info(void)
 }  
 
 
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-void redreg(byte cant, byte numb)
-{
-  byte cmd1=numb;
-  numb=(0x20 + cmd1);
-  cant=cant-1;
-  SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
-    delay(1);cs_low;delay(1);
-    SPI.transfer(0x11);
-    SPI.transfer(numb);
-    SPI.transfer(cant);
-    for(int n=0;n<(cant+1);n++)
-    {
-      cmd_read[n]=SPI.transfer(0x00);
-    }
-    cs_high;
-  SPI.endTransaction();
-  return;
-}
-
-void writereg(byte cant, byte numb)
-{
-  numb=(0x40 | numb);
-  cant=cant-1;
-  SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
-    delay(1);cs_low;delay(1);
-    SPI.transfer(0x11);
-    SPI.transfer(numb);
-    SPI.transfer(cant);
-    for(int n=0;n<(cant+1);n++)
-    {
-      SPI.transfer(cmd_read[n]);
-    }
-    cs_high;
-  SPI.endTransaction();
-  return;
-}
-
-byte cuenta_canales_EEG()
+byte teensy_cuenta_canales_EEG()
 {
 //  Serial.print("Counting device channels...");
   byte revid;
   byte ch;
   byte dev_id;
   byte num_ch;
+
+  // identifica el chip
+  // calcula el numero de canales
+  // ** no se que hace, tal vez identificar 
   SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
     cs_low;
     delayMicroseconds(1000);
@@ -191,17 +154,17 @@ byte cuenta_canales_EEG()
 #endif
 
 void due_inicia_hw() {
+  // inicia due, reconoce chip, saca gmaxchan,parpadea, activa interrupcion
   using namespace ADS1298;
 
   //al empezar, reset del ADS1299
-  // en charmander, el orden de este trozo es critico. Primero reset, y luego set pin mode. Y ni idea de porque. En la anterior, daba igual.
-
   delay(800); //desde Power up, esperar 1 segundo para mover nada
   digitalWrite(kPIN_RESET, LOW);
   delay(100);
   digitalWrite(kPIN_RESET, HIGH);
   delay(260); //deberia bastar, tiempo en datasheet es 240 ms
 
+  // ajustamos los pines
   pinMode(IPIN_CS, OUTPUT);
   pinMode(PIN_START, OUTPUT);
   pinMode(IPIN_DRDY, INPUT);
@@ -214,7 +177,11 @@ void due_inicia_hw() {
   digitalWrite(IPIN_CS, HIGH);
   digitalWrite(kPIN_CLKSEL, HIGH); // usa el reloj  interno
 
-  SPI.begin(); //ojo, es imprescindible o se para el prog
+  // ojo, imprescindible o se para el prog:
+  // arrancamos interfaz SPI
+  SPI.begin(); 
+
+  // identificamos chip y calculamos numero maximo de canales
   ads9_send_command(SDATAC); // dejamos el modo READ para emitir comandos
   delay(10);
   // Determine model number and number of channels available

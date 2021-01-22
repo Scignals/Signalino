@@ -99,18 +99,15 @@ y el Serial es el programming port
 */
 
 /* 
- * en teensy, los puertos serial 1 a 6 van por otros pines, el Serial3 son los pines 7(RX) y 8(TX), 
- * que estan usados,
- * mejor pasarlo al serial2 que son 26 y 31, lo que pasa es que estan por detras
+ * en teensy, los puertos serial 1 a 6 son otros pines: , el Serial3 son los pines 7(RX) y 8(TX), 
  * el Serial es el USB, como el due
- * segun el esquema del dropbox hc06 esta en pines 9 y 10 que seria serial2 y usamos en el codigo serial3. 
- * no entiendo como funciona (serial3 son pines 7 y 8)
+ * hc06 esta en pines 9 y 10 del esquematico (7 y 8, segun nomenclatura oficial de Serial3)
  */
 
 
 
 
-// tenemos un modulo Bluetooth HC06 en serial3, y por tanto en pines pins 15 (RX) and 14 (TX)
+// En due, tenemos un modulo Bluetooth HC06 en serial3, y por tanto en pines pins 15 (RX) and 14 (TX)
 // deberia cambiarse por un SMD que iria a los mismos pines
 // como serial usamos (xq lo prefiero) el programing port (Serial), parece mas estable
 
@@ -154,12 +151,24 @@ const int kPIN_RESET = 2; //Reset en Pin 2
 const int kPIN_CLKSEL = 7; //ClkSel en Pin 7
 
 // sacado de vteensy
-
+//?? cambiar esto a pin_... como abajo
 #define cs 10   //10
 #define start1 6
 #define reset1 2
 #define pwdn 3
 #define drdy 4
+
+#define pin_red 23
+#define pin_green 22
+#define pin_blue 21
+
+#define pin_tx 7
+#define pin_rx 8
+
+#define pin_blkey 5
+#define pin_key 9 /// Teensy and Bluetooth key pin for enable or disable comunication bluetooth
+
+
 
 #define cs_low digitalWrite(cs, LOW)
 #define cs_high digitalWrite(cs, HIGH)
@@ -169,6 +178,19 @@ const int kPIN_CLKSEL = 7; //ClkSel en Pin 7
 #define reset_on digitalWrite(reset1, HIGH)
 #define pwdn_off digitalWrite(pwdn, LOW)
 #define pwdn_on digitalWrite(pwdn, HIGH)
+
+#define bluetooth_on  digitalWrite(pin_key, LOW);  // write low to enable bluetooth
+#define bluetooth_off  digitalWrite(pin_key, HIGH);  // write high to disable bluetooth
+
+#define ledred_on  digitalWrite(pin_red, LOW);  
+#define ledred_off  digitalWrite(pin_red, HIGH);  
+#define ledgreen_on  digitalWrite(pin_green, LOW);  
+#define ledgreen_off  digitalWrite(pin_green, HIGH);  
+#define ledblue_on  digitalWrite(pin_blue, LOW);  
+#define ledblue_off  digitalWrite(pin_blue, HIGH);  
+
+
+
 
 #else
 #error "Hay que definir TEENSYDUINO o ARDUINO_SAM_DUE"

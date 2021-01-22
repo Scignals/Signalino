@@ -48,16 +48,32 @@ byte teensy_inicia_hw() {
   pinMode(pwdn, OUTPUT);
   pinMode(drdy, INPUT);
 // falta un misterioso pin 9 para bluetooth
+// nuevos pines en teensyII
+  pinMode(pin_red, OUTPUT);
+  pinMode(pin_green, OUTPUT);
+  pinMode(pin_blue, OUTPUT);
+  pinMode(pin_key, OUTPUT);
+  pinMode(pin_blkey, OUTPUT);
 
+
+  
   delay(800); //desde Power up, esperar 1 segundo para mover nada
 
-  //al empezar, reset del ADS1299
-  pwdn_off;delay(10); pwdn_on;delay(300);
-  reset_off;delay(100);reset_on;delay(260);
+//para teensyII
+  bluetooth_on;
+  ledred_off;
+  ledgreen_on;
+  ledblue_off;
+  
+
   pwdn_on;
   start_on;
   cs_high;
   SPI.begin();
+
+  //al empezar, reset del ADS1299
+//  pwdn_off;delay(10); pwdn_on;delay(300);
+  reset_off;delay(100);reset_on;delay(260);
 
   // cuenta canales a gMaxChan y activa interrupcion
   if(teensy_cuenta_canales_EEG()>0){

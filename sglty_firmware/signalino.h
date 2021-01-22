@@ -19,7 +19,7 @@
 // JA Barios, ILSB technologies, Spain.
 // And, of course, the Arduino team
 //
-// This file is part of project: SIGNALINO, a ADS1299-based bioamplifier
+// This file is a part of project: SIGNALINO, a ADS1299-based bioamplifier
 //
 /* firmware_signalino.h */
 #ifndef SIGNALINO_H

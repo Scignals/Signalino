@@ -179,8 +179,8 @@ const int kPIN_CLKSEL = 7; //ClkSel en Pin 7
 #define pwdn_off digitalWrite(pwdn, LOW)
 #define pwdn_on digitalWrite(pwdn, HIGH)
 
-#define bluetooth_on  digitalWrite(pin_key, LOW);  // write low to enable bluetooth
-#define bluetooth_off  digitalWrite(pin_key, HIGH);  // write high to disable bluetooth
+#define bluetooth_on  digitalWrite(pin_blkey, HIGH);  // write low to enable bluetooth
+#define bluetooth_off  digitalWrite(pin_blkey, LOW);  // write high to disable bluetooth
 
 #define ledred_on  digitalWrite(pin_red, LOW);  
 #define ledred_off  digitalWrite(pin_red, HIGH);  

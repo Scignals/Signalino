@@ -38,6 +38,13 @@ char*  pin =         "1234";                    // Pairing Code for Module, 4 di
 long bps_modulo= 7; // if original, 3- If modified, 7
 
 
+// Define pins to Connect the bluetooth 
+#define tx 7
+#define rx 8
+
+#define blkey 5
+#define key 9
+
 
 //----Typically no need to edit lines below---------------
 
@@ -108,6 +115,13 @@ long bps_modulo= 7; // if original, 3- If modified, 7
  int wait = 1000;
  void setup()
 {
+  // Activate bluetooth 
+  pinMode(blkey, OUTPUT);
+  pinMode(tx, OUTPUT);
+  pinMode(rx, INPUT);
+  pinMode(key, OUTPUT); 
+  digitalWrite(blkey, HIGH);
+  
   pinMode(led, OUTPUT);
   digitalWrite(led, LOW); // Turn off LED to signal waiting for Terminal
   delay(1000);  // Catch Due reset problem

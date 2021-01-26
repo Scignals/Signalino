@@ -150,6 +150,13 @@ void imprime_openEEG_p2(int modo_openeeg_protocolo){
      }
      WiredSerial.print(txBuf[ind]  );
      if(gBluetooth)HC06.print(txBuf[ind]  );
+     
+     // añadimos footer final
+     WiredSerial.print(SEPARADOR_SERIAL );
+     if(gBluetooth)HC06.print(SEPARADOR_SERIAL );
+     WiredSerial.print(footer  );
+     if(gBluetooth)HC06.print(footer  );
+
 //añadimos un ; al final 
     WiredSerial.println(FINLINEA);
     if(gBluetooth)HC06.println(FINLINEA);
@@ -225,7 +232,7 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
    // este ultimo es C0 para los acelerometros
    // en su lugar podian ir por ejemplo un registro de  booleanos: luz, bluetooh si/no,
    // pero entonces hay q cambiar el C0 por CX
-   txBuf[ind]=0xC0; 
+   txBuf[ind]=footer; 
 
    ind=0;
    if(modo_bci_protocolo==1){ 

@@ -54,6 +54,11 @@ boolean gSerialPrinting = true;
 boolean gLUX_ON = false;
 boolean gLUX_BOTH_ON = false;
 
+const unsigned char footer_EEG = 0xC0;
+const unsigned char footer_IMU = 0xC1;
+
+unsigned char footer = footer_EEG;
+
 boolean gCRD_ON = false;
 long luz=0;
 
@@ -91,12 +96,13 @@ else sbo=&(serialBytes[1]);
 
   if(gHayLectura && gisReadingDataNow ){
          gHayLectura=0;
+         footer = footer_EEG;
          tick++;
          if(gLUX_ON && gSenal_obtenida==SENAL_REAL ){
            // esto es un poco raro, pero mola
            // si gLUX_BOTH_ON hacemos que alternen acelerometro y eeg
            // asi casi no hay q tocar el codigo, solo complicamos el driver
-           // if(gLUX_BOTH_ON && tick%2==1) goto toca_EEG;
+           if(gLUX_BOTH_ON && tick%2==1) goto toca_EEG;
             //const int sbo=1;    // si ponemos 26, y hacemos un formato nuevo, podriamos añadir canales 
             // copia en serialBytes la ultima lectura de los perifericos
             // en serialBytes se copia lo q sale del ads (1+nchannel*3): 
@@ -114,6 +120,7 @@ else sbo=&(serialBytes[1]);
             to_3bytes((long)(gACC->temperature), sbo+21);
             gACC->leer(); //siempre leemos el acelerometro, frecuencia de muestreo como el EEG
             if(tick%(INTERVALO_LEELUZ)==0)gLUX->get_luz_calibrada();
+            footer = footer_IMU;
           }         
          toca_EEG: 
          if(tick%1==0)imprimeSerial_signalino(gFormatoSerial);

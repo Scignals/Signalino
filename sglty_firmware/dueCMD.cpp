@@ -61,8 +61,8 @@ byte teensy_inicia_hw() {
 
 //para teensyII
   bluetooth_on;
-  ledred_off;
-  ledgreen_on;
+  ledred_on;
+  ledgreen_off;
   ledblue_off;
   
 

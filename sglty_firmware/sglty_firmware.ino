@@ -56,7 +56,6 @@ boolean gLUX_BOTH_ON = false;
 
 const unsigned char footer_EEG = 0xC0;
 const unsigned char footer_IMU = 0xC1;
-
 unsigned char footer = footer_EEG;
 
 boolean gCRD_ON = false;
@@ -96,8 +95,8 @@ else sbo=&(serialBytes[1]);
 
   if(gHayLectura && gisReadingDataNow ){
          gHayLectura=0;
-         footer = footer_EEG;
          tick++;
+         footer = footer_EEG;
          if(gLUX_ON && gSenal_obtenida==SENAL_REAL ){
            // esto es un poco raro, pero mola
            // si gLUX_BOTH_ON hacemos que alternen acelerometro y eeg

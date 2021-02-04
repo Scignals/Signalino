@@ -150,13 +150,6 @@ void imprime_openEEG_p2(int modo_openeeg_protocolo){
      }
      WiredSerial.print(txBuf[ind]  );
      if(gBluetooth)HC06.print(txBuf[ind]  );
-     
-     // añadimos footer final
-     WiredSerial.print(SEPARADOR_SERIAL );
-     if(gBluetooth)HC06.print(SEPARADOR_SERIAL );
-     WiredSerial.print(footer  );
-     if(gBluetooth)HC06.print(footer  );
-
 //añadimos un ; al final 
     WiredSerial.println(FINLINEA);
     if(gBluetooth)HC06.println(FINLINEA);

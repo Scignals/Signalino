@@ -203,6 +203,8 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
    txBuf[1]=indice_paquete++;
    
    ind=2;
+
+
    for (int i = 1; i < numSerialBytes+canales_extra; i+=3)
    {
      txBuf[ind++] = serialBytes[i];

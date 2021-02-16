@@ -61,10 +61,10 @@ byte teensy_inicia_hw() {
 
 //para teensyII
   bluetooth_on;
-    digitalWrite(pin_tx, HIGH);
+/*    digitalWrite(pin_tx, HIGH);
   digitalWrite(pin_rx, HIGH);
   pinMode(pin_tx, OUTPUT);
-  pinMode(pin_rx, INPUT);
+  pinMode(pin_rx, INPUT);  */
   ledred_on;
   ledgreen_on;
   ledblue_off;

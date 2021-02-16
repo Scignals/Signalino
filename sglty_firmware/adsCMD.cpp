@@ -244,6 +244,7 @@ void ads9_setGanancia(int valor) { // 1..7 1-2-4-6-8-12-24
 		}
 	}
 	ads9_detectActiveChannels();
+
 	gisReadingDataNow = true;
 	ads9_send_command(RDATAC);
 	ads9_send_command(START);
@@ -272,7 +273,7 @@ void ads9_detectActiveChannels() {
 			gNumActiveChan++;
 	}
 	numSerialBytes = 1 + (3 * gNumActiveChan); //8-bits header plus 24-bits per ACTIVE channel
-
+    numSerialBytes=25;
 }
 
 void ads9_lee_datos(void) {

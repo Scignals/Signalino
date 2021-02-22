@@ -69,22 +69,25 @@ byte teensy_inicia_hw() {
   ledgreen_on;
   ledblue_off;
   
-
+  cs_high;
   pwdn_on;
   start_on;
-  cs_high;
+  delay(1000);
+  
   SPI.begin();
 
   //al empezar, reset del ADS1299
 //  pwdn_off;delay(10); pwdn_on;delay(300);
-  reset_off;delay(100);reset_on;delay(260);
+  reset_off;delay(1000);reset_on;delay(1000);
 
   // cuenta canales a gMaxChan y activa interrupcion
   if(teensy_cuenta_canales_EEG()>0){
     // si añado la rutina parpadea, se para el programa. que cosas...
+    
+    ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
+    delay(1000);
     attachInterrupt(digitalPinToInterrupt(drdy), ads9_lee_datos, FALLING);
     delay(100);
-    ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
   } else {
       gMaxChan = 8;
       gChip_EEG_instalado=AMP_NONE;
@@ -116,6 +119,10 @@ void teensy_sdcard_info(void)
 byte teensy_cuenta_canales_EEG()
 {
 //  Serial.print("Counting device channels...");
+  reset_off;
+  delay(10);
+  reset_on;
+  delay(100);
   byte revid;
   byte ch;
   byte dev_id;
@@ -124,9 +131,10 @@ byte teensy_cuenta_canales_EEG()
   // identifica el chip
   // calcula el numero de canales
   // ** no se que hace, tal vez identificar 
+  cs_low;
+  delayMicroseconds(1000);
   SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
-    cs_low;
-    delayMicroseconds(1000);
+    
     SPI.transfer(0x11);
     delayMicroseconds(2);
     SPI.transfer(0x20);

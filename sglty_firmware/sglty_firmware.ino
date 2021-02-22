@@ -67,6 +67,7 @@ sdtarjeta *gCRD;
 
 
 void setup(){
+  //delay(1000);
  tick=0; 
  inicia_signalino(sg_estado);
  

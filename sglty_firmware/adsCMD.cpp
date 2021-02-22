@@ -49,44 +49,57 @@ boolean gActiveChan[MAX_CANALES_HARDWARE]; // reports whether channels 1..9 are 
 
 void ads9_send_command(int cmd) {
 	using namespace ADS1298;
+	cs_low;
+ delay(1);
 	SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
-		cs_low;
+		
 		SPI.transfer(cmd);
-		delayMicroseconds(1);
-		cs_high;
+		delayMicroseconds(2);
+		
 	SPI.endTransaction();
+ cs_high;
 
 }
 
 void ads9_wreg(int reg, int val) {
 	//see pages 40,43 of datasheet -
 	using namespace ADS1298;
+ 
+ 
+    
 	SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
+    delay(1);
     cs_low;
 		SPI.transfer(WREG | reg);
-		delayMicroseconds(2);
+		//delayMicroseconds(2);
 		SPI.transfer(0);	// number of registers to be read/written – 1
-		delayMicroseconds(2);
+		
 		SPI.transfer(val);
 		//en datasheet dice q modificar config1 es como hacer un reset
 		//luego habra que esperar 18 clocks al menos
-		delayMicroseconds(1); 
+		//delayMicroseconds(2); 
     cs_high;
 	SPI.endTransaction();
+ 
 
 }
 
 int ads9_rreg(int reg) {
 	using namespace ADS1298;
+  
+  
 	SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
+  delay(1);
+  cs_low;
+  delay(1);
 		int out = 0;
-    	cs_low;
+    	
 		SPI.transfer(RREG | reg);
-		delayMicroseconds(5);
+		//delayMicroseconds(5);
 		SPI.transfer(0);	// number of registers to be read/written – 1
-		delayMicroseconds(5);
+		//delayMicroseconds(5);
 		out = SPI.transfer(0);
-		delayMicroseconds(1);
+		//delayMicroseconds(1);
     	cs_high;
 	SPI.endTransaction();
 	return (out);

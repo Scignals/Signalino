@@ -66,7 +66,7 @@ byte teensy_inicia_hw() {
   pinMode(pin_tx, OUTPUT);
   pinMode(pin_rx, INPUT);  */
   ledred_on;
-  ledgreen_on;
+  ledgreen_off;
   ledblue_off;
   
 
@@ -116,6 +116,11 @@ void teensy_sdcard_info(void)
 byte teensy_cuenta_canales_EEG()
 {
 //  Serial.print("Counting device channels...");
+  reset_off;
+  delay(10);
+  reset_on;
+  delay(100);
+
   byte revid;
   byte ch;
   byte dev_id;

@@ -23,8 +23,8 @@
 //
 #include "version.h"
 
-const char * build_version = "0.74";
-const char * build_fecha = "diciembre, 2020";
+const char * build_version = "0.8";
+const char * build_fecha = "marzo, 2020";
 #if defined(ARDUINO_SAM_DUE)
 const char * build_board = "Arduino Due";
 #elif defined(TEENSYDUINO)
@@ -62,7 +62,8 @@ void _mensaje_inicio(Stream &port_serial){
    port_serial.println(F("frmN -- data format: N=0..8(6)"));
    port_serial.println(F("inpN -- input parameters: N1:ref2x12 N2:bipx4 N3:refx24 N4:PSG N5:bipolarx24"));
    port_serial.println(F("bltN -- bluetooth 1=on 0=off"));
-   port_serial.println(F("luxN -- luxometro (dec format) 1=on 0=off"));
+   port_serial.println(F("luxN -- envío de datos 0=EEG (250Hz), 1=IMU (250Hz), 2=EEG+IMU (125Hz)"));
+   port_serial.println(F("impN -- modo impedancia 0:off 1:on"));
    port_serial.println(F("hlp  -- mensaje de ayuda y espera 'enter' "));
    port_serial.println(F("oka  -- mensaje de ayuda y sigue corriendo"));
    

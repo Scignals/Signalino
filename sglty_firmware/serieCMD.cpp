@@ -448,7 +448,7 @@ void procesaComando(String texto){
                   break;
              }
              break;
-      case comandos_parser::codigos_cmd::SDC:
+      case comandos_parser::codigos_cmd::IMP:
               switch(p1.param){
                 case 0:
                   ads9_misetup_ADS1299(MODE_IMPEDANCIAS_OFF); 

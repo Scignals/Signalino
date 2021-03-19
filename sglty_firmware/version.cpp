@@ -23,8 +23,8 @@
 //
 #include "version.h"
 
-const char * build_version = "0.8";
-const char * build_fecha = "marzo, 2020";
+const char * build_version = "0.81";
+const char * build_fecha = "19 marzo, 2020";
 #if defined(ARDUINO_SAM_DUE)
 const char * build_board = "Arduino Due";
 #elif defined(TEENSYDUINO)

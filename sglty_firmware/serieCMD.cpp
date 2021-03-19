@@ -328,6 +328,11 @@ void procesaComando(String texto){
            return;
           break;
       case comandos_parser::codigos_cmd::SIM:
+         if(gImpedanciasActivas==true){  
+               ads9_misetup_ADS1299(MODE_IMPEDANCIAS_OFF); 
+               gImpedanciasActivas=false;  
+         }
+         
          switch(p1.param){
            // 1 normal  2 test 3 simulada 4 max ganancia
             case 1:
@@ -371,7 +376,11 @@ void procesaComando(String texto){
                break;
             default:  
                if (p1.param<=maxComando) gFormatoSerial=p1.param;
+               break;
          }           
+         sprintf(buffer_comentaserial,"Signal format changed to %d",p1.param);
+         comentaSerial(buffer_comentaserial);
+
          break;
 
       case comandos_parser::codigos_cmd::REC:
@@ -388,6 +397,14 @@ void procesaComando(String texto){
          comentaSerial(buffer_comentaserial);
          break;
          // return;
+      case comandos_parser::codigos_cmd::RST:
+         gSenal_obtenida=SENAL_REAL;
+         ads9_misetup_ADS1299(MODE_SENAL_TEST);
+         delay(500);
+         ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
+         comentaSerial("Reset de la entrada");
+         break;
+ 
 
       case comandos_parser::codigos_cmd::GAN:
          gSenal_obtenida=SENAL_REAL;
@@ -399,6 +416,7 @@ void procesaComando(String texto){
 
       case comandos_parser::codigos_cmd::INP:
          comentaSerial(buffer_comentaserial);
+
             switch(p1.param){
                case 1:
                 gSenal_obtenida=SENAL_REAL;
@@ -411,7 +429,6 @@ void procesaComando(String texto){
                 ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
                 ads9_misetup_ADS1299(MODE_SENAL_BIP);
                 ads9_setGanancia(4);
-                
                 comentaSerial("EMG/EKG mode (bipolar channels, 4x)");
                 break;
                case 3: //eeg, serian 8 monopolares 
@@ -434,6 +451,7 @@ void procesaComando(String texto){
                 break;
                default:
                   comentaSerial("Solo hay modos 1-2-3-4-5");
+                  break;
              }
              break;
       case comandos_parser::codigos_cmd::BLT:
@@ -453,10 +471,12 @@ void procesaComando(String texto){
                 case 0:
                   ads9_misetup_ADS1299(MODE_IMPEDANCIAS_OFF); 
                   gImpedanciasActivas=false;  
+                  comentaSerial("Impedancias OFF");
                   break;
                 case 1:
                   ads9_misetup_ADS1299(MODE_IMPEDANCIAS_ON);   
                   gImpedanciasActivas=true;  
+                  comentaSerial("Impedancias ON");
                   break;
              }
              break;
@@ -466,19 +486,19 @@ void procesaComando(String texto){
                   gLUX_ON=false;
                   gLUX_BOTH_ON=false;
                   canales_extra=0;                  
-                  comentaSerial("EEG on LUX off");
+                  comentaSerial("EEG on IMU/LUX off");
                   break;
                 case 1:
                   gLUX_ON=true;
                   gLUX_BOTH_ON=false;                  
                   canales_extra=0;                  
-                  comentaSerial("LUX on");
+                  comentaSerial("IMU/LUX on");
                   break;
                 case 2:
                   gLUX_ON=true;
                   gLUX_BOTH_ON=true;                  
                   canales_extra=0;                  
-                  comentaSerial("LUX AND EEG on");
+                  comentaSerial("IMU/LUX & EEG on");
                   break;
 
              }

@@ -51,6 +51,7 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
  gSerialPrinting    = true;
  gLUX_ON            = false;
  gLUX_BOTH_ON       = false;
+ gImpedanciasActivas = false;
  
 // gFormatoSerial_code = OUT_DEC;
 

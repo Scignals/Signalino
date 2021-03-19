@@ -89,15 +89,16 @@ void loop()
 File myFile;
 volatile unsigned char *sbo;
 
-if(gLUX_BOTH_ON) sbo=&(serialBytes[1]); // 25 para añadirse, 1 para solaparse
-else sbo=&(serialBytes[1]);
-
+  if(gLUX_BOTH_ON) sbo=&(serialBytes[1]); // 25 para añadirse, 1 para solaparse
+  else sbo=&(serialBytes[1]);
+  // la lectura de datos EEG se hace por interrupciones, se copian automaticamente en serialBytes
+  // los datos del aceletometro se añaden ahora en el bucle
   if(gHayLectura && gisReadingDataNow ){
          gHayLectura=0;
          tick++;
-  // la lectura de datos se hace por interrupciones, se copian automaticamente en serialBytes
          footer = footer_EEG;
-         if(gLUX_ON && gSenal_obtenida==SENAL_REAL && gLUX_BOTH_ON && tick%2==0){
+         if(gSenal_obtenida==SENAL_REAL && 
+           (( gLUX_ON && !gLUX_BOTH_ON) || (gLUX_BOTH_ON && tick%2==0)) ){
             //const int sbo=1;    // si ponemos 26, y hacemos un formato nuevo, podriamos añadir canales 
             // copia en serialBytes la ultima lectura de los perifericos
             // en serialBytes se copia lo q sale del ads (1+nchannel*3): 
@@ -116,6 +117,7 @@ else sbo=&(serialBytes[1]);
             gACC->leer(); //siempre leemos el acelerometro, frecuencia de muestreo como el EEG
             if(tick%(INTERVALO_LEELUZ)==0)gLUX->get_luz_calibrada();
             footer = footer_IMU;
+
           }
          if(tick%1==0)imprimeSerial_signalino(gFormatoSerial);
         // if(gCRD_ON)imprime_linea2(1,gCRD->archivo);

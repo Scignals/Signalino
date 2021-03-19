@@ -190,6 +190,11 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 		break;
 	case MODE_IMPEDANCIAS_ON:
 		// activa el AC lead-off 
+		delay(150);
+		for (int i = 1; i <= gMaxChan; i++) {
+			ads9_wreg(char(CHnSET + i),
+				char(ELECTRODE_INPUT | GAIN_1X )); 
+		}
 		ads9_wreg(R1299::XLOFF, 		0b10101110 ); // Setup register 4; Current and frequency for Lead_off. 
 		ads9_wreg(R1299::XLOFF_SENSP, 	0b11111111 ); //Setup register 15; lead off enable . 
 		ads9_wreg(R1299::XLOFF_SENSN, 	0b11111111 ); // Setup register 16, lead off detection in negative signal
@@ -198,6 +203,11 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 		break;
 	case MODE_IMPEDANCIAS_OFF:
 		// desactiva el AC lead-off 
+		delay(150);
+		for (int i = 1; i <= gMaxChan; i++) {
+			ads9_wreg(char(CHnSET + i),
+				char(ELECTRODE_INPUT | GAIN_1X )); 
+		}
 		ads9_wreg(R1299::XLOFF, 		0b00000000 ); // Setup register 4; Current and frequency for Lead_off. 
 		ads9_wreg(R1299::XLOFF_SENSP, 	0b00000000 ); //Setup register 15; lead off enable . 
 		ads9_wreg(R1299::XLOFF_SENSN, 	0b00000000 ); // Setup register 16, lead off detection in negative signal
@@ -209,6 +219,7 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 	ads9_detectActiveChannels();
 	gisReadingDataNow = true;
 	ads9_send_command(RDATAC);
+	delay(2);
 	ads9_send_command(START);
 }
 
@@ -247,6 +258,7 @@ void ads9_setGanancia(int valor) { // 1..7 1-2-4-6-8-12-24
 
 	gisReadingDataNow = true;
 	ads9_send_command(RDATAC);
+	delay(2);
 	ads9_send_command(START);
 }
 
@@ -258,6 +270,7 @@ void ads9_set_fm(int p_samplefm) { // HIGH_RES_[16k,8k,4k,2k,1k,500,250]_SPS
 	ads9_wreg(CONFIG1, p_samplefm);
 	gisReadingDataNow = true;
 	ads9_send_command(RDATAC);
+	delay(2);
 	ads9_send_command(START);
 }
 

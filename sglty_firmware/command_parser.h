@@ -23,12 +23,13 @@ class comandos_parser {
 // blt: bluetooth 1:on/0:off
 // lux: lux+acelerometro 1:on/0:off
 // imp: activar medición de impedancias
+// rst: reset
 // sdc: grabando en SD
 
 
 
- typedef enum {ERR,GAN,INP,SIM,FRM,REC,HLP,OKA,BLT,LUX,IMP,SDC,IPD} codigos_cmd ; // empezamos en 1 para q 0 sea el ERR
- const static int numero_comandos=12; // el ERR no cuenta
+ typedef enum {ERR,GAN,INP,SIM,FRM,REC,RST,HLP,OKA,BLT,LUX,IMP,SDC,IPD} codigos_cmd ; // empezamos en 1 para q 0 sea el ERR
+ const static int numero_comandos=13; // el ERR no cuenta
 
  typedef struct {
 	char cmd[4];
@@ -37,7 +38,7 @@ class comandos_parser {
 
   tabla_comandos tabla_cmd [numero_comandos]={{"GAN",GAN},{"INP",INP},{"SIM",SIM},
 	{"FRM",FRM},{"REC",REC},{"HLP",HLP},
-	{"OKA",OKA},{"BLT",BLT},{"LUX",LUX},{"IMP",IMP},{"SDC",SDC}, {"IPD",IPD}, };
+	{"OKA",OKA},{"BLT",BLT},{"LUX",LUX},{"IMP",IMP},{"SDC",SDC}, {"IPD",IPD}, {"RST",RST} };
 public:
  cmd_control extraeComando(String);
  codigos_cmd traduceComando(cmd_control);

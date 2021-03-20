@@ -192,30 +192,33 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 	case MODE_IMPEDANCIAS_ON:
 		// activa el AC lead-off 
 	//	delay(150);
-	    reset_off;delay(10);reset_on;delay(100);
-
-		for (int i = 1; i <= gMaxChan; i++) {
-			ads9_wreg(char(CHnSET + i),
-				char(ELECTRODE_INPUT | GAIN_1X )); 
-		}
-		ads9_wreg(R1299::XLOFF, 		0b10101110 ); // Setup register 4; Current and frequency for Lead_off. 
-		ads9_wreg(R1299::XLOFF_SENSP, 	0b11111111 ); //Setup register 15; lead off enable . 
-		ads9_wreg(R1299::XLOFF_SENSN, 	0b11111111 ); // Setup register 16, lead off detection in negative signal
-		ads9_wreg(R1299::XCONFIG4, 		0b00000010 );//Setup register 23; lead off comparator enable
-		gImpedanciasActivas=true;
+		if(!gImpedanciasActivas){
+			reset_off;delay(10);reset_on;delay(100);
+			for (int i = 1; i <= gMaxChan; i++) {
+				ads9_wreg(char(CHnSET + i),
+					char(ELECTRODE_INPUT | GAIN_1X )); 
+			}
+			ads9_wreg(R1299::XLOFF, 		0b10101110 ); // Setup register 4; Current and frequency for Lead_off. 
+			ads9_wreg(R1299::XLOFF_SENSP, 	0b11111111 ); //Setup register 15; lead off enable . 
+			ads9_wreg(R1299::XLOFF_SENSN, 	0b11111111 ); // Setup register 16, lead off detection in negative signal
+			ads9_wreg(R1299::XCONFIG4, 		0b00000010 );//Setup register 23; lead off comparator enable
+			gImpedanciasActivas=true;
+			}
 		break;
 	case MODE_IMPEDANCIAS_OFF:
-		// desactiva el AC lead-off 
-		delay(150);
-		for (int i = 1; i <= gMaxChan; i++) {
-			ads9_wreg(char(CHnSET + i),
-				char(ELECTRODE_INPUT | GAIN_1X )); 
-		}
-		ads9_wreg(R1299::XLOFF, 		0b00000000 ); // Setup register 4; Current and frequency for Lead_off. 
-		ads9_wreg(R1299::XLOFF_SENSP, 	0b00000000 ); //Setup register 15; lead off enable . 
-		ads9_wreg(R1299::XLOFF_SENSN, 	0b00000000 ); // Setup register 16, lead off detection in negative signal
-		ads9_wreg(R1299::XCONFIG4, 		0b00000000 );//Setup register 23; lead off comparator enable
-		gImpedanciasActivas=false;
+		// desactiva el AC lead-off
+		if(gImpedanciasActivas){ 
+			delay(150);
+			for (int i = 1; i <= gMaxChan; i++) {
+				ads9_wreg(char(CHnSET + i),
+					char(ELECTRODE_INPUT | GAIN_1X )); 
+			}
+			ads9_wreg(R1299::XLOFF, 		0b00000000 ); // Setup register 4; Current and frequency for Lead_off. 
+			ads9_wreg(R1299::XLOFF_SENSP, 	0b00000000 ); //Setup register 15; lead off enable . 
+			ads9_wreg(R1299::XLOFF_SENSN, 	0b00000000 ); // Setup register 16, lead off detection in negative signal
+			ads9_wreg(R1299::XCONFIG4, 		0b00000000 );//Setup register 23; lead off comparator enable
+			gImpedanciasActivas=false;
+		}	
 		break;	
 	}
 	//start streaming data

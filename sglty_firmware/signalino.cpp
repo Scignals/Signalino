@@ -23,8 +23,7 @@
 //
 #include "signalino.h"
 
-// hay cuatro estados: QUIETO_PARADO, señal cuadrada, señal real
-// y modo impedancias, aun no implementado
+// hay CINCO estados: QUIETO_PARADO, señal cuadrada, IMPEDANCIAS, señal real
 
 
 const SIGNALINO_formatos_salida formatos[]={
@@ -46,12 +45,12 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
   #endif
   inicia_serial_pc();
   
- gFormatoSerial     = 2; // default para usarlo con arduino gui 
- gBluetooth         = true;
- gSerialPrinting    = true;
- gLUX_ON            = false;
- gLUX_BOTH_ON       = false;
- gImpedanciasActivas = false;
+ gFormatoSerial       = 2; // default para usarlo con arduino gui 
+ gBluetooth           = true;
+ gSerialPrinting      = true;
+ gLUX_ON              = false;
+ gLUX_BOTH_ON         = false;
+ gImpedanciasActivas  = false;
  
 // gFormatoSerial_code = OUT_DEC;
 
@@ -67,6 +66,9 @@ void inicia_signalino(SIGNALINO_maquina_estados p_estado){
     case SENAL_REAL_ADS:
         ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
         break;
+//    case IMPEDANCIAS:
+//        ads9_misetup_ADS1299(MODE_IMPEDANCIAS_ON);
+//        break;
     }
 
 }

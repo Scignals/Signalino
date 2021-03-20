@@ -97,7 +97,7 @@ volatile unsigned char *sbo;
          gHayLectura=0;
          tick++;
          footer = footer_EEG;
-         if(gSenal_obtenida==SENAL_REAL && 
+         if((gSenal_obtenida==SENAL_REAL || gSenal_obtenida==SENAL_TEST) && 
            (( gLUX_ON && !gLUX_BOTH_ON) || (gLUX_BOTH_ON && tick%2==0)) ){
             //const int sbo=1;    // si ponemos 26, y hacemos un formato nuevo, podriamos añadir canales 
             // copia en serialBytes la ultima lectura de los perifericos

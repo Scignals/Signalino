@@ -311,6 +311,7 @@ void lee_Comando_Serial_signalino(){
 // oka: mensaje de inicio y sigue corriendo
 // blt: bluetooth 1:on/0:off
 // sdc: grabando/no grabando en la SD card
+// sfm: cambia frecuencia de muestreo
 
 
 void procesaComando(String texto){
@@ -340,7 +341,7 @@ void procesaComando(String texto){
               ads9_misetup_ADS1299(MODE_SENAL_REAL_1x);
               break;
             case 2:
-              gSenal_obtenida=SENAL_REAL;
+              gSenal_obtenida=SENAL_TEST;
               ads9_misetup_ADS1299(MODE_SENAL_TEST);
               break;
             case 3:
@@ -352,13 +353,15 @@ void procesaComando(String texto){
               ads9_misetup_ADS1299(MODE_SENAL_REAL_24x);
               break;
            case 5:
-              gSenal_obtenida=SENAL_REAL;
+              gSenal_obtenida=SENAL_TEST;
               ads9_misetup_ADS1299(MODE_SENAL_TEST_24x);
               break;
           case 6: // reset
             #if defined(ARDUINO_SAM_DUE)
+               ads9_misetup_ADS1299(MODE_SENAL_TEST);
                due_inicia_hw();
             #elif defined(TEENSYDUINO)
+               ads9_misetup_ADS1299(MODE_SENAL_TEST);
                teensy_inicia_hw();
 //             teensy_configini();
             #endif
@@ -414,6 +417,15 @@ void procesaComando(String texto){
          comentaSerial(buffer_comentaserial);
          break;
 
+/*
+      case comandos_parser::codigos_cmd::SFM:
+         gSenal_obtenida=SENAL_REAL;
+         // HIGH_RES_[16k,8k,4k,2k,1k,500,250]_SPS
+         ads9_set_fm(p1.param);
+         sprintf(buffer_comentaserial,"fm changed to %d",p1.param);
+         comentaSerial(buffer_comentaserial);
+         break;
+*/
       case comandos_parser::codigos_cmd::INP:
          comentaSerial(buffer_comentaserial);
 

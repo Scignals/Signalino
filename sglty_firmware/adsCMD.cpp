@@ -95,6 +95,7 @@ int ads9_rreg(int reg) {
 void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 	// configura los parametros de ganancia y electrodos de referencia
 	using namespace ADS1298;
+    reset_off;delay(10);reset_on;delay(100);
 	ads9_send_command(SDATAC); // dejamos el modo READ para emitir comandos
 	delay(1); // dicen que hay que esperar un poquito aqui, aunque tanto como 1 segundo... lo bajo a 1ms y parece que no pasa nada
 	ads9_wreg(GPIO, char(0));
@@ -190,7 +191,9 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 		break;
 	case MODE_IMPEDANCIAS_ON:
 		// activa el AC lead-off 
-		delay(150);
+	//	delay(150);
+	    reset_off;delay(10);reset_on;delay(100);
+
 		for (int i = 1; i <= gMaxChan; i++) {
 			ads9_wreg(char(CHnSET + i),
 				char(ELECTRODE_INPUT | GAIN_1X )); 
@@ -216,7 +219,8 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 		break;	
 	}
 	//start streaming data
-	ads9_detectActiveChannels();
+//	ads9_detectActiveChannels();
+	numSerialBytes=25;
 	gisReadingDataNow = true;
 	ads9_send_command(RDATAC);
 	delay(2);
@@ -254,8 +258,7 @@ void ads9_setGanancia(int valor) { // 1..7 1-2-4-6-8-12-24
 			break;
 		}
 	}
-	ads9_detectActiveChannels();
-
+//	ads9_detectActiveChannels();
 	gisReadingDataNow = true;
 	ads9_send_command(RDATAC);
 	delay(2);
@@ -303,6 +306,7 @@ void ads9_lee_datos(void) {
 		for (int ch = 1; ch <= gMaxChan; ch++) {
 			switch (gSenal_obtenida) {
 			case SENAL_REAL:
+			case SENAL_TEST:
 				serialBytes[i++] = SPI.transfer(0);
 				serialBytes[i++] = SPI.transfer(0);
 				serialBytes[i++] = SPI.transfer(0);

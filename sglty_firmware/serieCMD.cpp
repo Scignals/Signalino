@@ -293,7 +293,7 @@ void lee_Comando_Serial_signalino(){
 		}
    
 	} else {
-      if(intervalo_leeserial>1){
+      if(intervalo_leeserial==1){
          if(ultimo_acceso_serie>1000*5)
             intervalo_leeserial=16;
       }
@@ -310,7 +310,7 @@ void lee_Comando_Serial_signalino(){
 			procesaComando(comando);
 		}
 	} else {
-      if(intervalo_leeserial>1){
+      if(intervalo_leeserial==1){
          if(ultimo_acceso_serie>1000*5)
             intervalo_leeserial=16;
       }

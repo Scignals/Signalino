@@ -45,6 +45,7 @@
 #define INTERVALO_LEESERIAL 1*16
 #define INTERVALO_LEELUZ 1*16
 
+extern unsigned int intervalo_leeserial;
 
 SIGNALINO_maquina_estados sg_estado=SENAL_REAL_ADS;
 SIGNALINO_serial_interprete sg_interprete=INTERPRETE_SIGNALINO;
@@ -53,6 +54,7 @@ unsigned long tick;
 boolean gSerialPrinting = true;
 boolean gLUX_ON = false;
 boolean gLUX_BOTH_ON = false;
+
 
 const unsigned char footer_EEG = 0xC0;
 const unsigned char footer_IMU = 0xC1;
@@ -122,7 +124,7 @@ volatile unsigned char *sbo;
          if(tick%1==0)imprimeSerial_signalino(gFormatoSerial);
         // if(gCRD_ON)imprime_linea2(1,gCRD->archivo);
          
-         if(tick%(INTERVALO_LEESERIAL)==0)lee_Comando_Serial_signalino();
+         if(tick%(intervalo_leeserial)==0)lee_Comando_Serial_signalino();
 
 
         if(0 && tick%(250)==0){ // en pruebas aun

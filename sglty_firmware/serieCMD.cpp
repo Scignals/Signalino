@@ -37,6 +37,9 @@ char buffer_comentaserial[MAX_COMENTARIO_SERIAL];
 char *gLetra; // buffer usado en to_hex, inicializado en inicia_serial()
 int gFormatoSerial; 
 
+// intervalo variable cuando se esta leyendo el puerto 
+unsigned int intervalo_leeserial=1;
+elapsedMillis ultimo_acceso_serie=0;
 
 int minComando=1;
 int maxComando=8;
@@ -281,23 +284,37 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
 void lee_Comando_Serial_signalino(){
 	if(WiredSerial.available()!=0){
 		String comando;
+      intervalo_leeserial=1;
+      ultimo_acceso_serie=0;
 		while( (comando = WiredSerial.readStringUntil(';')).length()>0){
 			comando.toLowerCase();
 			comando.trim();
 			procesaComando(comando);
 		}
-	}
+   
+	} else {
+      if(intervalo_leeserial>1){
+         if(ultimo_acceso_serie>1000*5)
+            intervalo_leeserial=16;
+      }
+   }
 
    //?? cambiar ; por FINLINEA
 	if(HC06.available()!=0){
 		String comando;
+      intervalo_leeserial=1;
+	   ultimo_acceso_serie=0;
 		while( (comando = HC06.readStringUntil(';')).length()>0){
 			comando.toLowerCase();
 			comando.trim();
 			procesaComando(comando);
 		}
-	}
-
+	} else {
+      if(intervalo_leeserial>1){
+         if(ultimo_acceso_serie>1000*5)
+            intervalo_leeserial=16;
+      }
+   }      
 }
 
 

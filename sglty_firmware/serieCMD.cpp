@@ -227,7 +227,8 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
    txBuf[ind++] = luz_percibida[1];
    txBuf[ind++] = luz_percibida[2];
    
-   // este ultimo es C0 para los acelerometros
+   // este ultimo es C0 para EEG y acelerometros
+   // ahora es C1 para lux y acelerometros
    // en su lugar podian ir por ejemplo un registro de  booleanos: luz, bluetooh si/no,
    // pero entonces hay q cambiar el C0 por CX
    txBuf[ind]=footer; 
@@ -281,12 +282,17 @@ void imprime_openBCI_V3(int modo_bci_protocolo){
   }
 }
 
-void lee_Comando_Serial_signalino(){
-	if(WiredSerial.available()!=0){
+
+
+
+
+
+void _lee_Comando_Stream(Stream &puerto){
+	if(puerto.available()!=0){
 		String comando;
       intervalo_leeserial=1;
       ultimo_acceso_serie=0;
-		while( (comando = WiredSerial.readStringUntil(';')).length()>0){
+		while( (comando = puerto.readStringUntil(';')).length()>0){
 			comando.toLowerCase();
 			comando.trim();
 			procesaComando(comando);
@@ -298,23 +304,11 @@ void lee_Comando_Serial_signalino(){
             intervalo_leeserial=16;
       }
    }
+}
 
-   //?? cambiar ; por FINLINEA
-	if(HC06.available()!=0){
-		String comando;
-      intervalo_leeserial=1;
-	   ultimo_acceso_serie=0;
-		while( (comando = HC06.readStringUntil(';')).length()>0){
-			comando.toLowerCase();
-			comando.trim();
-			procesaComando(comando);
-		}
-	} else {
-      if(intervalo_leeserial==1){
-         if(ultimo_acceso_serie>1000*5)
-            intervalo_leeserial=16;
-      }
-   }      
+void lee_Comando_Serial_signalino(){
+  _lee_Comando_Stream(WiredSerial);
+  _lee_Comando_Stream(HC06);
 }
 
 

@@ -37,7 +37,7 @@ char buffer_comentaserial[MAX_COMENTARIO_SERIAL];
 char *gLetra; // buffer usado en to_hex, inicializado en inicia_serial()
 int gFormatoSerial; 
 
-// intervalo variable cuando se esta leyendo el puerto 
+// intervalo variable cuando se esta leyendo el puerto serie para modificar su velocidad de respuesta 
 unsigned int intervalo_leeserial=1;
 elapsedMillis ultimo_acceso_serie=0;
 
@@ -74,6 +74,7 @@ void comentaSerial(String texto)
 /* PROTOCOLOS POR PUERTO SERIE   */
 //--------------------------------
 // cambio a Stream y referencia porque ahora funciona bien con los dos tipos de puertos
+// (serie y bluetooth)
 // leido en http://forum.arduino.cc/index.php?topic=155961.0
 
 void imprime_linea2( int modo_hex, Stream &port_serial ){
@@ -300,7 +301,7 @@ void _lee_Comando_Stream(Stream &puerto){
    
 	} else {
       if(intervalo_leeserial==1){
-         if(ultimo_acceso_serie>1000*5)
+         if(ultimo_acceso_serie>1000*5) 
             intervalo_leeserial=16;
       }
    }

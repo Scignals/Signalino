@@ -97,15 +97,16 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 	using namespace ADS1298;
     reset_off;delay(10);reset_on;delay(100);
 	ads9_send_command(SDATAC); // dejamos el modo READ para emitir comandos
-	delay(1); // dicen que hay que esperar un poquito aqui, aunque tanto como 1 segundo... lo bajo a 1ms y parece que no pasa nada
+	delay(2); // dicen que hay que esperar un poquito aqui, aunque tanto como 1 segundo... lo bajo a 1ms y parece que no pasa nada
 	ads9_wreg(GPIO, char(0));
 	ads9_wreg(CONFIG1, HIGH_RES_250_SPS);
 	ads9_wreg(CONFIG2, 0xC0);  // no generate internal test signals
-	delay(1); // dicen que hay que esperar un poquito aqui
+	delay(2); // dicen que hay que esperar un poquito aqui
 
 	switch (estado_ads1299) {
 	case MODE_SENAL_TEST:
 		ads9_wreg(CONFIG2, INT_TEST_4HZ_2X);  // generate internal test signals
+	delay(10); 
 		ads9_wreg(CONFIG3, char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {
@@ -115,6 +116,7 @@ void ads9_misetup_ADS1299(MODOS_ADS1299 estado_ads1299) {
 		break;
 	case MODE_SENAL_TEST_24x:
 		ads9_wreg(CONFIG2, INT_TEST_8HZ);  // generate internal test signals
+	delay(10); 
 		ads9_wreg(CONFIG3, char(PD_REFBUF | CONFIG3_const)); //PD_REFBUF used for test signal, activa la referencia interna
 		delay(150);
 		for (int i = 1; i <= gMaxChan; i++) {

@@ -12,7 +12,7 @@ complete hardware validation.
 
 | Component | Purpose | Availability |
 | --- | --- | --- |
-| Signalino Suite | Connect, inspect impedances, view EEG, record sessions and publish LSL | macOS, Windows and Linux installers in preparation |
+| Signalino Suite | Connect, inspect impedances, view EEG, record sessions and publish LSL | [0.9.0 Preview](https://github.com/Scignals/Signalino/releases/tag/v0.9.0) for macOS, Windows and Linux |
 | `signalino` for Python | Native USB, Bluetooth Classic and BLE acquisition API | [Available on PyPI](https://pypi.org/project/signalino/) |
 | BrainFlow integration | Use Signalino from BrainFlow-compatible applications | Release candidate |
 | BCI2000 integration | Native Signalino source and impedance support | Under validation |
@@ -55,10 +55,11 @@ frame as the current software stack.
 
 ## Downloads
 
-Validated Signalino Suite installers and firmware images will be attached to
-this repository's [Releases](https://github.com/Scignals/Signalino/releases).
-During the current development phase, devices are programmed and supported
-directly by Scignals.
+Signalino Suite preview installers are available from this repository's
+[Releases](https://github.com/Scignals/Signalino/releases). Firmware images
+will be added after the corresponding hardware release is frozen. During the
+current development phase, devices are programmed and supported directly by
+Scignals.
 
 The historical public repository has been preserved as
 [signalino-legacy](https://github.com/Scignals/signalino-legacy).

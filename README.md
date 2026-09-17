@@ -13,6 +13,7 @@ complete hardware validation.
 | Component | Purpose | Availability |
 | --- | --- | --- |
 | Signalino Suite | Connect, inspect impedances, view EEG, record sessions and publish LSL | [0.10.0 Preview](https://github.com/Scignals/Signalino/releases/tag/v0.10.0) for macOS, Windows and Linux |
+| Android Bridge + HepatoSense | BLE/paired Classic acquisition, recording, EDF export and exploratory qEEG | [Android 0.4.0 Preview](https://github.com/Scignals/Signalino/releases/tag/v0.10.0), Android 12+ |
 | `signalino` for Python | Native USB, Bluetooth Classic and BLE acquisition API | [Available on PyPI](https://pypi.org/project/signalino/) |
 | BrainFlow integration | Use Signalino from BrainFlow-compatible applications | Release candidate |
 | BCI2000 integration | Native Signalino source and impedance support | Under validation |
@@ -64,6 +65,13 @@ Scignals.
 See the [0.10.0 installation notes and known limitations](docs/releases/0.10.0.md).
 The software mock needs Python; physical Windows USB/Classic/BLE acquisition does
 not. Automated mock tests do not establish physical Bluetooth compatibility.
+
+Android downloads include **both** Signalino Bridge and HepatoSense. Install the
+matched pair; no Python or BrainFlow is needed on the phone. Read ANDROID_README.md
+in the ZIP before updating development APKs: the distribution signature differs,
+and uninstalling a development app deletes its private recordings and settings.
+Export and verify your recordings first. Android does not yet publish LSL over
+Wi-Fi or acquire over USB.
 
 The historical public repository has been preserved as
 [signalino-legacy](https://github.com/Scignals/signalino-legacy).

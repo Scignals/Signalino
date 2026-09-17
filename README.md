@@ -56,6 +56,10 @@ frame as the current software stack.
 
 ## Downloads
 
+**Installing on another PC?** Use the
+[Windows/Linux installation and test checklist](docs/PRUEBAS_0.10.0.md)
+(Spanish), with direct download links and a short results template.
+
 Signalino Suite preview installers are available from this repository's
 [Releases](https://github.com/Scignals/Signalino/releases). Firmware images
 will be added after the corresponding hardware release is frozen. During the

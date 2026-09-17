@@ -62,6 +62,8 @@ will be added after the corresponding hardware release is frozen. During the
 current development phase, devices are programmed and supported directly by
 Scignals.
 
+See [firmware availability and model selection](docs/firmware/README.md).
+
 See the [0.10.0 installation notes and known limitations](docs/releases/0.10.0.md).
 The software mock needs Python; physical Windows USB/Classic/BLE acquisition does
 not. Automated mock tests do not establish physical Bluetooth compatibility.

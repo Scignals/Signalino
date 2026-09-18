@@ -12,7 +12,7 @@ complete hardware validation.
 
 | Component | Purpose | Availability |
 | --- | --- | --- |
-| Signalino Suite | Connect, inspect impedances, view EEG, record sessions and publish LSL | [0.10.0 Preview](https://github.com/Scignals/Signalino/releases/tag/v0.10.0) for macOS, Windows and Linux |
+| Signalino Suite | Connect, inspect impedances, view EEG, record sessions and publish LSL | [0.11.0 Preview](https://github.com/Scignals/Signalino/releases/tag/v0.11.0) for macOS, Windows and Linux |
 | Android Bridge + HepatoSense | BLE/paired Classic acquisition, recording, EDF export and exploratory qEEG | [Android 0.4.0 Preview](https://github.com/Scignals/Signalino/releases/tag/v0.10.0), Android 12+ |
 | `signalino` for Python | Native USB, Bluetooth Classic and BLE acquisition API | [Available on PyPI](https://pypi.org/project/signalino/) |
 | BrainFlow integration | Use Signalino from BrainFlow-compatible applications | Release candidate |
@@ -68,7 +68,7 @@ Scignals.
 
 See [firmware availability and model selection](docs/firmware/README.md).
 
-See the [0.10.0 installation notes and known limitations](docs/releases/0.10.0.md).
+See the [0.11.0 installation notes and known limitations](docs/releases/0.11.0.md).
 The software mock needs Python; physical Windows USB/Classic/BLE acquisition does
 not. Automated mock tests do not establish physical Bluetooth compatibility.
 
